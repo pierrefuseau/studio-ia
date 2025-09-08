@@ -87,7 +87,8 @@ export function UploadZone() {
   const onDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(false);
-    handleFiles(e.dataTransfer.files);
+    const droppedFiles = Array.from(e.dataTransfer.files);
+    handleFiles(droppedFiles); // 🔥 traite tous les fichiers droppés
   }, [handleFiles]);
 
   const onDragOver = useCallback((e: React.DragEvent) => {
