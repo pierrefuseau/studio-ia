@@ -34,38 +34,37 @@ export class WebhookService {
         hasSingleImageFile: payload.productData.imageFile ? 1 : 0,
       });
 
-      // Préparer les fichiers à convertir en base64
+      // TOUJOURS préparer un tableau de fichiers à convertir
       let filesToConvert: File[] = [];
       
-      // Si plusieurs fichiers
+      // Récupérer TOUS les fichiers dans un tableau
       if (payload.productData.imageFiles && payload.productData.imageFiles.length > 0) {
-        console.log('📁 Mode MULTIPLE FILES détecté:', payload.productData.imageFiles.length, 'fichiers');
+        console.log('📁 Fichiers multiples détectés:', payload.productData.imageFiles.length, 'fichiers');
         filesToConvert = payload.productData.imageFiles;
-        payload.productData.imageFiles.forEach((file, index) => {
-          console.log(`  📄 Fichier ${index + 1}:`, {
-            name: file.name,
-            size: file.size,
-            type: file.type
-          });
-        });
       }
-      // Si un seul fichier
+      // Si un seul fichier, le mettre dans un tableau
       else if (payload.productData.imageFile) {
-        console.log('📄 Mode SINGLE FILE détecté:', {
-          name: payload.productData.imageFile.name,
-          size: payload.productData.imageFile.size,
-          type: payload.productData.imageFile.type
-        });
+        console.log('📄 Fichier unique détecté, ajout au tableau');
         filesToConvert = [payload.productData.imageFile];
       }
       else {
-        console.log('⚠️ Aucun fichier à traiter');
+        console.log('❌ Aucun fichier à traiter');
         throw new Error('Aucun fichier image fourni');
       }
       
-      console.log('🔄 Conversion en base64 de', filesToConvert.length, 'fichier(s)...');
+      // Log détaillé de tous les fichiers
+      console.log('📦 Fichiers à traiter:', filesToConvert.length);
+      filesToConvert.forEach((file, index) => {
+        console.log(`  📄 Fichier ${index + 1}:`, {
+          name: file.name,
+          size: file.size,
+          type: file.type
+        });
+      });
       
-      // Convertir tous les fichiers en base64
+      console.log('🔄 Conversion en Base64 (sans préfixe) de', filesToConvert.length, 'fichier(s)...');
+      
+      // Convertir TOUS les fichiers en Base64 pur (sans préfixe)
       const imagesBase64 = await Promise.all(filesToConvert.map(toB64));
       
       console.log('✅ Conversion terminée:', {
@@ -73,6 +72,7 @@ export class WebhookService {
         taillesBase64: imagesBase64.map(b64 => `${Math.round(b64.length / 1024)}KB`)
       });
       
+      // Construire le payload JSON avec le tableau imagesBase64
       const jsonPayload = {
         client: payload.productData.name || 'Client Anonyme',
         commentaire: payload.productData.description || 'Aucun commentaire',
@@ -81,10 +81,14 @@ export class WebhookService {
       };
       
       console.log('📤 JSON final à envoyer:', {
-        ...jsonPayload,
+        client: jsonPayload.client,
+        commentaire: jsonPayload.commentaire,
+        treatmentType: jsonPayload.treatmentType,
+        nombreImagesBase64: jsonPayload.imagesBase64.length
       });
       console.log('🌐 URL webhook:', this.webhookUrl);
 
+      // Envoi POST vers n8n
       const response = await fetch(this.webhookUrl, {
         method: 'POST',
         body: JSON.stringify(jsonPayload),
@@ -108,7 +112,7 @@ export class WebhookService {
 
       const result = await response.json();
       console.log('✅ Réponse n8n:', result);
-      console.log('🎉 === ENVOI RÉUSSI ===');
+      console.log('🎉 === ENVOI TABLEAU IMAGES RÉUSSI ===');
       
       return true;
     } catch (error) {
