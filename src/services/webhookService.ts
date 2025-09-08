@@ -47,22 +47,25 @@ export class WebhookService {
       
       // 🚀 PAYLOAD JSON FINAL
       const jsonPayload = {
-        client: payload.productData.name || 'Client Anonyme',
-        commentaire: payload.productData.description || 'Aucun commentaire',
+        client: 'Studio Produit',
+        productName: payload.productData.name || '',
+        productDescription: payload.productData.description || '',
         treatmentType: payload.treatmentType,
         imagesBase64: imagesBase64,   // ⚡ tableau complet d'images en base64
         originalFileNames: filesToConvert.map(file => file.name)  // 📝 noms des fichiers originaux
       };
       
       console.log('📤 JSON final à envoyer:', {
-        client: jsonPayload.client,
+        productName: jsonPayload.productName,
+        productDescription: jsonPayload.productDescription,
         treatmentType: jsonPayload.treatmentType,
         imagesCount: jsonPayload.imagesBase64.length,
         fileNames: jsonPayload.originalFileNames
       });
       
       console.log('📤 Envoi vers n8n:', {
-        client: jsonPayload.client,
+        productName: jsonPayload.productName,
+        productDescription: jsonPayload.productDescription,
         treatmentType: jsonPayload.treatmentType,
         imagesCount: jsonPayload.imagesBase64.length,
         originalFiles: jsonPayload.originalFileNames
@@ -96,8 +99,8 @@ export class WebhookService {
       const testPayload: WebhookPayload = {
         treatmentType: 'test',
         productData: {
-          name: 'Test Connection',
-          description: 'Test de connexion webhook'
+          name: 'Produit Test',
+          description: 'Description test pour connexion webhook'
         },
         timestamp: new Date().toISOString(),
         sessionId: 'test-' + Date.now()
