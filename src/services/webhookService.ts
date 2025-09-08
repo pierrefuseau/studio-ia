@@ -1,5 +1,13 @@
 import { WebhookPayload } from '../types';
 
+// Fonction utilitaire pour convertir un fichier en base64
+const toB64 = (file: File): Promise<string> =>
+  new Promise<string>((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result).split(',')[1] || '');
+    reader.readAsDataURL(file);
+  });
+
 export class WebhookService {
   private static instance: WebhookService;
   private webhookUrl: string;
@@ -24,24 +32,21 @@ export class WebhookService {
         commentaire: payload.productData.description || 'Aucun commentaire',
         hasImageFiles: payload.productData.imageFiles?.length || 0,
         hasSingleImageFile: payload.productData.imageFile ? 1 : 0,
-        hasImageUrl: payload.productData.imageUrl ? 1 : 0
       });
 
-      // Préparer les URLs des images
-      let imageUrls: string[] = [];
+      // Préparer les fichiers à convertir en base64
+      let filesToConvert: File[] = [];
       
       // Si plusieurs fichiers
       if (payload.productData.imageFiles && payload.productData.imageFiles.length > 0) {
         console.log('📁 Mode MULTIPLE FILES détecté:', payload.productData.imageFiles.length, 'fichiers');
-        imageUrls = payload.productData.imageFiles.map((file, index) => {
-          const url = `https://bolt-files/${file.name || `image_${index}.jpg`}`;
+        filesToConvert = payload.productData.imageFiles;
+        payload.productData.imageFiles.forEach((file, index) => {
           console.log(`  📄 Fichier ${index + 1}:`, {
             name: file.name,
             size: file.size,
-            type: file.type,
-            url: url
+            type: file.type
           });
-          return url;
         });
       }
       // Si un seul fichier
@@ -51,24 +56,31 @@ export class WebhookService {
           size: payload.productData.imageFile.size,
           type: payload.productData.imageFile.type
         });
-        imageUrls = [`https://bolt-files/${payload.productData.imageFile.name || 'image.jpg'}`];
+        filesToConvert = [payload.productData.imageFile];
       }
-      // Si URL d'image
-      else if (payload.productData.imageUrl) {
-        console.log('🔗 Mode IMAGE URL détecté:', payload.productData.imageUrl);
-        imageUrls = [payload.productData.imageUrl];
+      else {
+        console.log('⚠️ Aucun fichier à traiter');
+        throw new Error('Aucun fichier image fourni');
       }
       
-      console.log('🖼️ URLs d\'images générées:', imageUrls);
+      console.log('🔄 Conversion en base64 de', filesToConvert.length, 'fichier(s)...');
+      
+      // Convertir tous les fichiers en base64
+      const imagesBase64 = await Promise.all(filesToConvert.map(toB64));
+      
+      console.log('✅ Conversion terminée:', {
+        nombreImages: imagesBase64.length,
+        taillesBase64: imagesBase64.map(b64 => `${Math.round(b64.length / 1024)}KB`)
+      });
       
       // Construire le JSON exact comme spécifié
       const jsonPayload = {
         client: payload.productData.name || 'Client Anonyme',
         commentaire: payload.productData.description || 'Aucun commentaire',
         treatmentType: payload.treatmentType,
-        images: imageUrls
+        imagesBase64: imagesBase64
       };
-
+        imagesBase64: `[${jsonPayload.imagesBase64.length} images base64]`
       console.log('📤 JSON final à envoyer:', JSON.stringify(jsonPayload, null, 2));
       console.log('🌐 URL webhook:', this.webhookUrl);
 

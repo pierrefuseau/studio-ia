@@ -123,7 +123,7 @@ export function UploadZone() {
           payload: {
             id: Date.now().toString(),
             image: newFiles[0].file,
-            imageUrl: newFiles[0].preview
+            imageUrl: newFiles[0].preview // Gardé pour l'affichage local
           }
         });
       }
@@ -157,10 +157,11 @@ export function UploadZone() {
 
         const success = await webhookService.sendTreatmentRequest({
           treatmentType: state.selectedTreatmentType || 'background-removal',
+          treatmentDisplayName: 'Traitement Simple',
           productData: {
             name: state.product?.name,
             description: state.product?.description,
-            imageFile: file.file,
+            imageFiles: [file.file], // Utiliser imageFiles même pour un seul fichier
             originalFileName: file.file.name
           },
           timestamp: new Date().toISOString(),
@@ -192,14 +193,15 @@ export function UploadZone() {
           try {
             const success = await webhookService.sendTreatmentRequest({
               treatmentType: state.selectedTreatmentType || 'background-removal',
+              treatmentDisplayName: 'Traitement Batch',
               productData: {
                 name: state.product?.name,
                 description: state.product?.description,
-                imageFile: file.file,
+                imageFiles: uploadedFiles.map(f => f.file), // Envoyer tous les fichiers d'un coup
                 originalFileName: file.file.name
               },
               timestamp: new Date().toISOString(),
-              sessionId: 'batch-' + Date.now()
+              sessionId: 'batch-' + Date.now() + '-' + i
             });
 
             if (success) {
