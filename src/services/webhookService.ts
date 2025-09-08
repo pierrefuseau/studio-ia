@@ -50,16 +50,22 @@ export class WebhookService {
         client: payload.productData.name || 'Client Anonyme',
         commentaire: payload.productData.description || 'Aucun commentaire',
         treatmentType: payload.treatmentType,
-        imagesBase64: imagesBase64   // ⚡ tableau complet d'images en base64
+        imagesBase64: imagesBase64,   // ⚡ tableau complet d'images en base64
+        originalFileNames: filesToConvert.map(file => file.name)  // 📝 noms des fichiers originaux
       };
       
       console.log('📤 JSON final à envoyer:', {
-      }
-      )
+        client: jsonPayload.client,
+        treatmentType: jsonPayload.treatmentType,
+        imagesCount: jsonPayload.imagesBase64.length,
+        fileNames: jsonPayload.originalFileNames
+      });
+      
       console.log('📤 Envoi vers n8n:', {
         client: jsonPayload.client,
         treatmentType: jsonPayload.treatmentType,
-        imagesCount: jsonPayload.imagesBase64.length
+        imagesCount: jsonPayload.imagesBase64.length,
+        originalFiles: jsonPayload.originalFileNames
       });
 
       // 📡 Envoi POST vers n8n
