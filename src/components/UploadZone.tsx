@@ -71,16 +71,13 @@ export function UploadZone() {
     setUploadedFiles(newFiles);
     setCurrentMode(newFiles.length === 1 ? 'single' : 'batch');
 
-    // Mettre à jour le state global pour le premier fichier
+    // Ajouter tous les fichiers au state global
     if (newFiles.length > 0) {
-      dispatch({
-        type: 'SET_PRODUCT',
-        payload: {
-          id: Date.now().toString(),
-          images: newFiles.map(f => f.file),        // ✅ stocker toutes les images
-          imageUrls: newFiles.map(f => f.preview)   // ✅ stocker toutes les previews
-        }
-      });
+      // Vider d'abord les produits existants
+      dispatch({ type: 'CLEAR_PRODUCTS' });
+      
+      // Ajouter tous les nouveaux fichiers
+      dispatch({ type: 'ADD_PRODUCTS', payload: newFiles });
     }
   }, [addToast, dispatch]);
 
@@ -105,17 +102,11 @@ export function UploadZone() {
       const newFiles = prev.filter(f => f.id !== id);
       if (newFiles.length === 0) {
         setCurrentMode('none');
-        dispatch({ type: 'SET_PRODUCT', payload: null });
+        dispatch({ type: 'CLEAR_PRODUCTS' });
       } else {
         setCurrentMode(newFiles.length === 1 ? 'single' : 'batch');
-        dispatch({
-          type: 'SET_PRODUCT',
-          payload: {
-            id: Date.now().toString(),
-            images: newFiles.map(f => f.file),       // ✅ toujours toutes les images restantes
-            imageUrls: newFiles.map(f => f.preview)
-          }
-        });
+        // Supprimer le fichier du state global
+        dispatch({ type: 'REMOVE_PRODUCT', payload: id });
       }
       return newFiles;
     });
@@ -189,7 +180,7 @@ export function UploadZone() {
     setCurrentMode('none');
     setIsProcessing(false);
     setProgress({ current: 0, total: 0 });
-    dispatch({ type: 'SET_PRODUCT', payload: null });
+    dispatch({ type: 'CLEAR_PRODUCTS' });
   }, [uploadedFiles, dispatch]);
 
   const formatFileSize = (bytes: number) => {
