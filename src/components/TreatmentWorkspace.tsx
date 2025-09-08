@@ -198,33 +198,8 @@ export function TreatmentWorkspace() {
 
           {/* Colonne droite - Actions et preview */}
           <div className="space-y-6">
-            {/* Panneau des actions */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h3 className="text-sm font-medium text-gray-900 mb-4">
-                Actions
-              </h3>
-              
-              <div className="space-y-3">
-                <button 
-                  onClick={handleGenerate}
-                  disabled={!state.product?.imageUrl || state.isProcessing}
-                  className="w-full py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors text-sm font-medium"
-                >
-                  {state.isProcessing ? 'Traitement...' : 'Générer'}
-                </button>
-                
-                <button 
-                  onClick={handleReset}
-                  className="w-full py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm"
-                >
-                  Réinitialiser
-                </button>
-              </div>
-            </div>
-
             {/* État de traitement */}
             {state.isProcessing && <ProcessingStatus />}
-
           </div>
         </div>
       </div>
