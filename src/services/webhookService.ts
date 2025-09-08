@@ -19,78 +19,42 @@ export class WebhookService {
     try {
       console.log('🚀 Envoi vers n8n webhook:', {
         treatmentType: payload.treatmentType,
-        productName: payload.productData.name,
-        hasImage: !!payload.productData.imageFile
+        client: payload.productData.name,
+        hasImages: payload.productData.imageFiles?.length || (payload.productData.imageFile ? 1 : 0)
       });
 
-      // Préparer les données pour n8n
-      const formData = new FormData();
+      // Préparer les URLs des images
+      let imageUrls: string[] = [];
       
-      // Type de traitement - CRITIQUE pour la redirection n8n
-      formData.append('treatmentType', payload.treatmentType);
-      
-      // Informations détaillées du traitement
-      switch (payload.treatmentType) {
-        case 'background-removal':
-          formData.append('treatmentName', 'Détourage Studio');
-          formData.append('treatmentCategory', 'detourage');
-          break;
-        case 'scene-composition':
-          formData.append('treatmentName', 'Mise en Situation');
-          formData.append('treatmentCategory', 'mise_en_situation');
-          break;
-        case 'magazine-layout':
-          formData.append('treatmentName', 'Page Magazine A4');
-          formData.append('treatmentCategory', 'magazine');
-          break;
-        default:
-          formData.append('treatmentName', 'Traitement Inconnu');
-          formData.append('treatmentCategory', 'unknown');
+      // Si plusieurs fichiers
+      if (payload.productData.imageFiles && payload.productData.imageFiles.length > 0) {
+        imageUrls = payload.productData.imageFiles.map((file, index) => 
+          `https://bolt-files/${file.name || `image_${index}.jpg`}`
+        );
+      }
+      // Si un seul fichier
+      else if (payload.productData.imageFile) {
+        imageUrls = [`https://bolt-files/${payload.productData.imageFile.name || 'image.jpg'}`];
+      }
+      // Si URL d'image
+      else if (payload.productData.imageUrl) {
+        imageUrls = [payload.productData.imageUrl];
       }
       
-      // Données de base
-      formData.append('timestamp', payload.timestamp);
-      formData.append('sessionId', payload.sessionId);
-      
-      // Données produit
-      if (payload.productData.name) {
-        formData.append('productName', payload.productData.name);
-      }
-      if (payload.productData.code) {
-        formData.append('productCode', payload.productData.code);
-      }
-      if (payload.productData.description) {
-        formData.append('productDescription', payload.productData.description);
-      }
-      
-      // Toujours envoyer le champ promotion, même vide, pour le traitement magazine
-      if (payload.treatmentType === 'magazine-layout') {
-        formData.append('productPromotion', payload.productData.promotion || '');
-      } else if (payload.productData.promotion) {
-        formData.append('productPromotion', payload.productData.promotion);
-      }
-      
-      // Image (si c'est un File)
-      if (payload.productData.imageFile instanceof File) {
-        formData.append('productImage', payload.productData.imageFile);
-        formData.append('originalFileName', payload.productData.imageFile.name);
-      } else if (payload.productData.imageUrl) {
-        formData.append('productImageUrl', payload.productData.imageUrl);
-      }
-      
-      // Paramètres spécifiques au traitement
-      if (payload.treatmentParams?.situationPrompt) {
-        formData.append('situationPrompt', payload.treatmentParams.situationPrompt);
-      }
-      if (payload.treatmentParams?.magazineContent) {
-        formData.append('magazineContent', payload.treatmentParams.magazineContent);
-      }
+      // Construire le JSON exact comme spécifié
+      const jsonPayload = {
+        client: payload.productData.name || 'Client Anonyme',
+        commentaire: payload.productData.description || 'Aucun commentaire',
+        treatmentType: payload.treatmentType,
+        images: imageUrls
+      };
 
       const response = await fetch(this.webhookUrl, {
         method: 'POST',
-        body: formData,
+        body: JSON.stringify(jsonPayload),
         headers: {
-          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         }
       });
 
@@ -99,6 +63,7 @@ export class WebhookService {
       }
 
       const result = await response.json();
+      console.log('✅ JSON envoyé à n8n:', jsonPayload);
       console.log('✅ Réponse n8n:', result);
       
       return true;
