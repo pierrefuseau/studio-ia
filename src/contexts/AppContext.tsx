@@ -6,6 +6,7 @@ const initialState: AppState = {
   theme: 'light',
   products: [],
   selectedProduct: null,
+  product: null,
   treatments: [
     {
       id: 'background-removal',
@@ -64,6 +65,7 @@ type Action =
   | { type: 'UPDATE_PRODUCT'; payload: { id: string; updates: Partial<UploadedFile> } }
   | { type: 'SELECT_PRODUCT'; payload: UploadedFile | null }
   | { type: 'CLEAR_PRODUCTS' }
+  | { type: 'SET_PRODUCT'; payload: any }
   | { type: 'TOGGLE_TREATMENT'; payload: string }
   | { type: 'UPDATE_TREATMENT_OPTIONS'; payload: { id: string; options: any } }
   | { type: 'START_PROCESSING' }
@@ -109,6 +111,8 @@ function appReducer(state: AppState, action: Action): AppState {
       return { ...state, selectedProduct: action.payload };
     case 'CLEAR_PRODUCTS':
       return { ...state, products: [], selectedProduct: null };
+    case 'SET_PRODUCT':
+      return { ...state, product: action.payload };
     case 'TOGGLE_TREATMENT':
       return {
         ...state,

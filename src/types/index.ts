@@ -60,6 +60,7 @@ export interface AppState {
   theme: Theme;
   products: UploadedFile[];
   selectedProduct: UploadedFile | null;
+  product: Product | null;
   treatments: Treatment[];
   jobs: ProcessingJob[];
   isProcessing: boolean;

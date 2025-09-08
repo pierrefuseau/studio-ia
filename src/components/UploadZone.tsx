@@ -133,7 +133,10 @@ export function UploadZone() {
 
     // Validation spécifique pour la mise en situation
     if (state.selectedTreatmentType === 'scene-composition') {
-      if (!state.selectedProduct?.name?.trim()) {
+      const productName = state.products[0]?.name || state.selectedProduct?.name;
+      const productDescription = state.products[0]?.description || state.selectedProduct?.description;
+      
+      if (!productName?.trim()) {
         addToast({
           type: 'error',
           title: 'Nom requis',
@@ -141,7 +144,7 @@ export function UploadZone() {
         });
         return;
       }
-      if (!state.selectedProduct?.description?.trim()) {
+      if (!productDescription?.trim()) {
         addToast({
           type: 'error',
           title: 'Description requise',

@@ -27,7 +27,17 @@ export function ProductForm({ treatmentType }: ProductFormProps) {
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setProductName(value);
+    
+    // Mettre à jour à la fois le produit global et le produit sélectionné
     updateProduct({ name: value });
+    
+    // Mettre à jour aussi le premier produit dans la liste si il existe
+    if (state.products.length > 0) {
+      dispatch({
+        type: 'UPDATE_PRODUCT',
+        payload: { id: state.products[0].id, updates: { name: value } }
+      });
+    }
   };
 
   const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,7 +56,17 @@ export function ProductForm({ treatmentType }: ProductFormProps) {
   const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
     setProductDescription(value);
+    
+    // Mettre à jour à la fois le produit global et le produit sélectionné
     updateProduct({ description: value });
+    
+    // Mettre à jour aussi le premier produit dans la liste si il existe
+    if (state.products.length > 0) {
+      dispatch({
+        type: 'UPDATE_PRODUCT',
+        payload: { id: state.products[0].id, updates: { description: value } }
+      });
+    }
   };
 
   const improveText = async (field: 'name' | 'description', currentText: string) => {
