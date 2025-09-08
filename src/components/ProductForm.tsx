@@ -28,6 +28,8 @@ export function ProductForm({ treatmentType }: ProductFormProps) {
     const value = e.target.value;
     setProductName(value);
     
+    console.log('📝 Nom du produit mis à jour:', value);
+    
     // Mettre à jour à la fois le produit global et le produit sélectionné
     updateProduct({ name: value });
     
@@ -56,6 +58,8 @@ export function ProductForm({ treatmentType }: ProductFormProps) {
   const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
     setProductDescription(value);
+    
+    console.log('📝 Description du produit mise à jour:', value);
     
     // Mettre à jour à la fois le produit global et le produit sélectionné
     updateProduct({ description: value });

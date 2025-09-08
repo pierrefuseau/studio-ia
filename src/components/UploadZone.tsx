@@ -133,8 +133,16 @@ export function UploadZone() {
 
     // Validation spécifique pour la mise en situation
     if (state.selectedTreatmentType === 'scene-composition') {
-      const productName = state.products[0]?.name || state.selectedProduct?.name;
-      const productDescription = state.products[0]?.description || state.selectedProduct?.description;
+      const productName = state.product?.name || state.products[0]?.name || state.selectedProduct?.name;
+      const productDescription = state.product?.description || state.products[0]?.description || state.selectedProduct?.description;
+      
+      console.log('🔍 Validation mise en situation:', {
+        productName,
+        productDescription,
+        stateProduct: state.product,
+        firstProduct: state.products[0],
+        selectedProduct: state.selectedProduct
+      });
       
       if (!productName?.trim()) {
         addToast({
@@ -186,8 +194,8 @@ export function UploadZone() {
         treatmentType: state.selectedTreatmentType || 'background-removal',
         treatmentDisplayName: state.products.length === 1 ? 'Traitement Simple' : 'Traitement Batch',
         productData: {
-          name: state.selectedProduct?.name || `Batch ${state.products.length} images`,
-          description: state.selectedProduct?.description || 'Traitement par lot',
+          name: state.product?.name || state.selectedProduct?.name || `Batch ${state.products.length} images`,
+          description: state.product?.description || state.selectedProduct?.description || 'Traitement par lot',
           imageFiles: allFiles, // ✅ Envoyer TOUS les fichiers
           originalFileName: allFiles[0]?.name
         },
