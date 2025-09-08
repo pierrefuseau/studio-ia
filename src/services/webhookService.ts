@@ -86,11 +86,15 @@ export class WebhookService {
       });
       console.log('🌐 URL webhook:', this.webhookUrl);
 
-      const response = await fetch(this.webhookUrl, {
-        method: 'POST',
-        body: JSON.stringify(jsonPayload),
+      // Construire l'URL avec les paramètres pour GET
+      const url = new URL(this.webhookUrl);
+      url.searchParams.append('data', JSON.stringify(jsonPayload));
+      
+      console.log('🔗 URL complète avec paramètres:', url.toString().substring(0, 200) + '...');
+
+      const response = await fetch(url.toString(), {
+        method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
           'Accept': 'application/json'
         }
       });
