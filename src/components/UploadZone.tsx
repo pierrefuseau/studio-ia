@@ -108,13 +108,12 @@ export function UploadZone() {
         dispatch({ type: 'SET_PRODUCT', payload: null });
       } else {
         setCurrentMode(newFiles.length === 1 ? 'single' : 'batch');
-        // Mettre à jour le state global avec le premier fichier restant
         dispatch({
           type: 'SET_PRODUCT',
           payload: {
             id: Date.now().toString(),
-            image: newFiles[0].file,
-            imageUrl: newFiles[0].preview
+            images: newFiles.map(f => f.file),       // ✅ toujours toutes les images restantes
+            imageUrls: newFiles.map(f => f.preview)
           }
         });
       }
