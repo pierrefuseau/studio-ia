@@ -1,0 +1,147 @@
+import { WebhookPayload } from '../types';
+
+export class WebhookService {
+  private static instance: WebhookService;
+  private webhookUrl = 'https://n8n.sn/v7f8298/webhook/image-upload';
+
+  constructor(webhookUrl: string) {
+    this.webhookUrl = 'https://n8n.sn/v7f8298/webhook/image-upload';
+  }
+
+  static getInstance(webhookUrl: string): WebhookService {
+    if (!WebhookService.instance) {
+      WebhookService.instance = new WebhookService(webhookUrl);
+    }
+    return WebhookService.instance;
+  }
+
+  async sendTreatmentRequest(payload: WebhookPayload): Promise<boolean> {
+    try {
+      console.log('🚀 Envoi JSON vers n8n webhook:', {
+        client: payload.productData.name,
+        commentaire: payload.productData.description,
+        hasImage: !!payload.productData.imageFile || !!payload.productData.imageUrl
+      });
+
+      // Préparer les images selon le format demandé
+      let images: string[] = [];
+      
+      if (payload.productData.imageFile instanceof File) {
+        // Créer une URL temporaire pour le fichier
+        const imageUrl = URL.createObjectURL(payload.productData.imageFile);
+        images = [imageUrl];
+      } else if (payload.productData.imageUrl) {
+        images = [payload.productData.imageUrl];
+      }
+
+      // Préparer le payload JSON selon le format exact demandé
+      const jsonPayload = {
+        client: payload.productData.name || 'Client Inconnu',
+        commentaire: payload.productData.description || '',
+        images: images
+      };
+      const response = await fetch(this.webhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify(jsonPayload)
+      });
+
+      // Nettoyer les URLs temporaires
+      images.forEach(url => {
+        if (url.startsWith('blob:')) {
+          URL.revokeObjectURL(url);
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Webhook failed: ${response.status} ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      console.log('✅ Réponse n8n JSON:', result);
+      
+      return true;
+    } catch (error) {
+      console.error('❌ Erreur webhook JSON n8n:', error);
+      return false;
+    }
+  }
+
+  async sendBatchTreatmentRequest(payload: {
+    productData: {
+      name?: string;
+      code?: string;
+      description?: string;
+      promotion?: string;
+    };
+    images: File[];
+  }): Promise<boolean> {
+    try {
+      console.log('🚀 Envoi batch JSON vers n8n:', {
+        client: payload.productData.name,
+        commentaire: payload.productData.description,
+        imageCount: payload.images.length,
+      });
+
+      // Créer des URLs temporaires pour les images
+      const imageUrls = payload.images.map(file => URL.createObjectURL(file));
+
+      // Préparer le payload JSON selon le format exact demandé
+      const jsonPayload = {
+        client: payload.productData.name || 'Client Inconnu',
+        commentaire: payload.productData.description || '',
+        images: imageUrls
+      };
+
+      const response = await fetch(this.webhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(jsonPayload)
+      });
+
+      // Nettoyer les URLs temporaires
+      imageUrls.forEach(url => URL.revokeObjectURL(url));
+      
+      if (!response.ok) {
+        throw new Error(`Webhook failed: ${response.status} ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      console.log('✅ Réponse n8n batch JSON:', result);
+      
+      return true;
+    } catch (error) {
+      console.error('❌ Erreur webhook batch JSON n8n:', error);
+      return false;
+    }
+  }
+
+  async testConnection(): Promise<boolean> {
+    try {
+      const testPayload: WebhookPayload = {
+        treatmentType: 'test',
+        productData: {
+          name: 'Test Connection',
+          description: 'Test de connexion webhook'
+        },
+        timestamp: new Date().toISOString(),
+        sessionId: 'test-' + Date.now()
+      };
+
+      return await this.sendTreatmentRequest(testPayload);
+    } catch (error) {
+      console.error('❌ Test connexion échoué:', error);
+      return false;
+    }
+  }
+}
+
+export const webhookService = WebhookService.getInstance(
+  'https://n8n.sn/v7f8298/webhook/image-upload'
+);

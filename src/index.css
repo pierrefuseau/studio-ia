@@ -1,0 +1,146 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Design System Minimaliste Premium */
+:root {
+  /* Couleur principale - Un seul bleu très subtil */
+  --primary: #1A1A1A;        /* Noir pur pour textes principaux */
+  --accent: #0066CC;         /* Bleu IBM - utilisé avec grande parcimonie */
+  
+  /* Échelle de gris sophistiquée */
+  --gray-50: #FAFAFA;
+  --gray-100: #F5F5F5;
+  --gray-200: #EEEEEE;
+  --gray-300: #E0E0E0;
+  --gray-400: #BDBDBD;
+  --gray-500: #9E9E9E;
+  --gray-600: #757575;
+  --gray-700: #616161;
+  --gray-800: #424242;
+  --gray-900: #212121;
+  
+  /* Backgrounds */
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #FAFAFA;
+  
+  /* Textes */
+  --text-primary: #1A1A1A;
+  --text-secondary: #666666;
+  --text-muted: #999999;
+  
+  /* Bordures */
+  --border: #E5E5E5;
+  --border-light: #F0F0F0;
+  
+  /* États */
+  --success: #10B981;
+  --error: #EF4444;
+  --warning: #F59E0B;
+  --info: #3B82F6;
+}
+
+/* Mode Sombre - Optionnel mais tout aussi épuré */
+[data-theme="dark"] {
+  --bg-primary: #0A0A0A;
+  --bg-secondary: #111111;
+  --text-primary: #FAFAFA;
+  --text-secondary: #A1A1AA;
+  --text-muted: #71717A;
+  --border: #27272A;
+  --border-light: #3F3F46;
+}
+
+/* Typography - Inter/System Fonts */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  line-height: 1.5;
+}
+
+/* Transitions simples uniquement */
+* {
+  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+
+/* Focus states minimalistes */
+.focus-ring {
+  @apply focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400;
+}
+
+/* Hover states subtils */
+.hover-subtle {
+  @apply hover:border-gray-400 transition-colors;
+}
+
+/* États de chargement - Skeleton minimal */
+.skeleton {
+  @apply animate-pulse bg-gray-100 rounded;
+}
+
+/* Suppression de tous les effets complexes */
+.no-effects * {
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+/* Animations autorisées - Très limitées */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Scrollbar minimaliste */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--gray-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gray-300);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-400);
+}
+
+/* Selection */
+::selection {
+  background: rgba(0, 102, 204, 0.1);
+  color: inherit;
+}
+
+/* Suppression des animations par défaut */
+*, *::before, *::after {
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+  transition-duration: 0.15s !important;
+}
+
+/* Exceptions pour les animations essentielles */
+.animate-spin,
+.animate-pulse,
+.loading-spinner {
+  animation-duration: 1s !important;
+}
