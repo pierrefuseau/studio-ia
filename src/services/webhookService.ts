@@ -54,6 +54,8 @@ export class WebhookService {
       };
       
       console.log('📤 JSON final à envoyer:', {
+      }
+      )
       console.log('📤 Envoi vers n8n:', {
         client: jsonPayload.client,
         treatmentType: jsonPayload.treatmentType,
