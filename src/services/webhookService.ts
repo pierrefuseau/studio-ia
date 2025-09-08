@@ -33,7 +33,7 @@ export class WebhookService {
       // Si plusieurs fichiers
       if (payload.productData.imageFiles && payload.productData.imageFiles.length > 0) {
         console.log('📁 Mode MULTIPLE FILES détecté:', payload.productData.imageFiles.length, 'fichiers');
-        imageUrls = payload.productData.imageFiles.map((file, index) => 
+        imageUrls = payload.productData.imageFiles.map((file, index) => {
           const url = `https://bolt-files/${file.name || `image_${index}.jpg`}`;
           console.log(`  📄 Fichier ${index + 1}:`, {
             name: file.name,
@@ -42,7 +42,7 @@ export class WebhookService {
             url: url
           });
           return url;
-        );
+        });
       }
       // Si un seul fichier
       else if (payload.productData.imageFile) {
