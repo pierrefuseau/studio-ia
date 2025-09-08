@@ -35,7 +35,7 @@ export class WebhookService {
       
       // Ajouter l'image si elle existe
       if (payload.productData.imageFile instanceof File) {
-        formData.append('image', payload.productData.imageFile);
+        formData.append('file', payload.productData.imageFile);
       }
 
       console.log('📤 FormData avec jsonPayload envoyé vers n8n:', jsonPayload);
@@ -96,7 +96,7 @@ export class WebhookService {
       
       // Ajouter toutes les images
       payload.images.forEach((file, index) => {
-        formData.append('images', file);
+        formData.append('file', file);
       });
 
       console.log('📤 FormData batch avec jsonPayload envoyé vers n8n:', jsonPayload);
@@ -122,11 +122,15 @@ export class WebhookService {
 
   async testConnection(): Promise<boolean> {
     try {
+      // Créer un fichier factice pour le test
+      const dummyFile = new File(['test'], 'test.txt', { type: 'text/plain' });
+      
       const testPayload: WebhookPayload = {
         treatmentType: 'test',
         productData: {
           name: 'Test Connection',
-          description: 'Test de connexion webhook'
+          description: 'Test de connexion webhook',
+          imageFile: dummyFile
         },
         timestamp: new Date().toISOString(),
         sessionId: 'test-' + Date.now()
