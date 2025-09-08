@@ -322,35 +322,6 @@ export function UploadZone() {
         )}
       </div>
       
-      {/* Zone de preview pour mode simple */}
-      {currentMode === 'single' && (
-        <div className="preview-single">
-          <div className="preview-card">
-            <h3 className="card-header">Aperçu</h3>
-            <div className="preview-content">
-              <div className="preview-original">
-                <span className="preview-label">Original</span>
-                <img src={uploadedFiles[0]?.preview} alt="Original" />
-              </div>
-              <div className="preview-arrow">→</div>
-              <div className="preview-result">
-                <span className="preview-label">Après traitement</span>
-                <div className="result-placeholder">
-                  {isProcessing ? (
-                    <>
-                      <div className="loading-spinner"></div>
-                      <span>Traitement...</span>
-                    </>
-                  ) : (
-                    <span>En attente...</span>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      
       {/* Grille pour mode batch */}
       {currentMode === 'batch' && (
         <div className="batch-grid">
