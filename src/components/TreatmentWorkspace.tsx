@@ -109,7 +109,7 @@ export function TreatmentWorkspace() {
           ? (state.product.promotion || '') 
           : (state.product.promotion || undefined),
         imageUrl: state.product.imageUrl,
-        imageFile: state.product.image instanceof File ? state.product.image : undefined,
+        imageFiles: state.product.image instanceof File ? [state.product.image] : undefined,
         originalFileName: state.product.image instanceof File ? state.product.image.name : undefined
       },
       treatmentParams: {

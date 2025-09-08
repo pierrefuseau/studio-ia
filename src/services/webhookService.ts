@@ -36,22 +36,18 @@ export class WebhookService {
       // 🔧 RÈGLE STRICTE : TOUJOURS créer un tableau de fichiers
       let filesToConvert: File[] = [];
       
-      // Collecter TOUS les fichiers dans un seul tableau
+      // ⚠️ RÈGLE OBLIGATOIRE : Utiliser UNIQUEMENT imageFiles[], ignorer imageFile
       if (payload.productData.imageFiles && payload.productData.imageFiles.length > 0) {
-        console.log('📁 Ajout de', payload.productData.imageFiles.length, 'fichiers depuis imageFiles[]');
+        console.log('📁 Utilisation de', payload.productData.imageFiles.length, 'fichiers depuis imageFiles[]');
         filesToConvert = payload.productData.imageFiles;
-      }
-      
-      // Si un fichier unique existe, l'ajouter au tableau
-      if (payload.productData.imageFile) {
-        console.log('📄 Ajout d\'1 fichier depuis imageFile');
-        filesToConvert.push(payload.productData.imageFile);
+      } else {
+        console.log('❌ Aucun fichier dans imageFiles[]');
       }
       
       // Vérification finale
       if (filesToConvert.length === 0) {
-        console.log('❌ Aucun fichier à traiter');
-        throw new Error('Aucun fichier image fourni');
+        console.log('❌ Aucun fichier à traiter dans imageFiles[]');
+        throw new Error('Aucun fichier image fourni dans imageFiles[]');
       }
       
       console.log('📦 TOTAL fichiers à convertir:', filesToConvert.length);

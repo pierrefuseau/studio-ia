@@ -66,7 +66,6 @@ export interface WebhookPayload {
     code?: string;
     description?: string;
     promotion?: string;
-    imageFile?: File;
     imageFiles?: File[];
     originalFileName?: string;
   };
