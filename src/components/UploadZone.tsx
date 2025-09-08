@@ -113,33 +113,42 @@ export function UploadZone() {
   }, [dispatch]);
 
   const processImages = useCallback(async () => {
-    if (isProcessing || uploadedFiles.length === 0) return;
+    if (isProcessing || state.products.length === 0) return;
 
     console.log('🎬 === DÉBUT TRAITEMENT IMAGES ===');
     console.log('📊 État initial:', {
-      nombreFichiers: uploadedFiles.length,
-      fichiers: uploadedFiles.map(f => ({ name: f.file.name, size: f.file.size })),
-      produit: state.product?.name || 'Pas de nom',
+      nombreFichiers: state.products.length,
+      fichiers: state.products.map(p => ({ name: p.file.name, size: p.file.size })),
+      produitSélectionné: state.selectedProduct?.name || 'Aucun sélectionné',
       traitement: state.selectedTreatmentType
     });
 
     setIsProcessing(true);
-    setProgress({ current: 0, total: uploadedFiles.length });
+    setProgress({ current: 0, total: state.products.length });
 
     try {
       console.log('📦 Préparation des fichiers...');
       
-      // Toujours envoyer tous les fichiers en une seule fois
-      const allFiles = uploadedFiles.map(f => f.file);
+      // ✅ Récupérer tous les fichiers depuis state.products
+      const allFiles = state.products.map(product => product.file);
       
+      // ✅ Mettre à jour le statut de tous les produits
+      state.products.forEach(product => {
+        dispatch({
+          type: 'UPDATE_PRODUCT',
+          payload: { id: product.id, updates: { status: 'processing' } }
+        });
+      });
+      
+      // Synchroniser avec uploadedFiles local
       setUploadedFiles(prev => prev.map(f => ({ ...f, status: 'processing' })));
 
       const success = await webhookService.sendTreatmentRequest({
         treatmentType: state.selectedTreatmentType || 'background-removal',
-        treatmentDisplayName: currentMode === 'single' ? 'Traitement Simple' : 'Traitement Batch',
+        treatmentDisplayName: state.products.length === 1 ? 'Traitement Simple' : 'Traitement Batch',
         productData: {
-          name: state.product?.name,
-          description: state.product?.description,
+          name: state.selectedProduct?.name || `Batch ${state.products.length} images`,
+          description: state.selectedProduct?.description || 'Traitement par lot',
           imageFiles: allFiles, // ✅ Envoyer TOUS les fichiers
           originalFileName: allFiles[0]?.name
         },
@@ -148,21 +157,42 @@ export function UploadZone() {
       });
 
       if (success) {
+        // ✅ Mettre à jour le statut de tous les produits
+        state.products.forEach(product => {
+          dispatch({
+            type: 'UPDATE_PRODUCT',
+            payload: { id: product.id, updates: { status: 'completed' } }
+          });
+        });
+        
+        // Synchroniser avec uploadedFiles local
         setUploadedFiles(prev => prev.map(f => ({ ...f, status: 'completed' })));
+        
         addToast({
           type: 'success',
           title: 'Images traitées',
-          description: `${uploadedFiles.length} image(s) envoyée(s) pour traitement`
+          description: `${state.products.length} image(s) envoyée(s) pour traitement`
         });
       } else {
         throw new Error('Échec du traitement');
       }
 
-      setProgress({ current: uploadedFiles.length, total: uploadedFiles.length });
+      setProgress({ current: state.products.length, total: state.products.length });
       
     } catch (error) {
       console.error('💥 Erreur de traitement:', error);
+      
+      // ✅ Mettre à jour le statut d'erreur pour tous les produits
+      state.products.forEach(product => {
+        dispatch({
+          type: 'UPDATE_PRODUCT',
+          payload: { id: product.id, updates: { status: 'error' } }
+        });
+      });
+      
+      // Synchroniser avec uploadedFiles local
       setUploadedFiles(prev => prev.map(f => ({ ...f, status: 'error' })));
+      
       addToast({
         type: 'error',
         title: 'Erreur de traitement',
@@ -172,7 +202,7 @@ export function UploadZone() {
       setIsProcessing(false);
       console.log('🏁 === FIN TRAITEMENT ===');
     }
-  }, [isProcessing, uploadedFiles, currentMode, state, addToast]);
+  }, [isProcessing, state, addToast, dispatch]);
 
   const resetAll = useCallback(() => {
     uploadedFiles.forEach(file => URL.revokeObjectURL(file.preview));
@@ -315,10 +345,10 @@ export function UploadZone() {
           <div className="space-y-3">
             <button 
               onClick={processImages}
-              disabled={isProcessing}
+              disabled={isProcessing || state.products.length === 0}
               className="btn-generate"
             >
-              {isProcessing ? 'Traitement...' : `Traiter ${uploadedFiles.length} image(s)`}
+              {isProcessing ? 'Traitement...' : `Traiter ${state.products.length} image(s)`}
             </button>
             
             <button 
