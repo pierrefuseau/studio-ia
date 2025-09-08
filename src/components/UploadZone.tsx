@@ -71,13 +71,17 @@ export function UploadZone() {
     setUploadedFiles(newFiles);
     setCurrentMode(newFiles.length === 1 ? 'single' : 'batch');
 
-    // Ajouter tous les fichiers au state global
     if (newFiles.length > 0) {
-      // Vider d'abord les produits existants
       dispatch({ type: 'CLEAR_PRODUCTS' });
       
-      // Ajouter tous les nouveaux fichiers
-      dispatch({ type: 'ADD_PRODUCTS', payload: newFiles });
+      dispatch({
+        type: 'ADD_PRODUCTS',
+        payload: newFiles.map(f => ({
+          id: Date.now().toString() + f.id,
+          file: f.file,
+          preview: f.preview
+        }))
+      });
     }
   }, [addToast, dispatch]);
 
