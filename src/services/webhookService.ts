@@ -82,7 +82,6 @@ export class WebhookService {
       
       console.log('📤 JSON final à envoyer:', {
         ...jsonPayload,
-        imagesBase64: `[${jsonPayload.imagesBase64.length} images base64]`
       });
       console.log('🌐 URL webhook:', this.webhookUrl);
 
