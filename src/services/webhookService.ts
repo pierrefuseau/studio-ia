@@ -17,10 +17,14 @@ export class WebhookService {
 
   async sendTreatmentRequest(payload: WebhookPayload): Promise<boolean> {
     try {
-      console.log('🚀 Envoi vers n8n webhook:', {
+      console.log('🚀 === DÉBUT ENVOI WEBHOOK N8N ===');
+      console.log('📋 Payload reçu:', {
         treatmentType: payload.treatmentType,
-        client: payload.productData.name,
-        hasImages: payload.productData.imageFiles?.length || (payload.productData.imageFile ? 1 : 0)
+        client: payload.productData.name || 'Client Anonyme',
+        commentaire: payload.productData.description || 'Aucun commentaire',
+        hasImageFiles: payload.productData.imageFiles?.length || 0,
+        hasSingleImageFile: payload.productData.imageFile ? 1 : 0,
+        hasImageUrl: payload.productData.imageUrl ? 1 : 0
       });
 
       // Préparer les URLs des images
@@ -28,18 +32,34 @@ export class WebhookService {
       
       // Si plusieurs fichiers
       if (payload.productData.imageFiles && payload.productData.imageFiles.length > 0) {
+        console.log('📁 Mode MULTIPLE FILES détecté:', payload.productData.imageFiles.length, 'fichiers');
         imageUrls = payload.productData.imageFiles.map((file, index) => 
-          `https://bolt-files/${file.name || `image_${index}.jpg`}`
+          const url = `https://bolt-files/${file.name || `image_${index}.jpg`}`;
+          console.log(`  📄 Fichier ${index + 1}:`, {
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            url: url
+          });
+          return url;
         );
       }
       // Si un seul fichier
       else if (payload.productData.imageFile) {
+        console.log('📄 Mode SINGLE FILE détecté:', {
+          name: payload.productData.imageFile.name,
+          size: payload.productData.imageFile.size,
+          type: payload.productData.imageFile.type
+        });
         imageUrls = [`https://bolt-files/${payload.productData.imageFile.name || 'image.jpg'}`];
       }
       // Si URL d'image
       else if (payload.productData.imageUrl) {
+        console.log('🔗 Mode IMAGE URL détecté:', payload.productData.imageUrl);
         imageUrls = [payload.productData.imageUrl];
       }
+      
+      console.log('🖼️ URLs d\'images générées:', imageUrls);
       
       // Construire le JSON exact comme spécifié
       const jsonPayload = {
@@ -48,6 +68,9 @@ export class WebhookService {
         treatmentType: payload.treatmentType,
         images: imageUrls
       };
+
+      console.log('📤 JSON final à envoyer:', JSON.stringify(jsonPayload, null, 2));
+      console.log('🌐 URL webhook:', this.webhookUrl);
 
       const response = await fetch(this.webhookUrl, {
         method: 'POST',
@@ -58,17 +81,27 @@ export class WebhookService {
         }
       });
 
+      console.log('📡 Réponse HTTP:', {
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok
+      });
+
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ Erreur réponse:', errorText);
         throw new Error(`Webhook failed: ${response.status} ${response.statusText}`);
       }
 
       const result = await response.json();
-      console.log('✅ JSON envoyé à n8n:', jsonPayload);
       console.log('✅ Réponse n8n:', result);
+      console.log('🎉 === ENVOI RÉUSSI ===');
       
       return true;
     } catch (error) {
-      console.error('❌ Erreur webhook n8n:', error);
+      console.error('💥 === ERREUR WEBHOOK N8N ===');
+      console.error('❌ Détails:', error);
+      console.error('📍 Stack:', error instanceof Error ? error.stack : 'Pas de stack');
       return false;
     }
   }

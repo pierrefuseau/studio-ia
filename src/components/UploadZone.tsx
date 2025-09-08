@@ -134,11 +134,19 @@ export function UploadZone() {
   const processImages = useCallback(async () => {
     if (isProcessing || uploadedFiles.length === 0) return;
 
+    console.log('🎬 === DÉBUT TRAITEMENT IMAGES ===');
+    console.log('📊 État initial:', {
+      nombreFichiers: uploadedFiles.length,
+      fichiers: uploadedFiles.map(f => ({ name: f.file.name, size: f.file.size })),
+      produit: state.product?.name || 'Pas de nom',
+      traitement: state.selectedTreatmentType
+    });
+
     setIsProcessing(true);
     setProgress({ current: 0, total: uploadedFiles.length });
 
     try {
-      if (currentMode === 'single') {
+      console.log('📦 Préparation des fichiers...');
         // Mode simple
         const file = uploadedFiles[0];
         setUploadedFiles(prev => prev.map(f => 
@@ -233,14 +241,23 @@ export function UploadZone() {
         }
 
         setProgress({ current: uploadedFiles.length, total: uploadedFiles.length });
+      
+      console.log('📋 Fichiers préparés:', files.map(f => ({
+        name: f.name,
+        console.log('✅ Envoi réussi pour tous les fichiers');
+        size: f.size,
+        type: f.type
+      })));
         addToast({
-          type: 'success',
+          description: `${uploadedFiles.length} image${uploadedFiles.length > 1 ? 's' : ''} envoyée${uploadedFiles.length > 1 ? 's' : ''}`
           title: 'Traitement terminé',
           description: `${uploadedFiles.length} images traitées`
+        console.error('❌ Échec de l\'envoi');
+      console.log('🚀 Envoi vers webhook...');
         });
       }
 
-    } catch (error) {
+      console.error('💥 Erreur de traitement:', error);
       console.error('Erreur de traitement:', error);
       addToast({
         type: 'error',
@@ -249,6 +266,7 @@ export function UploadZone() {
       });
     } finally {
       setIsProcessing(false);
+      console.log('🏁 === FIN TRAITEMENT ===');
     }
   }, [isProcessing, uploadedFiles, currentMode, state, addToast]);
 
