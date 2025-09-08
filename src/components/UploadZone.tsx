@@ -302,11 +302,15 @@ export function UploadZone() {
           {/* Input caché */}
           <input 
             ref={fileInputRef}
-            type="file" 
-            multiple 
-            accept="image/*" 
+            type="file"
+            accept="image/*"
+            multiple   // 🔥 autorise plusieurs fichiers
             style={{ display: 'none' }}
-            onChange={onFileInputChange}
+            onChange={(e) => {
+              if (!e.target.files) return;
+              const newFiles = Array.from(e.target.files);
+              handleFiles(newFiles); // 🔥 utilise handleFiles existant
+            }}
           />
           
           {/* Badge de mode */}
