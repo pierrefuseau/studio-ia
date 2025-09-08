@@ -20,7 +20,9 @@ export class WebhookService {
       console.log('🚀 Envoi vers n8n webhook:', {
         treatmentType: payload.treatmentType,
         productName: payload.productData.name,
-        hasImage: !!payload.productData.imageFile
+        hasImage: !!payload.productData.imageFile,
+        hasMultipleFiles: !!(payload.productData.imageFiles && payload.productData.imageFiles.length > 0),
+        fileCount: payload.productData.imageFiles?.length || (payload.productData.imageFile ? 1 : 0)
       });
 
       // Préparer les données pour n8n
@@ -76,6 +78,15 @@ export class WebhookService {
         formData.append('originalFileName', payload.productData.imageFile.name);
       } else if (payload.productData.imageUrl) {
         formData.append('productImageUrl', payload.productData.imageUrl);
+      }
+      
+      // Images multiples (pour le mode batch)
+      if (payload.productData.imageFiles && payload.productData.imageFiles.length > 0) {
+        payload.productData.imageFiles.forEach((file, index) => {
+          formData.append(`file_${index}`, file.file);
+          formData.append(`fileName_${index}`, file.originalName);
+        });
+        formData.append('totalFiles', payload.productData.imageFiles.length.toString());
       }
       
       // Paramètres spécifiques au traitement

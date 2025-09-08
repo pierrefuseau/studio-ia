@@ -69,6 +69,11 @@ export interface WebhookPayload {
     imageUrl?: string;
     imageFile?: File;
     originalFileName?: string;
+    imageFiles?: Array<{
+      file: File;
+      originalName: string;
+      id: string;
+    }>;
   };
   treatmentParams?: {
     situationPrompt?: string;
