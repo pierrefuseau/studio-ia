@@ -19,51 +19,37 @@ export class WebhookService {
     try {
       console.log('🚀 Envoi JSON vers n8n webhook:', payload);
 
-      // Créer une URL temporaire pour l'image
-      let imageUrl = '';
+      // Préparer FormData pour l'envoi
+      const formData = new FormData();
+      formData.append('client', payload.productData.name || '');
+      formData.append('commentaire', payload.productData.description || '');
+      formData.append('treatmentType', payload.treatmentType || '');
+      formData.append('productName', payload.productData.name || '');
+      formData.append('productDescription', payload.productData.description || '');
+      formData.append('productPromotion', payload.productData.promotion || '');
+      
+      // Ajouter l'image si elle existe
       if (payload.productData.imageFile instanceof File) {
-        imageUrl = URL.createObjectURL(payload.productData.imageFile);
-      } else if (payload.productData.imageUrl) {
-        imageUrl = payload.productData.imageUrl;
+        formData.append('images', payload.productData.imageFile);
       }
 
-      // Préparer le payload JSON avec le format exact demandé
-      const jsonPayload = {
-        client: payload.productData.name || '',
-        commentaire: payload.productData.description || '',
-        treatmentType: payload.treatmentType || '',
-        productName: payload.productData.name || '',
-        productDescription: payload.productData.description || '',
-        productPromotion: payload.productData.promotion || '',
-        images: imageUrl ? [imageUrl] : []
-      };
-
-      console.log('📤 Payload JSON envoyé:', jsonPayload);
+      console.log('📤 FormData envoyé vers n8n');
 
       const response = await fetch(this.webhookUrl, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify(jsonPayload)
+        body: formData
       });
-
-      // Nettoyer l'URL temporaire
-      if (imageUrl.startsWith('blob:')) {
-        URL.revokeObjectURL(imageUrl);
-      }
 
       if (!response.ok) {
         throw new Error(`Webhook failed: ${response.status} ${response.statusText}`);
       }
 
-      const result = await response.json();
-      console.log('✅ Réponse n8n JSON:', result);
+      const result = await response.text();
+      console.log('✅ Réponse n8n:', result);
       
       return true;
     } catch (error) {
-      console.error('❌ Erreur webhook JSON n8n:', error);
+      console.error('❌ Erreur webhook n8n:', error);
       return false;
     }
   }
@@ -79,46 +65,39 @@ export class WebhookService {
     images: File[];
   }): Promise<boolean> {
     try {
-      console.log('🚀 Envoi batch JSON vers n8n:', payload);
+      console.log('🚀 Envoi batch vers n8n:', payload);
 
-      // Créer des URLs temporaires pour les images
-      const imageUrls = payload.images.map(file => URL.createObjectURL(file));
+      // Préparer FormData pour l'envoi batch
+      const formData = new FormData();
+      formData.append('client', payload.productData.name || '');
+      formData.append('commentaire', payload.productData.description || '');
+      formData.append('treatmentType', payload.treatmentType || '');
+      formData.append('productName', payload.productData.name || '');
+      formData.append('productDescription', payload.productData.description || '');
+      formData.append('productPromotion', payload.productData.promotion || '');
+      
+      // Ajouter toutes les images
+      payload.images.forEach((file, index) => {
+        formData.append('images', file);
+      });
 
-      // Préparer le payload JSON avec le format exact demandé
-      const jsonPayload = {
-        client: payload.productData.name || '',
-        commentaire: payload.productData.description || '',
-        treatmentType: payload.treatmentType || '',
-        productName: payload.productData.name || '',
-        productDescription: payload.productData.description || '',
-        productPromotion: payload.productData.promotion || '',
-        images: imageUrls
-      };
-
-      console.log('📤 Payload batch JSON envoyé:', jsonPayload);
+      console.log('📤 FormData batch envoyé vers n8n');
 
       const response = await fetch(this.webhookUrl, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(jsonPayload)
+        body: formData
       });
 
-      // Nettoyer les URLs temporaires
-      imageUrls.forEach(url => URL.revokeObjectURL(url));
-      
       if (!response.ok) {
         throw new Error(`Webhook failed: ${response.status} ${response.statusText}`);
       }
 
-      const result = await response.json();
-      console.log('✅ Réponse n8n batch JSON:', result);
+      const result = await response.text();
+      console.log('✅ Réponse n8n batch:', result);
       
       return true;
     } catch (error) {
-      console.error('❌ Erreur webhook batch JSON n8n:', error);
+      console.error('❌ Erreur webhook batch n8n:', error);
       return false;
     }
   }
