@@ -71,6 +71,8 @@ export class WebhookService {
       console.log('✅ Conversion terminée:', {
         nombreImages: imagesBase64.length,
         taillesBase64: imagesBase64.map(b64 => `${Math.round(b64.length / 1024)}KB`)
+      }
+      )
       const jsonPayload = {
         client: payload.productData.name || 'Client Anonyme',
         commentaire: payload.productData.description || 'Aucun commentaire',
