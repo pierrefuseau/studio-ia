@@ -291,7 +291,7 @@ export function UploadZone() {
             <div className="drop-formats">
               <span className="format-text">JPG, PNG, WEBP • Max 10 Mo</span>
               <span className="batch-text">
-                • {state.selectedTreatmentType === 'scene-composition' ? 'Une seule image' : 'Jusqu'à 50 images'}
+                • {state.selectedTreatmentType === 'scene-composition' ? 'Une seule image' : 'Jusqu\'à 50 images'}
               </span>
             </div>
           </div>
