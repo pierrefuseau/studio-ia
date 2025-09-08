@@ -139,5 +139,5 @@ export class WebhookService {
 }
 
 export const webhookService = WebhookService.getInstance(
-  'https://n8n.srv778298.hstgr.cloud/webhook-test/fb09047a-1a80-44e7-833a-99fe0eda3266'
+  'https://n8n.srv778298.hstgr.cloud/webhook/fb09047a-1a80-44e7-833a-99fe0eda3266'
 );
