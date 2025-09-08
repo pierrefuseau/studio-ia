@@ -1,4 +1,15 @@
 // Types de base pour l'application
+export interface UploadedFile {
+  id: string;
+  file: File;
+  preview: string;
+  status: 'pending' | 'processing' | 'completed' | 'error';
+  name?: string;
+  description?: string;
+  code?: string;
+  promotion?: string;
+}
+
 export interface Product {
   id: string;
   name?: string;
@@ -7,6 +18,8 @@ export interface Product {
   promotion?: string;
   image?: File | string;
   imageUrl?: string;
+  images?: File[];
+  imageUrls?: string[];
 }
 
 export interface Treatment {
@@ -45,11 +58,14 @@ export type Theme = 'light' | 'dark';
 
 export interface AppState {
   theme: Theme;
-  product: Product | null;
+  products: UploadedFile[];
+  selectedProduct: UploadedFile | null;
   treatments: Treatment[];
   jobs: ProcessingJob[];
   isProcessing: boolean;
   webhookConfig: WebhookConfig;
+  selectedTreatmentType: string | null;
+  currentStep: 'hero' | 'treatment';
 }
 
 export interface WebhookConfig {

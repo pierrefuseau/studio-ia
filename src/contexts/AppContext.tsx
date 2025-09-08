@@ -1,10 +1,11 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import { AppState, Theme, Product, Treatment, ProcessingJob, WebhookConfig } from '../types';
+import { AppState, Theme, Product, Treatment, ProcessingJob, WebhookConfig, UploadedFile } from '../types';
 
 // État initial de l'application
 const initialState: AppState = {
   theme: 'light',
-  product: null,
+  products: [],
+  selectedProduct: null,
   treatments: [
     {
       id: 'background-removal',
@@ -58,7 +59,11 @@ const initialState: AppState = {
 // Actions du reducer
 type Action = 
   | { type: 'SET_THEME'; payload: Theme }
-  | { type: 'SET_PRODUCT'; payload: Product | null }
+  | { type: 'ADD_PRODUCTS'; payload: UploadedFile[] }
+  | { type: 'REMOVE_PRODUCT'; payload: string }
+  | { type: 'UPDATE_PRODUCT'; payload: { id: string; updates: Partial<UploadedFile> } }
+  | { type: 'SELECT_PRODUCT'; payload: UploadedFile | null }
+  | { type: 'CLEAR_PRODUCTS' }
   | { type: 'TOGGLE_TREATMENT'; payload: string }
   | { type: 'UPDATE_TREATMENT_OPTIONS'; payload: { id: string; options: any } }
   | { type: 'START_PROCESSING' }
@@ -73,8 +78,37 @@ function appReducer(state: AppState, action: Action): AppState {
   switch (action.type) {
     case 'SET_THEME':
       return { ...state, theme: action.payload };
-    case 'SET_PRODUCT':
-      return { ...state, product: action.payload };
+    case 'ADD_PRODUCTS':
+      return { 
+        ...state, 
+        products: [...state.products, ...action.payload],
+        selectedProduct: action.payload.length > 0 ? action.payload[0] : state.selectedProduct
+      };
+    case 'REMOVE_PRODUCT':
+      const filteredProducts = state.products.filter(p => p.id !== action.payload);
+      return { 
+        ...state, 
+        products: filteredProducts,
+        selectedProduct: state.selectedProduct?.id === action.payload 
+          ? (filteredProducts.length > 0 ? filteredProducts[0] : null)
+          : state.selectedProduct
+      };
+    case 'UPDATE_PRODUCT':
+      return {
+        ...state,
+        products: state.products.map(p =>
+          p.id === action.payload.id
+            ? { ...p, ...action.payload.updates }
+            : p
+        ),
+        selectedProduct: state.selectedProduct?.id === action.payload.id
+          ? { ...state.selectedProduct, ...action.payload.updates }
+          : state.selectedProduct
+      };
+    case 'SELECT_PRODUCT':
+      return { ...state, selectedProduct: action.payload };
+    case 'CLEAR_PRODUCTS':
+      return { ...state, products: [], selectedProduct: null };
     case 'TOGGLE_TREATMENT':
       return {
         ...state,
