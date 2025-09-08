@@ -50,8 +50,6 @@ export interface AppState {
   jobs: ProcessingJob[];
   isProcessing: boolean;
   webhookConfig: WebhookConfig;
-  selectedTreatmentType: string | null;
-  currentStep: 'hero' | 'treatment';
 }
 
 export interface WebhookConfig {

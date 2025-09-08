@@ -2,7 +2,7 @@ import { WebhookPayload } from '../types';
 
 export class WebhookService {
   private static instance: WebhookService;
-  private webhookUrl = '/api/n8n-webhook';
+  private webhookUrl: string;
 
   constructor(webhookUrl: string) {
     this.webhookUrl = webhookUrl;
@@ -17,47 +17,96 @@ export class WebhookService {
 
   async sendTreatmentRequest(payload: WebhookPayload): Promise<boolean> {
     try {
-      console.log('🚀 Envoi JSON vers n8n webhook:', payload);
+      console.log('🚀 Envoi vers n8n webhook:', {
+        treatmentType: payload.treatmentType,
+        productName: payload.productData.name,
+        hasImage: !!payload.productData.imageFile
+      });
 
-      // Préparer les données JSON (sans les fichiers)
-      const jsonPayload = {
-        client: payload.productData.name || '',
-        commentaire: payload.productData.description || '',
-        treatmentType: payload.treatmentType || '',
-        productName: payload.productData.name || '',
-        productDescription: payload.productData.description || '',
-        productPromotion: payload.productData.promotion || ''
-      };
-
-      // Préparer FormData avec JSON structuré
+      // Préparer les données pour n8n
       const formData = new FormData();
-      formData.append('jsonPayload', JSON.stringify(jsonPayload));
       
-      // Ajouter l'image si elle existe
-      if (payload.productData.imageFile instanceof File) {
-        formData.append('file', payload.productData.imageFile);
+      // Type de traitement - CRITIQUE pour la redirection n8n
+      formData.append('treatmentType', payload.treatmentType);
+      
+      // Informations détaillées du traitement
+      switch (payload.treatmentType) {
+        case 'background-removal':
+          formData.append('treatmentName', 'Détourage Studio');
+          formData.append('treatmentCategory', 'detourage');
+          break;
+        case 'scene-composition':
+          formData.append('treatmentName', 'Mise en Situation');
+          formData.append('treatmentCategory', 'mise_en_situation');
+          break;
+        case 'magazine-layout':
+          formData.append('treatmentName', 'Page de Flyer promo A4');
+          formData.append('treatmentCategory', 'magazine');
+          break;
+        default:
+          formData.append('treatmentName', 'Traitement Inconnu');
+          formData.append('treatmentCategory', 'unknown');
       }
-
-      console.log('📤 FormData avec jsonPayload envoyé vers n8n:', jsonPayload);
-      console.log('🔗 URL webhook:', this.webhookUrl);
+      
+      // Données de base
+      formData.append('timestamp', payload.timestamp);
+      formData.append('sessionId', payload.sessionId);
+      
+      // Données produit
+      if (payload.productData.name) {
+        formData.append('productName', payload.productData.name);
+      }
+      if (payload.productData.code) {
+        formData.append('productCode', payload.productData.code);
+      }
+      if (payload.productData.description) {
+        formData.append('productDescription', payload.productData.description);
+      }
+      
+      // Toujours envoyer le champ promotion, même vide, pour le traitement magazine
+      if (payload.treatmentType === 'magazine-layout') {
+        formData.append('productPromotion', payload.productData.promotion || '');
+      } else if (payload.productData.promotion) {
+        formData.append('productPromotion', payload.productData.promotion);
+      }
+      
+      // Image (si c'est un File)
+      if (payload.productData.imageFile instanceof File) {
+        formData.append('productImage', payload.productData.imageFile);
+        formData.append('originalFileName', payload.productData.imageFile.name);
+      } else if (payload.productData.imageUrl) {
+        formData.append('productImageUrl', payload.productData.imageUrl);
+      }
+      
+      // Paramètres spécifiques au traitement
+      if (payload.treatmentParams?.situationPrompt) {
+        formData.append('situationPrompt', payload.treatmentParams.situationPrompt);
+      }
+      if (payload.treatmentParams?.magazineContent) {
+        formData.append('magazineContent', payload.treatmentParams.magazineContent);
+      }
+      
+      // Paramètres batch
+      if (payload.treatmentParams?.batchMode) {
+        formData.append('batchMode', 'true');
+        formData.append('batchIndex', payload.treatmentParams.batchIndex?.toString() || '0');
+        formData.append('batchTotal', payload.treatmentParams.batchTotal?.toString() || '1');
+        formData.append('batchSessionId', payload.treatmentParams.batchSessionId || '');
+      }
 
       const response = await fetch(this.webhookUrl, {
         method: 'POST',
-        body: formData
+        body: formData,
+        headers: {
+          'Accept': 'application/json',
+        }
       });
 
       if (!response.ok) {
-        const errorText = await response.text().catch(() => 'Pas de détails d\'erreur');
-        console.error('❌ Détails erreur n8n:', {
-          status: response.status,
-          statusText: response.statusText,
-          url: this.webhookUrl,
-          errorBody: errorText
-        });
         throw new Error(`Webhook failed: ${response.status} ${response.statusText}`);
       }
 
-      const result = await response.text();
+      const result = await response.json();
       console.log('✅ Réponse n8n:', result);
       
       return true;
@@ -67,70 +116,13 @@ export class WebhookService {
     }
   }
 
-  async sendBatchTreatmentRequest(payload: {
-    treatmentType?: string;
-    productData: {
-      name?: string;
-      code?: string;
-      description?: string;
-      promotion?: string;
-    };
-    images: File[];
-  }): Promise<boolean> {
-    try {
-      console.log('🚀 Envoi batch vers n8n:', payload);
-
-      // Préparer les données JSON (sans les fichiers)
-      const jsonPayload = {
-        client: payload.productData.name || '',
-        commentaire: payload.productData.description || '',
-        treatmentType: payload.treatmentType || '',
-        productName: payload.productData.name || '',
-        productDescription: payload.productData.description || '',
-        productPromotion: payload.productData.promotion || ''
-      };
-
-      // Préparer FormData avec JSON structuré
-      const formData = new FormData();
-      formData.append('jsonPayload', JSON.stringify(jsonPayload));
-      
-      // Ajouter toutes les images
-      payload.images.forEach((file, index) => {
-        formData.append('file', file);
-      });
-
-      console.log('📤 FormData batch avec jsonPayload envoyé vers n8n:', jsonPayload);
-
-      const response = await fetch(this.webhookUrl, {
-        method: 'POST',
-        body: formData
-      });
-
-      if (!response.ok) {
-        throw new Error(`Webhook failed: ${response.status} ${response.statusText}`);
-      }
-
-      const result = await response.text();
-      console.log('✅ Réponse n8n batch:', result);
-      
-      return true;
-    } catch (error) {
-      console.error('❌ Erreur webhook batch n8n:', error);
-      return false;
-    }
-  }
-
   async testConnection(): Promise<boolean> {
     try {
-      // Créer un fichier factice pour le test
-      const dummyFile = new File(['test'], 'test.txt', { type: 'text/plain' });
-      
       const testPayload: WebhookPayload = {
         treatmentType: 'test',
         productData: {
           name: 'Test Connection',
-          description: 'Test de connexion webhook',
-          imageFile: dummyFile
+          description: 'Test de connexion webhook'
         },
         timestamp: new Date().toISOString(),
         sessionId: 'test-' + Date.now()

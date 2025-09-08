@@ -7,9 +7,9 @@ export default defineConfig({
   server: {
     proxy: {
       '/api/n8n-webhook': {
-        target: 'https://n8n.srv778298.hstgr.cloud/webhook/fb09047a-1a80-44e7-833a-99fe0eda3266',
+        target: 'https://n8n.srv778298.hstgr.cloud',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/n8n-webhook/, '')
+        rewrite: (path) => path.replace(/^\/api\/n8n-webhook/, '/webhook/fb09047a-1a80-44e7-833a-99fe0eda3266')
       }
     }
   },

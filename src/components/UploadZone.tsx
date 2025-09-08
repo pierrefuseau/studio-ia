@@ -173,52 +173,100 @@ export function UploadZone() {
         }
 
       } else {
-        // Mode batch - envoyer toutes les images
-        console.log(`🚀 Envoi JSON avec tableau d'images: ${uploadedFiles.length} images`);
+        // Mode batch - envoyer chaque image individuellement
+        const batchSessionId = `batch-${Date.now()}`;
+        let successCount = 0;
+        let errorCount = 0;
 
-        // Marquer toutes les images comme en cours de traitement
-        setUploadedFiles(prev => prev.map(f => ({ ...f, status: 'processing' })));
-        
-        try {
-          // Envoyer toutes les images dans le format JSON demandé
-          const success = await webhookService.sendBatchTreatmentRequest({
-            treatmentType: state.selectedTreatmentType || 'background-removal',
-            productData: {
-              name: state.product?.name || 'Mon Produit',
-              code: state.product?.code || undefined,
-              description: state.product?.description || undefined,
-              promotion: state.product?.promotion || undefined
-            },
-            images: uploadedFiles.map(file => file.file)
-          });
+        console.log(`🚀 Début traitement batch séquentiel: ${uploadedFiles.length} images`);
 
-          if (success) {
-            // Marquer toutes les images comme terminées
-            setUploadedFiles(prev => prev.map(f => ({ ...f, status: 'completed' })));
-            setProgress({ current: uploadedFiles.length, total: uploadedFiles.length });
-            
-            addToast({
-              type: 'success',
-              title: 'Batch envoyé',
-              description: `Tableau de ${uploadedFiles.length} images envoyé en JSON`
+        // Traiter chaque image une par une
+        for (let i = 0; i < uploadedFiles.length; i++) {
+          const file = uploadedFiles[i];
+          setProgress({ current: i, total: uploadedFiles.length });
+          
+          console.log(`📤 Envoi image ${i + 1}/${uploadedFiles.length}: ${file.file.name}`);
+          
+          // Marquer l'image comme en cours de traitement
+          setUploadedFiles(prev => prev.map(f => 
+            f.id === file.id ? { ...f, status: 'processing' } : f
+          ));
+
+          try {
+            // Envoyer cette image spécifique
+            const success = await webhookService.sendTreatmentRequest({
+              treatmentType: state.selectedTreatmentType || 'background-removal',
+              productData: {
+                name: state.product?.name ? `${state.product.name} (${i + 1}/${uploadedFiles.length})` : `Image ${i + 1}`,
+                code: state.product?.code || undefined,
+                description: state.product?.description || undefined,
+                promotion: state.product?.promotion || undefined,
+                imageFile: file.file,
+                originalFileName: file.file.name
+              },
+              treatmentParams: {
+                batchMode: true,
+                batchIndex: i,
+                batchTotal: uploadedFiles.length,
+                batchSessionId: batchSessionId
+              },
+              timestamp: new Date().toISOString(),
+              sessionId: `${batchSessionId}-image-${i + 1}`
             });
+
+            if (success) {
+              // Marquer comme terminé
+              setUploadedFiles(prev => prev.map(f => 
+                f.id === file.id ? { ...f, status: 'completed' } : f
+              ));
+              successCount++;
+              console.log(`✅ Image ${i + 1}/${uploadedFiles.length} envoyée avec succès`);
+            } else {
+              throw new Error('Échec de l\'envoi');
+            }
+
+          } catch (error) {
+            console.error(`❌ Erreur envoi image ${i + 1}/${uploadedFiles.length}:`, error);
             
-            console.log(`✅ JSON avec tableau d'images envoyé: ${uploadedFiles.length} images`);
-          } else {
-            throw new Error('Échec de l\'envoi du batch');
+            // Marquer comme erreur
+            setUploadedFiles(prev => prev.map(f => 
+              f.id === file.id ? { ...f, status: 'error' } : f
+            ));
+            errorCount++;
           }
-        } catch (error) {
-          console.error('❌ Erreur envoi JSON:', error);
-          
-          // Marquer toutes les images comme erreur
-          setUploadedFiles(prev => prev.map(f => ({ ...f, status: 'error' })));
-          
+
+          // Délai entre chaque envoi pour éviter la surcharge de N8N
+          if (i < uploadedFiles.length - 1) {
+            console.log(`⏳ Attente 1 seconde avant l'image suivante...`);
+            await new Promise(resolve => setTimeout(resolve, 1000));
+          }
+        }
+
+        // Finaliser la progression
+        setProgress({ current: uploadedFiles.length, total: uploadedFiles.length });
+        
+        // Afficher le résultat final
+        if (errorCount === 0) {
+          addToast({
+            type: 'success',
+            title: 'Traitement terminé',
+            description: `${successCount} images envoyées avec succès`
+          });
+        } else if (successCount > 0) {
+          addToast({
+            type: 'warning',
+            title: 'Traitement partiel',
+            description: `${successCount} envoyées, ${errorCount} échouées`
+          });
+        } else {
           addToast({
             type: 'error',
-            title: 'Échec JSON',
-            description: 'Impossible d\'envoyer le JSON avec les images'
+            title: 'Échec complet',
+            description: 'Aucune image n\'a pu être envoyée'
           });
         }
+
+        console.log(`📊 Résultat final: ${successCount} succès, ${errorCount} erreurs sur ${uploadedFiles.length} images`);
       }
 
     } catch (error) {
