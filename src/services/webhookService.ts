@@ -71,20 +71,16 @@ export class WebhookService {
       console.log('✅ Conversion terminée:', {
         nombreImages: imagesBase64.length,
         taillesBase64: imagesBase64.map(b64 => `${Math.round(b64.length / 1024)}KB`)
-      });
-      
-      // Construire le JSON exact comme spécifié
       const jsonPayload = {
         client: payload.productData.name || 'Client Anonyme',
         commentaire: payload.productData.description || 'Aucun commentaire',
         treatmentType: payload.treatmentType,
-        imagesBase64: imagesBase64,
+        imagesBase64: imagesBase64
+      };
+      
       console.log('📤 JSON final à envoyer:', {
-        client: jsonPayload.client,
-        commentaire: jsonPayload.commentaire,
-        treatmentType: jsonPayload.treatmentType,
-        imagesBase64: `[${jsonPayload.imagesBase64.length} images base64 complètes]`,
-        originalFileName: jsonPayload.originalFileName
+        ...jsonPayload,
+        imagesBase64: `[${jsonPayload.imagesBase64.length} images base64]`
       });
       console.log('🌐 URL webhook:', this.webhookUrl);
 
