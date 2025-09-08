@@ -1,4 +1,5 @@
 import React, { useCallback, useState, useRef } from 'react';
+import { useDropzone } from 'react-dropzone';
 import { Upload, X, Image as ImageIcon } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 import { useToast } from './ui/Toast';
@@ -17,18 +18,16 @@ export function UploadZone() {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [currentMode, setCurrentMode] = useState<'none' | 'single' | 'batch'>('none');
   const [isProcessing, setIsProcessing] = useState(false);
-  const [isDragOver, setIsDragOver] = useState(false);
   const [progress, setProgress] = useState({ current: 0, total: 0 });
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const MAX_FILES = 50;
   const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
-  const handleFiles = useCallback((files: FileList | File[]) => {
-    const fileArray = Array.from(files);
+  const handleFiles = useCallback((files: File[]) => {
+    console.log("📦 Fichiers reçus dans handleFiles :", files.length);
     
     // Validation des fichiers
-    const validFiles = fileArray.filter(file => {
+    const validFiles = files.filter(file => {
       if (!file.type.startsWith('image/')) {
         addToast({
           type: 'error',
@@ -68,6 +67,7 @@ export function UploadZone() {
       status: 'pending'
     }));
 
+    console.log("✅ Fichiers validés :", newFiles.length);
     setUploadedFiles(newFiles);
     setCurrentMode(newFiles.length === 1 ? 'single' : 'batch');
 
@@ -84,31 +84,21 @@ export function UploadZone() {
     }
   }, [addToast, dispatch]);
 
-  const onDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(false);
-    const droppedFiles = Array.from(e.dataTransfer.files);
-    handleFiles(droppedFiles); // 🔥 traite tous les fichiers droppés
-  }, [handleFiles]);
-
-  const onDragOver = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(true);
-  }, []);
-
-  const onDragLeave = useCallback(() => {
-    setIsDragOver(false);
-  }, []);
-
-  const onClick = useCallback(() => {
-    fileInputRef.current?.click();
-  }, []);
-
-  const onFileInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      handleFiles(e.target.files);
-    }
-  }, [handleFiles]);
+  // Configuration react-dropzone
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop: (acceptedFiles: File[]) => {
+      console.log("🎯 onDrop - Fichiers acceptés :", acceptedFiles.length);
+      if (acceptedFiles.length > 0) {
+        handleFiles(acceptedFiles); // ✅ envoie TOUS les fichiers
+      }
+    },
+    multiple: true, // ✅ autoriser plusieurs fichiers
+    accept: {
+      'image/*': [] // ✅ limite aux images
+    },
+    maxFiles: MAX_FILES,
+    maxSize: MAX_FILE_SIZE
+  });
 
   const removeFile = useCallback((id: string) => {
     setUploadedFiles(prev => {
@@ -124,7 +114,7 @@ export function UploadZone() {
           payload: {
             id: Date.now().toString(),
             image: newFiles[0].file,
-            imageUrl: newFiles[0].preview // Gardé pour l'affichage local
+            imageUrl: newFiles[0].preview
           }
         });
       }
@@ -149,93 +139,40 @@ export function UploadZone() {
     try {
       console.log('📦 Préparation des fichiers...');
       
-      if (currentMode === 'single') {
-        // Mode simple
-        const file = uploadedFiles[0];
-        setUploadedFiles(prev => prev.map(f => 
-          f.id === file.id ? { ...f, status: 'processing' } : f
-        ));
+      // Toujours envoyer tous les fichiers en une seule fois
+      const allFiles = uploadedFiles.map(f => f.file);
+      
+      setUploadedFiles(prev => prev.map(f => ({ ...f, status: 'processing' })));
 
-        const success = await webhookService.sendTreatmentRequest({
-          treatmentType: state.selectedTreatmentType || 'background-removal',
-          treatmentDisplayName: 'Traitement Simple',
-          productData: {
-            name: state.product?.name,
-            description: state.product?.description,
-            imageFiles: [file.file], // Utiliser imageFiles même pour un seul fichier
-            originalFileName: file.file.name
-          },
-          timestamp: new Date().toISOString(),
-          sessionId: 'session-' + Date.now()
-        });
+      const success = await webhookService.sendTreatmentRequest({
+        treatmentType: state.selectedTreatmentType || 'background-removal',
+        treatmentDisplayName: currentMode === 'single' ? 'Traitement Simple' : 'Traitement Batch',
+        productData: {
+          name: state.product?.name,
+          description: state.product?.description,
+          imageFiles: allFiles, // ✅ Envoyer TOUS les fichiers
+          originalFileName: allFiles[0]?.name
+        },
+        timestamp: new Date().toISOString(),
+        sessionId: 'session-' + Date.now()
+      });
 
-        if (success) {
-          setUploadedFiles(prev => prev.map(f => 
-            f.id === file.id ? { ...f, status: 'completed' } : f
-          ));
-          addToast({
-            type: 'success',
-            title: 'Image traitée',
-            description: 'Votre image a été envoyée pour traitement'
-          });
-        } else {
-          throw new Error('Échec du traitement');
-        }
-      } else {
-        // Mode batch
-        for (let i = 0; i < uploadedFiles.length; i++) {
-          const file = uploadedFiles[i];
-          setProgress({ current: i, total: uploadedFiles.length });
-          
-          setUploadedFiles(prev => prev.map(f => 
-            f.id === file.id ? { ...f, status: 'processing' } : f
-          ));
-
-          try {
-            const success = await webhookService.sendTreatmentRequest({
-              treatmentType: state.selectedTreatmentType || 'background-removal',
-              treatmentDisplayName: 'Traitement Batch',
-              productData: {
-                name: state.product?.name,
-                description: state.product?.description,
-                imageFiles: uploadedFiles.map(f => f.file), // Envoyer tous les fichiers d'un coup
-                originalFileName: file.file.name
-              },
-              timestamp: new Date().toISOString(),
-              sessionId: 'batch-' + Date.now() + '-' + i
-            });
-
-            if (success) {
-              setUploadedFiles(prev => prev.map(f => 
-                f.id === file.id ? { ...f, status: 'completed' } : f
-              ));
-            } else {
-              throw new Error('Échec du traitement');
-            }
-          } catch (error) {
-            setUploadedFiles(prev => prev.map(f => 
-              f.id === file.id ? { ...f, status: 'error' } : f
-            ));
-          }
-
-          // Délai entre les traitements
-          if (i < uploadedFiles.length - 1) {
-            await new Promise(resolve => setTimeout(resolve, 1000));
-          }
-        }
-
-        setProgress({ current: uploadedFiles.length, total: uploadedFiles.length });
-        
-        console.log('✅ Envoi réussi pour tous les fichiers');
+      if (success) {
+        setUploadedFiles(prev => prev.map(f => ({ ...f, status: 'completed' })));
         addToast({
           type: 'success',
-          title: 'Traitement terminé',
-          description: `${uploadedFiles.length} images traitées`
+          title: 'Images traitées',
+          description: `${uploadedFiles.length} image(s) envoyée(s) pour traitement`
         });
+      } else {
+        throw new Error('Échec du traitement');
       }
+
+      setProgress({ current: uploadedFiles.length, total: uploadedFiles.length });
+      
     } catch (error) {
       console.error('💥 Erreur de traitement:', error);
-      console.error('Erreur de traitement:', error);
+      setUploadedFiles(prev => prev.map(f => ({ ...f, status: 'error' })));
       addToast({
         type: 'error',
         title: 'Erreur de traitement',
@@ -254,9 +191,6 @@ export function UploadZone() {
     setIsProcessing(false);
     setProgress({ current: 0, total: 0 });
     dispatch({ type: 'SET_PRODUCT', payload: null });
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
   }, [uploadedFiles, dispatch]);
 
   const formatFileSize = (bytes: number) => {
@@ -271,15 +205,14 @@ export function UploadZone() {
     <div className="upload-container">
       {/* Card principale */}
       <div className="upload-card">
-        <h3 className="card-header">Télécharger une image</h3>
+        <h3 className="card-header">Télécharger des images</h3>
         
         <div 
-          className={`drop-zone ${isDragOver ? 'drag-over' : ''} ${uploadedFiles.length > 0 ? 'has-files' : ''}`}
-          onDrop={onDrop}
-          onDragOver={onDragOver}
-          onDragLeave={onDragLeave}
-          onClick={onClick}
+          {...getRootProps()}
+          className={`drop-zone ${isDragActive ? 'drag-over' : ''} ${uploadedFiles.length > 0 ? 'has-files' : ''}`}
         >
+          <input {...getInputProps()} />
+          
           {/* Zone de contenu central */}
           <div className="drop-content">
             {/* Icône upload */}
@@ -288,7 +221,9 @@ export function UploadZone() {
             </div>
             
             {/* Texte principal */}
-            <p className="drop-title">Glissez-déposez votre image ici</p>
+            <p className="drop-title">
+              {isDragActive ? 'Déposez vos images ici' : 'Glissez-déposez vos images ici'}
+            </p>
             
             {/* Texte secondaire */}
             <p className="drop-subtitle">ou cliquez pour parcourir</p>
@@ -299,20 +234,6 @@ export function UploadZone() {
               <span className="batch-text">• Jusqu'à 50 images</span>
             </div>
           </div>
-          
-          {/* Input caché */}
-          <input 
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            multiple   // 🔥 autorise plusieurs fichiers
-            style={{ display: 'none' }}
-            onChange={(e) => {
-              if (!e.target.files) return;
-              const newFiles = Array.from(e.target.files);
-              handleFiles(newFiles); // 🔥 utilise handleFiles existant
-            }}
-          />
           
           {/* Badge de mode */}
           {currentMode !== 'none' && (
@@ -395,6 +316,44 @@ export function UploadZone() {
               ))}
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Actions */}
+      {uploadedFiles.length > 0 && (
+        <div className="upload-card">
+          <div className="space-y-3">
+            <button 
+              onClick={processImages}
+              disabled={isProcessing}
+              className="btn-generate"
+            >
+              {isProcessing ? 'Traitement...' : `Traiter ${uploadedFiles.length} image(s)`}
+            </button>
+            
+            <button 
+              onClick={resetAll}
+              className="btn-reset"
+            >
+              Réinitialiser
+            </button>
+          </div>
+
+          {/* Progress bar */}
+          {isProcessing && (
+            <div className="batch-progress">
+              <div className="progress-info">
+                <span>Traitement en cours...</span>
+                <span>{progress.current}/{progress.total}</span>
+              </div>
+              <div className="progress-bar">
+                <div 
+                  className="progress-fill" 
+                  style={{ width: `${(progress.current / progress.total) * 100}%` }}
+                ></div>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
