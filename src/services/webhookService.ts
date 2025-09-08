@@ -5,7 +5,7 @@ export class WebhookService {
   private webhookUrl = 'https://n8n.sn/v7f8298/webhook/image-upload';
 
   constructor(webhookUrl: string) {
-    this.webhookUrl = 'https://n8n.sn/v7f8298/webhook/image-upload';
+    this.webhookUrl = webhookUrl;
   }
 
   static getInstance(webhookUrl: string): WebhookService {
@@ -19,18 +19,15 @@ export class WebhookService {
     try {
       console.log('🚀 Envoi JSON vers n8n webhook:', payload);
 
-      // Préparer les images selon le format demandé
-      let images: string[] = [];
-      
+      // Créer une URL temporaire pour l'image
+      let imageUrl = '';
       if (payload.productData.imageFile instanceof File) {
-        // Créer une URL temporaire pour le fichier
-        const imageUrl = URL.createObjectURL(payload.productData.imageFile);
-        images = [imageUrl];
+        imageUrl = URL.createObjectURL(payload.productData.imageFile);
       } else if (payload.productData.imageUrl) {
-        images = [payload.productData.imageUrl];
+        imageUrl = payload.productData.imageUrl;
       }
 
-      // Préparer le payload JSON avec tous les champs demandés
+      // Préparer le payload JSON avec le format exact demandé
       const jsonPayload = {
         client: payload.productData.name || '',
         commentaire: payload.productData.description || '',
@@ -38,7 +35,7 @@ export class WebhookService {
         productName: payload.productData.name || '',
         productDescription: payload.productData.description || '',
         productPromotion: payload.productData.promotion || '',
-        images: images
+        images: imageUrl ? [imageUrl] : []
       };
 
       console.log('📤 Payload JSON envoyé:', jsonPayload);
@@ -52,12 +49,10 @@ export class WebhookService {
         body: JSON.stringify(jsonPayload)
       });
 
-      // Nettoyer les URLs temporaires
-      images.forEach(url => {
-        if (url.startsWith('blob:')) {
-          URL.revokeObjectURL(url);
-        }
-      });
+      // Nettoyer l'URL temporaire
+      if (imageUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(imageUrl);
+      }
 
       if (!response.ok) {
         throw new Error(`Webhook failed: ${response.status} ${response.statusText}`);
@@ -89,7 +84,7 @@ export class WebhookService {
       // Créer des URLs temporaires pour les images
       const imageUrls = payload.images.map(file => URL.createObjectURL(file));
 
-      // Préparer le payload JSON avec tous les champs demandés
+      // Préparer le payload JSON avec le format exact demandé
       const jsonPayload = {
         client: payload.productData.name || '',
         commentaire: payload.productData.description || '',

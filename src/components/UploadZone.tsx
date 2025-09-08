@@ -173,23 +173,9 @@ export function UploadZone() {
         }
 
       } else {
-        // Mode batch - envoyer toutes les images dans un seul payload JSON
-        const batchSessionId = `batch-${Date.now()}`;
-
+        // Mode batch - envoyer toutes les images
         console.log(`🚀 Envoi JSON avec tableau d'images: ${uploadedFiles.length} images`);
 
-        // Traiter chaque image une par une
-        for (let i = 0; i < uploadedFiles.length; i++) {
-          const file = uploadedFiles[i];
-          setProgress({ current: i, total: uploadedFiles.length });
-          
-          console.log(`📤 Envoi image ${i + 1}/${uploadedFiles.length}: ${file.file.name}`);
-          
-          // Marquer l'image comme en cours de traitement
-          setUploadedFiles(prev => prev.map(f => 
-            f.id === file.id ? { ...f, status: 'processing' } : f
-          ));
-        }
         // Marquer toutes les images comme en cours de traitement
         setUploadedFiles(prev => prev.map(f => ({ ...f, status: 'processing' })));
         

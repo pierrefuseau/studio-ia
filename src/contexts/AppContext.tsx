@@ -62,6 +62,7 @@ type Action =
   | { type: 'TOGGLE_TREATMENT'; payload: string }
   | { type: 'UPDATE_TREATMENT_OPTIONS'; payload: { id: string; options: any } }
   | { type: 'START_PROCESSING' }
+  | { type: 'STOP_PROCESSING' }
   | { type: 'ADD_JOB'; payload: ProcessingJob }
   | { type: 'UPDATE_JOB'; payload: { id: string; updates: Partial<ProcessingJob> } }
   | { type: 'SET_WEBHOOK_CONFIG'; payload: WebhookConfig }
@@ -93,6 +94,8 @@ function appReducer(state: AppState, action: Action): AppState {
       };
     case 'START_PROCESSING':
       return { ...state, isProcessing: true };
+    case 'STOP_PROCESSING':
+      return { ...state, isProcessing: false };
     case 'ADD_JOB':
       return { ...state, jobs: [...state.jobs, action.payload] };
     case 'UPDATE_JOB':
