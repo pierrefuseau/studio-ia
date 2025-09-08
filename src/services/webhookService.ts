@@ -17,11 +17,7 @@ export class WebhookService {
 
   async sendTreatmentRequest(payload: WebhookPayload): Promise<boolean> {
     try {
-      console.log('🚀 Envoi JSON vers n8n webhook:', {
-        client: payload.productData.name,
-        commentaire: payload.productData.description,
-        hasImage: !!payload.productData.imageFile || !!payload.productData.imageUrl
-      });
+      console.log('🚀 Envoi JSON vers n8n webhook:', payload);
 
       // Préparer les images selon le format demandé
       let images: string[] = [];
@@ -34,12 +30,19 @@ export class WebhookService {
         images = [payload.productData.imageUrl];
       }
 
-      // Préparer le payload JSON selon le format exact demandé
+      // Préparer le payload JSON avec tous les champs demandés
       const jsonPayload = {
-        client: payload.productData.name || 'Client Inconnu',
+        client: payload.productData.name || '',
         commentaire: payload.productData.description || '',
+        treatmentType: payload.treatmentType || '',
+        productName: payload.productData.name || '',
+        productDescription: payload.productData.description || '',
+        productPromotion: payload.productData.promotion || '',
         images: images
       };
+
+      console.log('📤 Payload JSON envoyé:', jsonPayload);
+
       const response = await fetch(this.webhookUrl, {
         method: 'POST',
         headers: {
@@ -71,6 +74,7 @@ export class WebhookService {
   }
 
   async sendBatchTreatmentRequest(payload: {
+    treatmentType?: string;
     productData: {
       name?: string;
       code?: string;
@@ -80,21 +84,23 @@ export class WebhookService {
     images: File[];
   }): Promise<boolean> {
     try {
-      console.log('🚀 Envoi batch JSON vers n8n:', {
-        client: payload.productData.name,
-        commentaire: payload.productData.description,
-        imageCount: payload.images.length,
-      });
+      console.log('🚀 Envoi batch JSON vers n8n:', payload);
 
       // Créer des URLs temporaires pour les images
       const imageUrls = payload.images.map(file => URL.createObjectURL(file));
 
-      // Préparer le payload JSON selon le format exact demandé
+      // Préparer le payload JSON avec tous les champs demandés
       const jsonPayload = {
-        client: payload.productData.name || 'Client Inconnu',
+        client: payload.productData.name || '',
         commentaire: payload.productData.description || '',
+        treatmentType: payload.treatmentType || '',
+        productName: payload.productData.name || '',
+        productDescription: payload.productData.description || '',
+        productPromotion: payload.productData.promotion || '',
         images: imageUrls
       };
+
+      console.log('📤 Payload batch JSON envoyé:', jsonPayload);
 
       const response = await fetch(this.webhookUrl, {
         method: 'POST',

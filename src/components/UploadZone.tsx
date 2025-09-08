@@ -196,6 +196,7 @@ export function UploadZone() {
         try {
           // Envoyer toutes les images dans le format JSON demandé
           const success = await webhookService.sendBatchTreatmentRequest({
+            treatmentType: state.selectedTreatmentType || 'background-removal',
             productData: {
               name: state.product?.name || 'Mon Produit',
               code: state.product?.code || undefined,
