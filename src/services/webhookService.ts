@@ -78,10 +78,14 @@ export class WebhookService {
         client: payload.productData.name || 'Client Anonyme',
         commentaire: payload.productData.description || 'Aucun commentaire',
         treatmentType: payload.treatmentType,
-        imagesBase64: imagesBase64
-      };
-        imagesBase64: `[${jsonPayload.imagesBase64.length} images base64]`
-      console.log('📤 JSON final à envoyer:', JSON.stringify(jsonPayload, null, 2));
+        imagesBase64: imagesBase64,
+      console.log('📤 JSON final à envoyer:', {
+        client: jsonPayload.client,
+        commentaire: jsonPayload.commentaire,
+        treatmentType: jsonPayload.treatmentType,
+        imagesBase64: `[${jsonPayload.imagesBase64.length} images base64 complètes]`,
+        originalFileName: jsonPayload.originalFileName
+      });
       console.log('🌐 URL webhook:', this.webhookUrl);
 
       const response = await fetch(this.webhookUrl, {
