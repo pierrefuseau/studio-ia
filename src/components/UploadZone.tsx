@@ -147,20 +147,13 @@ export function UploadZone() {
 
     try {
       console.log('📦 Préparation des fichiers...');
+      
+      if (currentMode === 'single') {
         // Mode simple
         const file = uploadedFiles[0];
         setUploadedFiles(prev => prev.map(f => 
           f.id === file.id ? { ...f, status: 'processing' } : f
         ));
-
-        const formData = new FormData();
-        formData.append('treatmentType', state.selectedTreatmentType || 'background-removal');
-        formData.append('productImage', file.file);
-        formData.append('productName', state.product?.name || '');
-        formData.append('productDescription', state.product?.description || '');
-        formData.append('mode', 'single');
-        formData.append('timestamp', new Date().toISOString());
-        formData.append('sessionId', 'session-' + Date.now());
 
         const success = await webhookService.sendTreatmentRequest({
           treatmentType: state.selectedTreatmentType || 'background-removal',
@@ -186,7 +179,6 @@ export function UploadZone() {
         } else {
           throw new Error('Échec du traitement');
         }
-
       } else {
         // Mode batch
         for (let i = 0; i < uploadedFiles.length; i++) {
@@ -196,17 +188,6 @@ export function UploadZone() {
           setUploadedFiles(prev => prev.map(f => 
             f.id === file.id ? { ...f, status: 'processing' } : f
           ));
-
-          const formData = new FormData();
-          formData.append('treatmentType', state.selectedTreatmentType || 'background-removal');
-          formData.append('productImage', file.file);
-          formData.append('productName', state.product?.name || '');
-          formData.append('productDescription', state.product?.description || '');
-          formData.append('mode', 'batch');
-          formData.append('batchIndex', i.toString());
-          formData.append('batchTotal', uploadedFiles.length.toString());
-          formData.append('timestamp', new Date().toISOString());
-          formData.append('sessionId', 'batch-' + Date.now());
 
           try {
             const success = await webhookService.sendTreatmentRequest({
@@ -241,22 +222,15 @@ export function UploadZone() {
         }
 
         setProgress({ current: uploadedFiles.length, total: uploadedFiles.length });
-      
-      console.log('📋 Fichiers préparés:', files.map(f => ({
-        name: f.name,
+        
         console.log('✅ Envoi réussi pour tous les fichiers');
-        size: f.size,
-        type: f.type
-      })));
         addToast({
-          description: `${uploadedFiles.length} image${uploadedFiles.length > 1 ? 's' : ''} envoyée${uploadedFiles.length > 1 ? 's' : ''}`
+          type: 'success',
           title: 'Traitement terminé',
           description: `${uploadedFiles.length} images traitées`
-        console.error('❌ Échec de l\'envoi');
-      console.log('🚀 Envoi vers webhook...');
         });
       }
-
+    } catch (error) {
       console.error('💥 Erreur de traitement:', error);
       console.error('Erreur de traitement:', error);
       addToast({
