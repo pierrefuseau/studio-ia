@@ -144,8 +144,9 @@ export function TreatmentWorkspace() {
       addToast({
         type: 'error',
         title: 'Erreur',
-        description: 'Impossible de lancer le traitement'
+        description: 'Erreur serveur n8n (500). Vérifiez les logs du workflow n8n.'
       });
+      dispatch({ type: 'STOP_PROCESSING' });
     }
   };
 

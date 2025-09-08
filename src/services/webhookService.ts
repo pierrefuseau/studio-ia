@@ -39,6 +39,7 @@ export class WebhookService {
       }
 
       console.log('📤 FormData avec jsonPayload envoyé vers n8n:', jsonPayload);
+      console.log('🔗 URL webhook:', this.webhookUrl);
 
       const response = await fetch(this.webhookUrl, {
         method: 'POST',
@@ -46,6 +47,13 @@ export class WebhookService {
       });
 
       if (!response.ok) {
+        const errorText = await response.text().catch(() => 'Pas de détails d\'erreur');
+        console.error('❌ Détails erreur n8n:', {
+          status: response.status,
+          statusText: response.statusText,
+          url: this.webhookUrl,
+          errorBody: errorText
+        });
         throw new Error(`Webhook failed: ${response.status} ${response.statusText}`);
       }
 
