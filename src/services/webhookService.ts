@@ -30,30 +30,31 @@ export class WebhookService {
         treatmentType: payload.treatmentType,
         client: payload.productData.name || 'Client Anonyme',
         commentaire: payload.productData.description || 'Aucun commentaire',
-        hasImageFiles: payload.productData.imageFiles?.length || 0,
-        hasSingleImageFile: payload.productData.imageFile ? 1 : 0,
+        totalFiles: (payload.productData.imageFiles?.length || 0) + (payload.productData.imageFile ? 1 : 0),
       });
 
-      // TOUJOURS préparer un tableau de fichiers à convertir
+      // 🔧 RÈGLE STRICTE : TOUJOURS créer un tableau de fichiers
       let filesToConvert: File[] = [];
       
-      // Récupérer TOUS les fichiers dans un tableau
+      // Collecter TOUS les fichiers dans un seul tableau
       if (payload.productData.imageFiles && payload.productData.imageFiles.length > 0) {
-        console.log('📁 Fichiers multiples détectés:', payload.productData.imageFiles.length, 'fichiers');
+        console.log('📁 Ajout de', payload.productData.imageFiles.length, 'fichiers depuis imageFiles[]');
         filesToConvert = payload.productData.imageFiles;
       }
-      // Si un seul fichier, le mettre dans un tableau
-      else if (payload.productData.imageFile) {
-        console.log('📄 Fichier unique détecté, ajout au tableau');
-        filesToConvert = [payload.productData.imageFile];
+      
+      // Si un fichier unique existe, l'ajouter au tableau
+      if (payload.productData.imageFile) {
+        console.log('📄 Ajout d\'1 fichier depuis imageFile');
+        filesToConvert.push(payload.productData.imageFile);
       }
-      else {
+      
+      // Vérification finale
+      if (filesToConvert.length === 0) {
         console.log('❌ Aucun fichier à traiter');
         throw new Error('Aucun fichier image fourni');
       }
       
-      // Log détaillé de tous les fichiers
-      console.log('📦 Fichiers à traiter:', filesToConvert.length);
+      console.log('📦 TOTAL fichiers à convertir:', filesToConvert.length);
       filesToConvert.forEach((file, index) => {
         console.log(`  📄 Fichier ${index + 1}:`, {
           name: file.name,
@@ -62,33 +63,34 @@ export class WebhookService {
         });
       });
       
-      console.log('🔄 Conversion en Base64 (sans préfixe) de', filesToConvert.length, 'fichier(s)...');
+      console.log('🔄 Conversion en Base64 pur (sans préfixe data:image)...');
       
-      // Convertir TOUS les fichiers en Base64 pur (sans préfixe)
+      // 🎯 CONVERSION : Tous les fichiers → Base64 pur
       const imagesBase64 = await Promise.all(filesToConvert.map(toB64));
       
       console.log('✅ Conversion terminée:', {
-        nombreImages: imagesBase64.length,
+        nombreImagesBase64: imagesBase64.length,
         taillesBase64: imagesBase64.map(b64 => `${Math.round(b64.length / 1024)}KB`)
       });
       
-      // Construire le payload JSON avec le tableau imagesBase64
+      // 🚀 PAYLOAD FINAL : Structure JSON stricte
       const jsonPayload = {
         client: payload.productData.name || 'Client Anonyme',
         commentaire: payload.productData.description || 'Aucun commentaire',
         treatmentType: payload.treatmentType,
-        imagesBase64: imagesBase64
+        imagesBase64: imagesBase64  // ⚡ TOUJOURS un tableau, jamais autre chose
       };
       
       console.log('📤 JSON final à envoyer:', {
         client: jsonPayload.client,
         commentaire: jsonPayload.commentaire,
         treatmentType: jsonPayload.treatmentType,
-        nombreImagesBase64: jsonPayload.imagesBase64.length
+        imagesBase64Length: jsonPayload.imagesBase64.length,
+        isArray: Array.isArray(jsonPayload.imagesBase64)
       });
       console.log('🌐 URL webhook:', this.webhookUrl);
 
-      // Envoi POST vers n8n
+      // 📡 ENVOI POST vers n8n
       const response = await fetch(this.webhookUrl, {
         method: 'POST',
         body: JSON.stringify(jsonPayload),
@@ -112,7 +114,7 @@ export class WebhookService {
 
       const result = await response.json();
       console.log('✅ Réponse n8n:', result);
-      console.log('🎉 === ENVOI TABLEAU IMAGES RÉUSSI ===');
+      console.log('🎉 === ENVOI TABLEAU imagesBase64[] RÉUSSI ===');
       
       return true;
     } catch (error) {
