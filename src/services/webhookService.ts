@@ -20,96 +20,27 @@ export class WebhookService {
       console.log('🚀 Envoi vers n8n webhook:', {
         treatmentType: payload.treatmentType,
         productName: payload.productData.name,
-        hasImage: !!payload.productData.imageFile,
-        hasMultipleFiles: !!(payload.productData.imageFiles && payload.productData.imageFiles.length > 0),
-        fileCount: payload.productData.imageFiles?.length || (payload.productData.imageFile ? 1 : 0)
+        imageCount: payload.images?.length || 0,
+        client: payload.client,
+        commentaire: payload.commentaire
       });
 
-      // Préparer les données pour n8n
-      const formData = new FormData();
-      
-      // Type de traitement - CRITIQUE pour la redirection n8n
-      formData.append('treatmentType', payload.treatmentType);
-      
-      // Informations détaillées du traitement
-      switch (payload.treatmentType) {
-        case 'background-removal':
-          formData.append('treatmentName', 'Détourage Studio');
-          formData.append('treatmentCategory', 'detourage');
-          break;
-        case 'scene-composition':
-          formData.append('treatmentName', 'Mise en Situation');
-          formData.append('treatmentCategory', 'mise_en_situation');
-          break;
-        case 'magazine-layout':
-          formData.append('treatmentName', 'Page de Flyer promo A4');
-          formData.append('treatmentCategory', 'magazine');
-          break;
-        default:
-          formData.append('treatmentName', 'Traitement Inconnu');
-          formData.append('treatmentCategory', 'unknown');
-      }
-      
-      // Données de base
-      formData.append('timestamp', payload.timestamp);
-      formData.append('sessionId', payload.sessionId);
-      
-      // Données produit
-      if (payload.productData.name) {
-        formData.append('productName', payload.productData.name);
-      }
-      if (payload.productData.code) {
-        formData.append('productCode', payload.productData.code);
-      }
-      if (payload.productData.description) {
-        formData.append('productDescription', payload.productData.description);
-      }
-      
-      // Toujours envoyer le champ promotion, même vide, pour le traitement magazine
-      if (payload.treatmentType === 'magazine-layout') {
-        formData.append('productPromotion', payload.productData.promotion || '');
-      } else if (payload.productData.promotion) {
-        formData.append('productPromotion', payload.productData.promotion);
-      }
-      
-      // Image (si c'est un File)
-      if (payload.productData.imageFile instanceof File) {
-        formData.append('productImage', payload.productData.imageFile);
-        formData.append('originalFileName', payload.productData.imageFile.name);
-      } else if (payload.productData.imageUrl) {
-        formData.append('productImageUrl', payload.productData.imageUrl);
-      }
-      
-      // Images multiples (pour le mode batch)
-      if (payload.productData.imageFiles && payload.productData.imageFiles.length > 0) {
-        payload.productData.imageFiles.forEach((file, index) => {
-          formData.append(`file_${index}`, file.file);
-          formData.append(`fileName_${index}`, file.originalName);
-        });
-        formData.append('totalFiles', payload.productData.imageFiles.length.toString());
-      }
-      
-      // Paramètres spécifiques au traitement
-      if (payload.treatmentParams?.situationPrompt) {
-        formData.append('situationPrompt', payload.treatmentParams.situationPrompt);
-      }
-      if (payload.treatmentParams?.magazineContent) {
-        formData.append('magazineContent', payload.treatmentParams.magazineContent);
-      }
-      
-      // Paramètres batch
-      if (payload.treatmentParams?.batchMode) {
-        formData.append('batchMode', 'true');
-        formData.append('batchIndex', payload.treatmentParams.batchIndex?.toString() || '0');
-        formData.append('batchTotal', payload.treatmentParams.batchTotal?.toString() || '1');
-        formData.append('batchSessionId', payload.treatmentParams.batchSessionId || '');
-      }
+      // Préparer le payload JSON selon le format spécifié
+      const jsonPayload = {
+        client: payload.client || payload.productData.name || 'Client Anonyme',
+        commentaire: payload.commentaire || payload.productData.description || 'Aucun commentaire',
+        treatmentType: payload.treatmentType,
+        images: payload.images || []
+      };
+
+      console.log('📤 Payload JSON envoyé:', jsonPayload);
 
       const response = await fetch(this.webhookUrl, {
         method: 'POST',
-        body: formData,
+        body: JSON.stringify(jsonPayload),
         headers: {
-          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         }
       });
 
@@ -131,12 +62,15 @@ export class WebhookService {
     try {
       const testPayload: WebhookPayload = {
         treatmentType: 'test',
+        client: 'Test Client',
+        commentaire: 'Test de connexion webhook',
         productData: {
           name: 'Test Connection',
           description: 'Test de connexion webhook'
         },
         timestamp: new Date().toISOString(),
-        sessionId: 'test-' + Date.now()
+        sessionId: 'test-' + Date.now(),
+        images: ['https://example.com/test-image.jpg']
       };
 
       return await this.sendTreatmentRequest(testPayload);

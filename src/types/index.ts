@@ -61,6 +61,8 @@ export interface WebhookConfig {
 export interface WebhookPayload {
   treatmentType: string;
   treatmentDisplayName?: string;
+  client?: string;
+  commentaire?: string;
   productData: {
     name?: string;
     code?: string;
@@ -73,6 +75,7 @@ export interface WebhookPayload {
       file: File;
       originalName: string;
       id: string;
+      url?: string;
     }>;
   };
   treatmentParams?: {
@@ -85,4 +88,5 @@ export interface WebhookPayload {
   };
   timestamp: string;
   sessionId: string;
+  images?: string[];
 }

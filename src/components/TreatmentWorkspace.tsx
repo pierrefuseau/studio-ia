@@ -99,27 +99,30 @@ export function TreatmentWorkspace() {
     const config = getTreatmentConfig();
     if (!config) return;
 
-    // Préparer le payload pour n8n
+    // Créer une URL simulée pour l'image (en production, il faudrait uploader le fichier)
+    const imageUrl = state.product.image instanceof File 
+      ? `https://bolt-files/${state.product.image.name.replace(/\s+/g, '_')}`
+      : state.product.imageUrl || '';
+
+    // Préparer le payload JSON pour n8n
     const payload: WebhookPayload = {
       treatmentType: state.selectedTreatmentType || 'unknown',
       treatmentDisplayName: config.name,
+      client: state.product.name || 'Client Anonyme',
+      commentaire: state.product.description || 'Traitement d\'image produit',
       productData: {
         name: state.product.name || undefined,
         code: state.product.code || undefined,
         description: state.product.description || undefined,
-        promotion: state.selectedTreatmentType === 'magazine-layout' 
-          ? (state.product.promotion || '') 
-          : (state.product.promotion || undefined),
-        imageUrl: state.product.imageUrl,
-        imageFile: state.product.image instanceof File ? state.product.image : undefined,
-        originalFileName: state.product.image instanceof File ? state.product.image.name : undefined
+        promotion: state.product.promotion || undefined
       },
       treatmentParams: {
         situationPrompt: state.selectedTreatmentType === 'scene-composition' ? situationPrompt : undefined,
         magazineContent: state.selectedTreatmentType === 'magazine-layout' ? magazineContent : undefined
       },
       timestamp: new Date().toISOString(),
-      sessionId: 'session-' + Date.now()
+      sessionId: 'session-' + Date.now(),
+      images: [imageUrl]
     };
 
     addToast({

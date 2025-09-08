@@ -138,116 +138,60 @@ export function UploadZone() {
     setProgress({ current: 0, total: uploadedFiles.length });
 
     try {
-      if (currentMode === 'single') {
-        // Mode simple - une seule image
-        const file = uploadedFiles[0];
-        setUploadedFiles(prev => prev.map(f => 
-          f.id === file.id ? { ...f, status: 'processing' } : f
-        ));
+      // Marquer toutes les images comme en cours de traitement
+      setUploadedFiles(prev => prev.map(f => ({ ...f, status: 'processing' })));
+      setProgress({ current: 1, total: 2 });
 
-        const success = await webhookService.sendTreatmentRequest({
-          treatmentType: state.selectedTreatmentType || 'background-removal',
-          productData: {
-            name: state.product?.name,
-            code: state.product?.code,
-            description: state.product?.description,
-            promotion: state.product?.promotion,
-            imageFile: file.file,
-            originalFileName: file.file.name
-          },
-          timestamp: new Date().toISOString(),
-          sessionId: 'session-' + Date.now()
+      // Créer les URLs des images (simulation - en production, il faudrait uploader les fichiers)
+      const imageUrls = uploadedFiles.map((file, index) => 
+        `https://bolt-files/${file.file.name.replace(/\s+/g, '_')}`
+      );
+
+      console.log(`📤 Envoi de ${uploadedFiles.length} image(s) en format JSON`);
+
+      // Envoyer toutes les images en format JSON
+      const success = await webhookService.sendTreatmentRequest({
+        treatmentType: state.selectedTreatmentType || 'background-removal',
+        client: state.product?.name || 'Client Anonyme',
+        commentaire: state.product?.description || `Traitement de ${uploadedFiles.length} image(s)`,
+        productData: {
+          name: state.product?.name,
+          code: state.product?.code,
+          description: state.product?.description,
+          promotion: state.product?.promotion
+        },
+        timestamp: new Date().toISOString(),
+        sessionId: `session-${Date.now()}`,
+        images: imageUrls
+      });
+
+      setProgress({ current: 2, total: 2 });
+
+      if (success) {
+        // Marquer toutes les images comme terminées
+        setUploadedFiles(prev => prev.map(f => ({ ...f, status: 'completed' })));
+        
+        addToast({
+          type: 'success',
+          title: uploadedFiles.length === 1 ? 'Image traitée' : 'Images traitées',
+          description: `${uploadedFiles.length} image(s) envoyée(s) pour traitement`
         });
-
-        if (success) {
-          setUploadedFiles(prev => prev.map(f => 
-            f.id === file.id ? { ...f, status: 'completed' } : f
-          ));
-          addToast({
-            type: 'success',
-            title: 'Image traitée',
-            description: 'Votre image a été envoyée pour traitement'
-          });
-        } else {
-          throw new Error('Échec du traitement');
-        }
-
+        
+        console.log(`✅ ${uploadedFiles.length} image(s) envoyée(s) avec succès`);
       } else {
-        // Mode batch - envoyer toutes les images en une seule requête
-        const batchSessionId = `batch-${Date.now()}`;
-
-        console.log(`🚀 Début traitement batch groupé: ${uploadedFiles.length} images`);
-
-        // Marquer toutes les images comme en cours de traitement
-        setUploadedFiles(prev => prev.map(f => ({ ...f, status: 'processing' })));
-        setProgress({ current: 1, total: 2 });
-
-        try {
-          // Préparer toutes les images pour l'envoi groupé
-          const imageFiles = uploadedFiles.map(file => ({
-            file: file.file,
-            originalName: file.file.name,
-            id: file.id
-          }));
-
-          console.log(`📤 Envoi groupé de ${imageFiles.length} images`);
-
-          // Envoyer toutes les images en une seule requête
-          const success = await webhookService.sendTreatmentRequest({
-            treatmentType: state.selectedTreatmentType || 'background-removal',
-            productData: {
-              name: state.product?.name ? `${state.product.name} (Lot de ${uploadedFiles.length})` : `Lot de ${uploadedFiles.length} images`,
-              code: state.product?.code || undefined,
-              description: state.product?.description || undefined,
-              promotion: state.product?.promotion || undefined,
-              imageFiles: imageFiles
-            },
-            treatmentParams: {
-              batchMode: true,
-              batchTotal: uploadedFiles.length,
-              batchSessionId: batchSessionId
-            },
-            timestamp: new Date().toISOString(),
-            sessionId: batchSessionId
-          });
-
-          setProgress({ current: 2, total: 2 });
-
-          if (success) {
-            // Marquer toutes les images comme terminées
-            setUploadedFiles(prev => prev.map(f => ({ ...f, status: 'completed' })));
-            
-            addToast({
-              type: 'success',
-              title: 'Lot traité',
-              description: `${uploadedFiles.length} images envoyées en une seule requête`
-            });
-            
-            console.log(`✅ Lot de ${uploadedFiles.length} images envoyé avec succès`);
-          } else {
-            throw new Error('Échec de l\'envoi du lot');
-          }
-
-        } catch (error) {
-          console.error('❌ Erreur envoi lot:', error);
-          
-          // Marquer toutes les images comme erreur
-          setUploadedFiles(prev => prev.map(f => ({ ...f, status: 'error' })));
-          
-          addToast({
-            type: 'error',
-            title: 'Échec du lot',
-            description: 'Impossible d\'envoyer le lot d\'images'
-          });
-        }
+        throw new Error('Échec de l\'envoi');
       }
 
     } catch (error) {
-      console.error('❌ Erreur générale lors du traitement:', error);
+      console.error('❌ Erreur lors du traitement:', error);
+      
+      // Marquer toutes les images comme erreur
+      setUploadedFiles(prev => prev.map(f => ({ ...f, status: 'error' })));
+      
       addToast({
         type: 'error',
         title: 'Erreur',
-        description: 'Une erreur générale est survenue'
+        description: 'Impossible d\'envoyer les images'
       });
     } finally {
       setIsProcessing(false);
