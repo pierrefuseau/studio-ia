@@ -131,26 +131,6 @@ export function UploadZone() {
   const processImages = useCallback(async () => {
     if (isProcessing || state.products.length === 0) return;
 
-    // Validation spécifique pour la mise en situation
-    if (state.selectedTreatmentType === 'scene-composition') {
-      if (!state.selectedProduct?.name?.trim()) {
-        addToast({
-          type: 'error',
-          title: 'Nom requis',
-          description: 'Le nom du produit est obligatoire pour la mise en situation'
-        });
-        return;
-      }
-      if (!state.selectedProduct?.description?.trim()) {
-        addToast({
-          type: 'error',
-          title: 'Description requise',
-          description: 'La description est obligatoire pour la mise en situation'
-        });
-        return;
-      }
-    }
-
     console.log('🎬 === DÉBUT TRAITEMENT IMAGES ===');
     console.log('📊 État initial:', {
       nombreFichiers: state.products.length,
