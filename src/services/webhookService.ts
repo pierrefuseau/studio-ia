@@ -2,7 +2,7 @@ import { WebhookPayload } from '../types';
 
 export class WebhookService {
   private static instance: WebhookService;
-  private webhookUrl = 'https://n8n.sn/v7f8298/webhook/image-upload';
+  private webhookUrl = '/api/n8n-webhook';
 
   constructor(webhookUrl: string) {
     this.webhookUrl = webhookUrl;
@@ -144,5 +144,5 @@ export class WebhookService {
 }
 
 export const webhookService = WebhookService.getInstance(
-  'https://n8n.sn/v7f8298/webhook/image-upload'
+  '/api/n8n-webhook'
 );
