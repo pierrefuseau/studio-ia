@@ -11,8 +11,6 @@ import { WebhookPayload } from '../types';
 export function TreatmentWorkspace() {
   const { state, dispatch } = useApp();
   const { addToast } = useToast();
-  const [situationPrompt, setSituationPrompt] = useState('');
-  const [magazineContent, setMagazineContent] = useState('');
 
   const handleBack = () => {
     dispatch({ type: 'SET_CURRENT_STEP', payload: 'hero' });
@@ -44,7 +42,7 @@ export function TreatmentWorkspace() {
         };
       case 'magazine-layout':
         return {
-          name: 'Page de Flyer promo A4',
+          name: 'Page Magazine A4',
           description: 'Créez une mise en page publicitaire professionnelle',
           icon: <FileText className="w-5 h-5" />,
           fields: [
@@ -99,30 +97,27 @@ export function TreatmentWorkspace() {
     const config = getTreatmentConfig();
     if (!config) return;
 
-    // Créer une URL simulée pour l'image (en production, il faudrait uploader le fichier)
-    const imageUrl = state.product.image instanceof File 
-      ? `https://bolt-files/${state.product.image.name.replace(/\s+/g, '_')}`
-      : state.product.imageUrl || '';
-
-    // Préparer le payload JSON pour n8n
+    // Préparer le payload pour n8n
     const payload: WebhookPayload = {
       treatmentType: state.selectedTreatmentType || 'unknown',
       treatmentDisplayName: config.name,
-      client: state.product.name || 'Client Anonyme',
-      commentaire: state.product.description || 'Traitement d\'image produit',
       productData: {
         name: state.product.name || undefined,
         code: state.product.code || undefined,
         description: state.product.description || undefined,
-        promotion: state.product.promotion || undefined
+        promotion: state.selectedTreatmentType === 'magazine-layout' 
+          ? (state.product.promotion || '') 
+          : (state.product.promotion || undefined),
+        imageUrl: state.product.imageUrl,
+        imageFile: state.product.image instanceof File ? state.product.image : undefined,
+        originalFileName: state.product.image instanceof File ? state.product.image.name : undefined
       },
       treatmentParams: {
-        situationPrompt: state.selectedTreatmentType === 'scene-composition' ? situationPrompt : undefined,
-        magazineContent: state.selectedTreatmentType === 'magazine-layout' ? magazineContent : undefined
+        situationPrompt: undefined,
+        magazineContent: undefined
       },
       timestamp: new Date().toISOString(),
-      sessionId: 'session-' + Date.now(),
-      images: [imageUrl]
+      sessionId: 'session-' + Date.now()
     };
 
     addToast({
@@ -156,8 +151,6 @@ export function TreatmentWorkspace() {
 
   const handleReset = () => {
     dispatch({ type: 'SET_PRODUCT', payload: null });
-    setSituationPrompt('');
-    setMagazineContent('');
     // Réinitialiser aussi le traitement en cours si nécessaire
     if (state.isProcessing) {
       // Arrêter le traitement en cours
@@ -201,47 +194,6 @@ export function TreatmentWorkspace() {
           <div className="lg:col-span-2 space-y-6">
             <UploadZone />
             <ProductForm treatmentType={state.selectedTreatmentType} />
-            
-            {/* Champs spécifiques au traitement */}
-            {state.selectedTreatmentType === 'scene-composition' && (
-              <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <h3 className="text-sm font-medium text-gray-900 mb-4">
-                  Paramètres de mise en situation
-                </h3>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Description de l'environnement
-                  </label>
-                  <textarea
-                    value={situationPrompt}
-                    onChange={(e) => setSituationPrompt(e.target.value)}
-                    placeholder="Ex: Dans un salon moderne, sur une table en bois, avec une lumière naturelle douce..."
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent resize-none"
-                    rows={3}
-                  />
-                </div>
-              </div>
-            )}
-            
-            {state.selectedTreatmentType === 'magazine-layout' && (
-              <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <h3 className="text-sm font-medium text-gray-900 mb-4">
-                  Paramètres de mise en page
-                </h3>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Contenu de la page
-                  </label>
-                  <textarea
-                    value={magazineContent}
-                    onChange={(e) => setMagazineContent(e.target.value)}
-                    placeholder="Ex: Design élégant et minimaliste, mise en avant des caractéristiques techniques..."
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent resize-none"
-                    rows={3}
-                  />
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Colonne droite - Actions et preview */}

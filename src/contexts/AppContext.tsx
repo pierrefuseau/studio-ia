@@ -33,7 +33,7 @@ const initialState: AppState = {
     },
     {
       id: 'magazine-layout',
-      name: 'Page de Flyer promo A4',
+      name: 'Page Magazine A4',
       description: 'Mise en page publicitaire professionnelle',
       icon: 'FileText',
       badge: 'Nouveau',

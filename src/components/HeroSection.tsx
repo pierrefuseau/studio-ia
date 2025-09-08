@@ -22,7 +22,7 @@ export function HeroSection() {
     },
     {
       id: 'magazine-layout',
-      name: 'Page de Flyer promo',
+      name: 'Page Magazine',
       description: 'Mise en page publicitaire professionnelle',
       icon: <FileText className="w-5 h-5" />,
       badge: 'Nouveau'
