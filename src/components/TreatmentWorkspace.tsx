@@ -225,26 +225,6 @@ export function TreatmentWorkspace() {
             {/* État de traitement */}
             {state.isProcessing && <ProcessingStatus />}
 
-            {/* Informations */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h3 className="text-sm font-medium text-gray-900 mb-4">
-                Informations
-              </h3>
-              <div className="space-y-2 text-xs text-gray-500">
-                <div className="flex justify-between">
-                  <span>Format de sortie:</span>
-                  <span>PNG, JPG</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Qualité:</span>
-                  <span>HD & 4K</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Temps estimé:</span>
-                  <span>2-5 min</span>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
