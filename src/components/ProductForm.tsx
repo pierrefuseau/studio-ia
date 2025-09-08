@@ -158,15 +158,20 @@ export function ProductForm({ treatmentType }: ProductFormProps) {
 
       <div>
         <label className="block text-sm text-gray-700 mb-1.5">
-          Nom du produit
+          Nom du produit {treatmentType === 'scene-composition' && <span className="text-red-500">*</span>}
         </label>
         <div className="relative">
           <input
             type="text"
             value={productName}
             onChange={handleNameChange}
-            className="w-full px-3 py-2 pr-10 border border-gray-200 rounded-lg focus-ring"
+            className={`w-full px-3 py-2 pr-10 border rounded-lg focus-ring ${
+              treatmentType === 'scene-composition' && !productName.trim()
+                ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
+                : 'border-gray-200 focus:border-gray-400'
+            }`}
             placeholder="Ex: Chaise de bureau ergonomique"
+            required={treatmentType === 'scene-composition'}
           />
           <button
             onClick={() => improveText('name', productName)}
@@ -181,6 +186,9 @@ export function ProductForm({ treatmentType }: ProductFormProps) {
             )}
           </button>
         </div>
+        {treatmentType === 'scene-composition' && !productName.trim() && (
+          <p className="text-xs text-red-500 mt-1">Le nom du produit est obligatoire pour la mise en situation</p>
+        )}
       </div>
 
       {/* Promotion - uniquement pour Page Magazine */}
@@ -219,15 +227,24 @@ export function ProductForm({ treatmentType }: ProductFormProps) {
         <div>
         <label className="block text-sm text-gray-700 mb-1.5">
           Description
-          <span className="text-gray-400 ml-1 font-normal">(optionnel)</span>
+          {treatmentType === 'scene-composition' ? (
+            <span className="text-red-500 ml-1">*</span>
+          ) : (
+            <span className="text-gray-400 ml-1 font-normal">(optionnel)</span>
+          )}
         </label>
         <div className="relative">
           <textarea
             value={productDescription}
             onChange={handleDescriptionChange}
-            className="w-full px-3 py-2 pr-10 border border-gray-200 rounded-lg focus-ring resize-none"
+            className={`w-full px-3 py-2 pr-10 border rounded-lg focus-ring resize-none ${
+              treatmentType === 'scene-composition' && !productDescription.trim()
+                ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
+                : 'border-gray-200 focus:border-gray-400'
+            }`}
             rows={3}
             placeholder="Décrivez votre produit..."
+            required={treatmentType === 'scene-composition'}
           />
           <button
             onClick={() => improveText('description', productDescription)}
@@ -242,6 +259,9 @@ export function ProductForm({ treatmentType }: ProductFormProps) {
             )}
           </button>
         </div>
+        {treatmentType === 'scene-composition' && !productDescription.trim() && (
+          <p className="text-xs text-red-500 mt-1">La description est obligatoire pour la mise en situation</p>
+        )}
         <div className="mt-1 text-xs text-gray-400 text-right">
           {productDescription.length}/500
         </div>

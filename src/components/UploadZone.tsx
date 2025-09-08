@@ -23,8 +23,18 @@ export function UploadZone() {
   const MAX_FILES = 50;
   const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
+  // Limite selon le type de traitement
+  const getMaxFiles = () => {
+    if (state.selectedTreatmentType === 'scene-composition') {
+      return 1; // Une seule image pour la mise en situation
+    }
+    return MAX_FILES;
+  };
+
   const handleFiles = useCallback((files: File[]) => {
     console.log("📦 Fichiers reçus dans handleFiles :", files.length);
+    
+    const maxFiles = getMaxFiles();
     
     // Validation des fichiers
     const validFiles = files.filter(file => {
@@ -49,13 +59,15 @@ export function UploadZone() {
 
     if (validFiles.length === 0) return;
 
-    // Limite du nombre de fichiers
-    if (validFiles.length > MAX_FILES) {
-      validFiles.splice(MAX_FILES);
+    // Limite du nombre de fichiers selon le traitement
+    if (validFiles.length > maxFiles) {
+      validFiles.splice(maxFiles);
       addToast({
         type: 'warning',
         title: 'Limite atteinte',
-        description: `Maximum ${MAX_FILES} images autorisées`
+        description: state.selectedTreatmentType === 'scene-composition' 
+          ? 'Une seule image autorisée pour la mise en situation'
+          : `Maximum ${maxFiles} images autorisées`
       });
     }
 
@@ -93,11 +105,11 @@ export function UploadZone() {
         handleFiles(acceptedFiles); // ✅ envoie TOUS les fichiers
       }
     },
-    multiple: true, // ✅ autoriser plusieurs fichiers
+    multiple: state.selectedTreatmentType !== 'scene-composition', // Une seule image pour mise en situation
     accept: {
       'image/*': [] // ✅ limite aux images
     },
-    maxFiles: MAX_FILES,
+    maxFiles: getMaxFiles(),
     maxSize: MAX_FILE_SIZE
   });
 
@@ -118,6 +130,26 @@ export function UploadZone() {
 
   const processImages = useCallback(async () => {
     if (isProcessing || state.products.length === 0) return;
+
+    // Validation spécifique pour la mise en situation
+    if (state.selectedTreatmentType === 'scene-composition') {
+      if (!state.selectedProduct?.name?.trim()) {
+        addToast({
+          type: 'error',
+          title: 'Nom requis',
+          description: 'Le nom du produit est obligatoire pour la mise en situation'
+        });
+        return;
+      }
+      if (!state.selectedProduct?.description?.trim()) {
+        addToast({
+          type: 'error',
+          title: 'Description requise',
+          description: 'La description est obligatoire pour la mise en situation'
+        });
+        return;
+      }
+    }
 
     console.log('🎬 === DÉBUT TRAITEMENT IMAGES ===');
     console.log('📊 État initial:', {
@@ -246,7 +278,10 @@ export function UploadZone() {
             
             {/* Texte principal */}
             <p className="drop-title">
-              {isDragActive ? 'Déposez vos images ici' : 'Glissez-déposez vos images ici'}
+              {isDragActive 
+                ? (state.selectedTreatmentType === 'scene-composition' ? 'Déposez votre image ici' : 'Déposez vos images ici')
+                : (state.selectedTreatmentType === 'scene-composition' ? 'Glissez-déposez votre image ici' : 'Glissez-déposez vos images ici')
+              }
             </p>
             
             {/* Texte secondaire */}
@@ -255,7 +290,9 @@ export function UploadZone() {
             {/* Info formats */}
             <div className="drop-formats">
               <span className="format-text">JPG, PNG, WEBP • Max 10 Mo</span>
-              <span className="batch-text">• Jusqu'à 50 images</span>
+              <span className="batch-text">
+                • {state.selectedTreatmentType === 'scene-composition' ? 'Une seule image' : 'Jusqu'à 50 images'}
+              </span>
             </div>
           </div>
           
