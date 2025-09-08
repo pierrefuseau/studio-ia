@@ -77,8 +77,8 @@ export function UploadZone() {
         type: 'SET_PRODUCT',
         payload: {
           id: Date.now().toString(),
-          image: newFiles[0].file,
-          imageUrl: newFiles[0].preview
+          images: newFiles.map(f => f.file),        // ✅ stocker toutes les images
+          imageUrls: newFiles.map(f => f.preview)   // ✅ stocker toutes les previews
         }
       });
     }
