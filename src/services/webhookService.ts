@@ -19,21 +19,26 @@ export class WebhookService {
     try {
       console.log('🚀 Envoi JSON vers n8n webhook:', payload);
 
-      // Préparer FormData pour l'envoi
+      // Préparer les données JSON (sans les fichiers)
+      const jsonPayload = {
+        client: payload.productData.name || '',
+        commentaire: payload.productData.description || '',
+        treatmentType: payload.treatmentType || '',
+        productName: payload.productData.name || '',
+        productDescription: payload.productData.description || '',
+        productPromotion: payload.productData.promotion || ''
+      };
+
+      // Préparer FormData avec JSON structuré
       const formData = new FormData();
-      formData.append('client', payload.productData.name || '');
-      formData.append('commentaire', payload.productData.description || '');
-      formData.append('treatmentType', payload.treatmentType || '');
-      formData.append('productName', payload.productData.name || '');
-      formData.append('productDescription', payload.productData.description || '');
-      formData.append('productPromotion', payload.productData.promotion || '');
+      formData.append('jsonPayload', JSON.stringify(jsonPayload));
       
       // Ajouter l'image si elle existe
       if (payload.productData.imageFile instanceof File) {
-        formData.append('images', payload.productData.imageFile);
+        formData.append('image', payload.productData.imageFile);
       }
 
-      console.log('📤 FormData envoyé vers n8n');
+      console.log('📤 FormData avec jsonPayload envoyé vers n8n:', jsonPayload);
 
       const response = await fetch(this.webhookUrl, {
         method: 'POST',
@@ -67,21 +72,26 @@ export class WebhookService {
     try {
       console.log('🚀 Envoi batch vers n8n:', payload);
 
-      // Préparer FormData pour l'envoi batch
+      // Préparer les données JSON (sans les fichiers)
+      const jsonPayload = {
+        client: payload.productData.name || '',
+        commentaire: payload.productData.description || '',
+        treatmentType: payload.treatmentType || '',
+        productName: payload.productData.name || '',
+        productDescription: payload.productData.description || '',
+        productPromotion: payload.productData.promotion || ''
+      };
+
+      // Préparer FormData avec JSON structuré
       const formData = new FormData();
-      formData.append('client', payload.productData.name || '');
-      formData.append('commentaire', payload.productData.description || '');
-      formData.append('treatmentType', payload.treatmentType || '');
-      formData.append('productName', payload.productData.name || '');
-      formData.append('productDescription', payload.productData.description || '');
-      formData.append('productPromotion', payload.productData.promotion || '');
+      formData.append('jsonPayload', JSON.stringify(jsonPayload));
       
       // Ajouter toutes les images
       payload.images.forEach((file, index) => {
         formData.append('images', file);
       });
 
-      console.log('📤 FormData batch envoyé vers n8n');
+      console.log('📤 FormData batch avec jsonPayload envoyé vers n8n:', jsonPayload);
 
       const response = await fetch(this.webhookUrl, {
         method: 'POST',
