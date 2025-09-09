@@ -52,7 +52,7 @@ export function TreatmentSelector() {
     },
     {
       id: 'magazine-layout',
-      name: 'Page Magazine A4',
+      name: 'Page Flyer Promotionnelle A4',
       description: 'Mise en page publicitaire professionnelle',
       icon: FileText,
       badge: 'Nouveau',

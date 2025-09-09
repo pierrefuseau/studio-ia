@@ -42,7 +42,7 @@ export function TreatmentWorkspace() {
         };
       case 'magazine-layout':
         return {
-          name: 'Page Magazine A4',
+          name: 'Page Flyer Promotionnelle A4',
           description: 'Créez une mise en page publicitaire professionnelle',
           icon: <FileText className="w-5 h-5" />,
           fields: [
