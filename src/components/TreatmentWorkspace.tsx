@@ -193,7 +193,9 @@ export function TreatmentWorkspace() {
           {/* Colonne gauche - Upload et formulaire */}
           <div className="lg:col-span-2 space-y-6">
             <UploadZone />
-            <ProductForm treatmentType={state.selectedTreatmentType} />
+            {state.selectedTreatmentType !== 'background-removal' && (
+              <ProductForm treatmentType={state.selectedTreatmentType} />
+            )}
           </div>
 
           {/* Colonne droite - Actions et preview */}
