@@ -50,7 +50,7 @@ const initialState: AppState = {
   jobs: [],
   isProcessing: false,
   webhookConfig: {
-    url: 'https://n8n.srv778298.hstgr.cloud/webhook/fb09047a-1a80-44e7-833a-99fe0eda3266',
+    url: 'https://n8n.srv778298.hstgr.cloud/webhook-test/fb09047a-1a80-44e7-833a-99fe0eda3266',
     enabled: false
   },
   selectedTreatmentType: null,
