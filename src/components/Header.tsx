@@ -30,7 +30,7 @@ export function Header() {
     <header className="border-b border-gray-100 bg-white">
       <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-7 h-7 bg-black rounded flex items-center justify-center">
+          <div className="w-7 h-7 bg-gray-900 rounded flex items-center justify-center border border-gray-200">
             <span className="text-white text-xs font-bold">S</span>
           </div>
           <span className="text-gray-900 font-medium text-sm">Studio Produit</span>
