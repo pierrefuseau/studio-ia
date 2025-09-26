@@ -28,8 +28,8 @@ export function TreatmentWorkspace() {
         };
       case 'scene-composition':
         return {
-          name: 'Mise en Situation',
-          description: 'Intégrez votre produit dans un environnement réaliste',
+          name: 'Mise en situation Packaging',
+          description: 'Intégrez votre packaging dans un environnement réaliste',
           icon: <ImagePlus className="w-5 h-5" />,
           fields: [
             {
@@ -40,35 +40,23 @@ export function TreatmentWorkspace() {
             }
           ]
         };
-      case 'magazine-layout':
+      case 'product-scene':
         return {
-          name: 'Page Flyer Promotionnelle A4',
-          description: 'Créez une mise en page publicitaire professionnelle',
-          icon: <FileText className="w-5 h-5" />,
+          name: 'Mise en situation Produit Brut',
+          description: 'Intégrez votre produit brut dans un environnement personnalisé',
+          icon: <ImagePlus className="w-5 h-5" />,
           fields: [
             {
-              key: 'productName',
+              key: 'productName', 
               label: 'Nom du produit',
-              placeholder: 'Ex: iPhone 15 Pro Max Titane Naturel',
+              placeholder: 'Ex: Chaise ergonomique, Gamme mobilier bureau...',
               type: 'input'
             },
             {
-              key: 'productDescription',
-              label: 'Description du produit',
-              placeholder: 'Ex: Le smartphone le plus avancé avec des performances exceptionnelles...',
+              key: 'situationDescription',
+              label: 'Quelle mise en situation ?',
+              placeholder: 'Ex: Dans un bureau moderne avec éclairage naturel, sur un parquet en chêne, ambiance cosy et professionnelle...',
               type: 'textarea'
-            },
-            {
-              key: 'magazineContent',
-              label: 'Contenu de la page',
-              placeholder: 'Ex: Design élégant et minimaliste, mise en avant des caractéristiques techniques...',
-              type: 'textarea'
-            },
-            {
-              key: 'promotion',
-              label: 'Promotion',
-              placeholder: 'Ex: -30% jusqu\'au 31 décembre, Offre limitée, Nouveau produit...',
-              type: 'input'
             }
           ]
         };

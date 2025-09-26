@@ -182,7 +182,7 @@ export function ProductForm({ treatmentType }: ProductFormProps) {
 
       <div>
         <label className="block text-sm text-gray-700 mb-1.5">
-          Nom du produit {treatmentType === 'scene-composition' && <span className="text-red-500">*</span>}
+          Nom du produit {(treatmentType === 'scene-composition' || treatmentType === 'product-scene') && <span className="text-red-500">*</span>}
         </label>
         <div className="relative">
           <input
@@ -190,12 +190,12 @@ export function ProductForm({ treatmentType }: ProductFormProps) {
             value={productName}
             onChange={handleNameChange}
             className={`w-full px-3 py-2 pr-10 border rounded-lg focus-ring ${
-              treatmentType === 'scene-composition' && !productName.trim()
+              (treatmentType === 'scene-composition' || treatmentType === 'product-scene') && !productName.trim()
                 ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
                 : 'border-gray-200 focus:border-gray-400'
             }`}
-            placeholder="Ex: Chaise de bureau ergonomique"
-            required={treatmentType === 'scene-composition'}
+            placeholder={treatmentType === 'product-scene' ? "Ex: Chaise ergonomique, Gamme mobilier bureau..." : "Ex: Chaise de bureau ergonomique"}
+            required={treatmentType === 'scene-composition' || treatmentType === 'product-scene'}
           />
           <button
             onClick={() => improveText('name', productName)}
@@ -210,33 +210,33 @@ export function ProductForm({ treatmentType }: ProductFormProps) {
             )}
           </button>
         </div>
-        {treatmentType === 'scene-composition' && !productName.trim() && (
+        {(treatmentType === 'scene-composition' || treatmentType === 'product-scene') && !productName.trim() && (
           <p className="text-xs text-red-500 mt-1">Le nom du produit est obligatoire pour la mise en situation</p>
         )}
       </div>
 
-      {/* Promotion - uniquement pour Page Magazine */}
-      {treatmentType === 'magazine-layout' && (
+      {/* Description de la mise en situation - uniquement pour Produit Brut */}
+      {treatmentType === 'product-scene' && (
         <div>
           <label className="block text-sm text-gray-700 mb-1.5">
-            Promotion
+            Quelle mise en situation ?
             <span className="text-gray-400 ml-1 font-normal">(optionnel)</span>
           </label>
           <div className="relative">
-            <input
-              type="text"
-              value={promotion}
-              onChange={handlePromotionChange}
-              className="w-full px-3 py-2 pr-10 border border-gray-200 rounded-lg focus-ring"
-              placeholder="Ex: -30% jusqu'au 31 décembre"
+            <textarea
+              value={productDescription}
+              onChange={handleDescriptionChange}
+              className="w-full px-3 py-2 pr-10 border border-gray-200 rounded-lg focus-ring resize-none"
+              rows={3}
+              placeholder="Ex: Dans un bureau moderne avec éclairage naturel, sur un parquet en chêne, ambiance cosy et professionnelle..."
             />
             <button
-              onClick={() => improveText('promotion', promotion)}
-              disabled={isImproving === 'promotion' || !promotion.trim()}
-              className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-blue-500 hover:text-orange-500 hover:bg-orange-50 rounded transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={() => improveText('description', productDescription)}
+              disabled={isImproving === 'description' || !productDescription.trim()}
+              className="absolute right-2 top-2 p-1.5 text-blue-500 hover:text-orange-500 hover:bg-orange-50 rounded transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               title="Améliorer avec IA"
             >
-              {isImproving === 'promotion' ? (
+              {isImproving === 'description' ? (
                 <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
               ) : (
                 <Wand2 className="w-4 h-4" />
@@ -247,7 +247,7 @@ export function ProductForm({ treatmentType }: ProductFormProps) {
       )}
 
       {/* Description - masquée pour le détourage */}
-      {treatmentType !== 'background-removal' && (
+      {treatmentType !== 'background-removal' && treatmentType !== 'product-scene' && (
         <div>
         <label className="block text-sm text-gray-700 mb-1.5">
           Description

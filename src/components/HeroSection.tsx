@@ -15,16 +15,16 @@ export function HeroSection() {
     },
     {
       id: 'scene-composition',
-      name: 'Mise en Situation',
-      description: 'Intégration dans un environnement réaliste',
+      name: 'Mise en situation Packaging',
+      description: 'Intégration packaging dans un environnement réaliste',
       icon: <ImagePlus className="w-5 h-5" />,
       badge: 'Premium'
     },
     {
-      id: 'magazine-layout',
-      name: 'Page Flyer Promotionnelle',
-      description: 'Mise en page publicitaire professionnelle',
-      icon: <FileText className="w-5 h-5" />,
+      id: 'product-scene',
+      name: 'Mise en situation Produit Brut',
+      description: 'Intégration produit brut dans un environnement personnalisé',
+      icon: <ImagePlus className="w-5 h-5" />,
       badge: 'Nouveau'
     }
   ];
@@ -47,12 +47,12 @@ export function HeroSection() {
         </div>
 
         {/* Grille 2x2 simple */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-6xl mx-auto">
           {treatments.map((treatment) => (
             <button
               key={treatment.id}
               onClick={() => handleSelectTreatment(treatment.id)}
-              className="group p-8 bg-white border border-gray-200 rounded-lg hover:border-gray-400 transition-all text-left"
+              className="group p-6 bg-white border border-gray-200 rounded-lg hover:border-gray-400 transition-all text-left"
             >
               <div className="flex items-start gap-4">
                 <div className="text-gray-400 group-hover:text-gray-600 transition-colors">

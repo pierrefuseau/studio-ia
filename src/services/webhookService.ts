@@ -52,7 +52,8 @@ export class WebhookService {
         productDescription: payload.productData.description || '',
         treatmentType: payload.treatmentType,
         imagesBase64: imagesBase64,   // ⚡ tableau complet d'images en base64
-        originalFileNames: filesToConvert.map(file => file.name)  // 📝 noms des fichiers originaux
+        originalFileNames: filesToConvert.map(file => file.name),  // 📝 noms des fichiers originaux
+        situationDescription: payload.treatmentParams?.situationPrompt || payload.productData.description || ''
       };
       
       console.log('📤 JSON final à envoyer:', {
@@ -60,7 +61,8 @@ export class WebhookService {
         productDescription: jsonPayload.productDescription,
         treatmentType: jsonPayload.treatmentType,
         imagesCount: jsonPayload.imagesBase64.length,
-        fileNames: jsonPayload.originalFileNames
+        fileNames: jsonPayload.originalFileNames,
+        situationDescription: jsonPayload.situationDescription
       });
       
       console.log('📤 Envoi vers n8n:', {

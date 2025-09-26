@@ -131,8 +131,8 @@ export function UploadZone() {
   const processImages = useCallback(async () => {
     if (isProcessing || state.products.length === 0) return;
 
-    // Validation spécifique pour la mise en situation
-    if (state.selectedTreatmentType === 'scene-composition') {
+    // Validation spécifique pour les mises en situation
+    if (state.selectedTreatmentType === 'scene-composition' || state.selectedTreatmentType === 'product-scene') {
       const productName = state.product?.name || state.products[0]?.name || state.selectedProduct?.name;
       const productDescription = state.product?.description || state.products[0]?.description || state.selectedProduct?.description;
       
@@ -152,11 +152,13 @@ export function UploadZone() {
         });
         return;
       }
-      if (!productDescription?.trim()) {
+      
+      // Description obligatoire seulement pour scene-composition (packaging)
+      if (state.selectedTreatmentType === 'scene-composition' && !productDescription?.trim()) {
         addToast({
           type: 'error',
           title: 'Description requise',
-          description: 'La description est obligatoire pour la mise en situation'
+          description: 'La description est obligatoire pour la mise en situation packaging'
         });
         return;
       }

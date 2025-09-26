@@ -23,8 +23,8 @@ const initialState: AppState = {
     },
     {
       id: 'scene-composition',
-      name: 'Mise en Situation',
-      description: 'Intégration dans un environnement réaliste',
+      name: 'Mise en situation Packaging',
+      description: 'Intégration packaging dans un environnement réaliste',
       icon: 'ImagePlus',
       badge: 'Premium',
       enabled: false,
@@ -34,16 +34,15 @@ const initialState: AppState = {
       }
     },
     {
-      id: 'magazine-layout',
-      name: 'Page Flyer Promotionnelle A4',
-      description: 'Mise en page publicitaire professionnelle',
-      icon: 'FileText',
+      id: 'product-scene',
+      name: 'Mise en situation Produit Brut',
+      description: 'Intégration produit brut dans un environnement personnalisé',
+      icon: 'ImagePlus',
       badge: 'Nouveau',
       enabled: false,
       options: {
-        template: 'elegant-minimal',
-        position: 'center',
-        textSize: 'medium'
+        environment: 'custom',
+        lighting: 'natural'
       }
     }
   ],
