@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Upload, Video, Clock, Maximize } from 'lucide-react';
+import { Upload, Video, Clock, Maximize, CheckCircle, XCircle } from 'lucide-react';
 import { Button } from './ui/Button';
 import { Input } from './ui/Input';
 import { Card } from './ui/Card';
+
+const WEBHOOK_URL = 'https://n8n.srv778298.hstgr.cloud/webhook-test/1dd808fb-dae9-45bc-9406-2d948af2effc';
 
 export function VideoGenerationForm() {
   const [description, setDescription] = useState('');
@@ -11,6 +13,9 @@ export function VideoGenerationForm() {
   const [duration] = useState('8 secondes');
   const [uploadedImage, setUploadedImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [statusMessage, setStatusMessage] = useState('');
 
   const onDrop = (acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
@@ -29,14 +34,47 @@ export function VideoGenerationForm() {
     maxFiles: 1
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({
-      description,
-      format,
-      duration,
-      image: uploadedImage
-    });
+
+    if (!uploadedImage) {
+      setSubmitStatus('error');
+      setStatusMessage('Veuillez sélectionner une image');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+    setStatusMessage('');
+
+    try {
+      const formData = new FormData();
+      formData.append('description', description);
+      formData.append('format', format);
+      formData.append('duration', duration);
+      formData.append('image', uploadedImage);
+
+      const response = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        body: formData
+      });
+
+      if (response.ok) {
+        setSubmitStatus('success');
+        setStatusMessage('Vidéo en cours de génération !');
+        setDescription('');
+        setUploadedImage(null);
+        setPreviewUrl(null);
+      } else {
+        throw new Error('Erreur lors de l\'envoi');
+      }
+    } catch (error) {
+      setSubmitStatus('error');
+      setStatusMessage('Erreur lors de l\'envoi de la demande');
+      console.error('Webhook error:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -141,8 +179,23 @@ export function VideoGenerationForm() {
               </div>
             </div>
 
-            <Button type="submit" className="w-full">
-              Générer la vidéo
+            {submitStatus !== 'idle' && (
+              <div className={`flex items-center gap-2 p-4 rounded-lg ${
+                submitStatus === 'success'
+                  ? 'bg-green-50 text-green-800'
+                  : 'bg-red-50 text-red-800'
+              }`}>
+                {submitStatus === 'success' ? (
+                  <CheckCircle className="w-5 h-5" />
+                ) : (
+                  <XCircle className="w-5 h-5" />
+                )}
+                <span>{statusMessage}</span>
+              </div>
+            )}
+
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? 'Envoi en cours...' : 'Générer la vidéo'}
             </Button>
           </form>
         </Card>
