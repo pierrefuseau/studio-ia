@@ -4,6 +4,7 @@ import { ToastProvider } from './components/ui/Toast';
 import { HeroSection } from './components/HeroSection';
 import { TreatmentWorkspace } from './components/TreatmentWorkspace';
 import { Header } from './components/Header';
+import { VideoGenerationPage } from './components/VideoGenerationPage';
 import { useApp } from './contexts/AppContext';
 
 function AppContent() {
@@ -11,7 +12,9 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-white">
-      {state.currentStep === 'hero' ? (
+      {state.selectedTreatmentType === 'video-generation' ? (
+        <VideoGenerationPage />
+      ) : state.currentStep === 'hero' ? (
         <HeroSection />
       ) : (
         <>

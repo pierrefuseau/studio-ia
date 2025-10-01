@@ -1,5 +1,5 @@
 import React from 'react';
-import { Camera, ImagePlus, FileText } from 'lucide-react';
+import { Camera, ImagePlus, Video } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 
 export function HeroSection() {
@@ -26,6 +26,13 @@ export function HeroSection() {
       description: 'Intégration produit brut dans un environnement personnalisé',
       icon: <ImagePlus className="w-5 h-5" />,
       badge: 'Nouveau'
+    },
+    {
+      id: 'video-generation',
+      name: 'Génération de vidéos',
+      description: 'Créez des vidéos à partir de vos images',
+      icon: <Video className="w-5 h-5" />,
+      badge: 'Admin'
     }
   ];
 
