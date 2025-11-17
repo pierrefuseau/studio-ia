@@ -5,6 +5,7 @@ import { HeroSection } from './components/HeroSection';
 import { TreatmentWorkspace } from './components/TreatmentWorkspace';
 import { Header } from './components/Header';
 import { VideoGenerationPage } from './components/VideoGenerationPage';
+import { Gallery } from './components/Gallery';
 import { useApp } from './contexts/AppContext';
 
 function AppContent() {
@@ -14,6 +15,8 @@ function AppContent() {
     <div className="min-h-screen bg-white">
       {state.selectedTreatmentType === 'video-generation' ? (
         <VideoGenerationPage />
+      ) : state.currentStep === 'gallery' ? (
+        <Gallery />
       ) : state.currentStep === 'hero' ? (
         <HeroSection />
       ) : (

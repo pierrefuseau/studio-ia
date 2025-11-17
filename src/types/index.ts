@@ -66,7 +66,9 @@ export interface AppState {
   isProcessing: boolean;
   webhookConfig: WebhookConfig;
   selectedTreatmentType: string | null;
-  currentStep: 'hero' | 'treatment';
+  currentStep: 'hero' | 'treatment' | 'gallery';
+  history: HistoryItem[];
+  currentProgress?: ProcessingProgress;
 }
 
 export interface WebhookConfig {
@@ -84,6 +86,7 @@ export interface WebhookPayload {
     description?: string;
     promotion?: string;
     imageFiles?: File[];
+    imageFile?: File;
     originalFileName?: string;
   };
   treatmentParams?: {
@@ -92,4 +95,69 @@ export interface WebhookPayload {
   };
   timestamp: string;
   sessionId: string;
+}
+
+// Types pour l'historique et la galerie
+export interface HistoryItem {
+  id: string;
+  productName: string;
+  productDescription?: string;
+  treatmentType: string;
+  treatmentDisplayName: string;
+  originalImageUrl: string;
+  originalImageName: string;
+  processedImageUrl?: string;
+  status: 'pending' | 'processing' | 'completed' | 'failed';
+  progress: number;
+  createdAt: string;
+  completedAt?: string;
+  error?: string;
+  metadata?: {
+    fileSize: number;
+    dimensions: { width: number; height: number };
+    format: string;
+  };
+}
+
+// Types pour la validation d'images
+export interface ImageValidationResult {
+  isValid: boolean;
+  errors: ImageValidationError[];
+  warnings: ImageValidationWarning[];
+  suggestions: string[];
+}
+
+export interface ImageValidationError {
+  type: 'size' | 'dimension' | 'format' | 'quality';
+  message: string;
+  value?: number;
+  limit?: number;
+}
+
+export interface ImageValidationWarning {
+  type: 'size' | 'dimension' | 'quality' | 'aspect-ratio';
+  message: string;
+  value?: number;
+  recommended?: number;
+}
+
+// Configuration de validation
+export interface ImageValidationConfig {
+  maxSizeInMB: number;
+  minWidth: number;
+  minHeight: number;
+  maxWidth: number;
+  maxHeight: number;
+  allowedFormats: string[];
+  recommendedAspectRatio?: number;
+}
+
+// Types pour le suivi en temps réel
+export interface ProcessingProgress {
+  jobId: string;
+  status: 'queued' | 'uploading' | 'analyzing' | 'processing' | 'rendering' | 'completed' | 'failed';
+  progress: number;
+  currentStep: string;
+  estimatedTimeRemaining?: number;
+  message?: string;
 }

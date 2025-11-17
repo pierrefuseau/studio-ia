@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import { AppState, Theme, Product, Treatment, ProcessingJob, WebhookConfig, UploadedFile } from '../types';
+import { AppState, Theme, Product, Treatment, ProcessingJob, WebhookConfig, UploadedFile, HistoryItem, ProcessingProgress } from '../types';
+import { historyStorage } from '../services/historyStorage';
 
 // État initial de l'application
 const initialState: AppState = {
@@ -53,11 +54,13 @@ const initialState: AppState = {
     enabled: false
   },
   selectedTreatmentType: null,
-  currentStep: 'hero'
+  currentStep: 'hero',
+  history: [],
+  currentProgress: undefined
 };
 
 // Actions du reducer
-type Action = 
+type Action =
   | { type: 'SET_THEME'; payload: Theme }
   | { type: 'ADD_PRODUCTS'; payload: UploadedFile[] }
   | { type: 'REMOVE_PRODUCT'; payload: string }
@@ -72,7 +75,13 @@ type Action =
   | { type: 'UPDATE_JOB'; payload: { id: string; updates: Partial<ProcessingJob> } }
   | { type: 'SET_WEBHOOK_CONFIG'; payload: WebhookConfig }
   | { type: 'SELECT_TREATMENT_TYPE'; payload: string | null }
-  | { type: 'SET_CURRENT_STEP'; payload: 'hero' | 'treatment' };
+  | { type: 'SET_CURRENT_STEP'; payload: 'hero' | 'treatment' | 'gallery' }
+  | { type: 'LOAD_HISTORY' }
+  | { type: 'ADD_HISTORY_ITEM'; payload: HistoryItem }
+  | { type: 'UPDATE_HISTORY_ITEM'; payload: { id: string; updates: Partial<HistoryItem> } }
+  | { type: 'DELETE_HISTORY_ITEM'; payload: string }
+  | { type: 'CLEAR_HISTORY' }
+  | { type: 'SET_PROGRESS'; payload: ProcessingProgress | undefined };
 
 // Reducer
 function appReducer(state: AppState, action: Action): AppState {
@@ -151,6 +160,22 @@ function appReducer(state: AppState, action: Action): AppState {
       };
     case 'SET_CURRENT_STEP':
       return { ...state, currentStep: action.payload };
+    case 'LOAD_HISTORY':
+      return { ...state, history: historyStorage.getHistory() };
+    case 'ADD_HISTORY_ITEM':
+      historyStorage.addHistoryItem(action.payload);
+      return { ...state, history: historyStorage.getHistory() };
+    case 'UPDATE_HISTORY_ITEM':
+      historyStorage.updateHistoryItem(action.payload.id, action.payload.updates);
+      return { ...state, history: historyStorage.getHistory() };
+    case 'DELETE_HISTORY_ITEM':
+      historyStorage.deleteHistoryItem(action.payload);
+      return { ...state, history: historyStorage.getHistory() };
+    case 'CLEAR_HISTORY':
+      historyStorage.clearHistory();
+      return { ...state, history: [] };
+    case 'SET_PROGRESS':
+      return { ...state, currentProgress: action.payload };
     default:
       return state;
   }
@@ -172,6 +197,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (savedTheme) {
       dispatch({ type: 'SET_THEME', payload: savedTheme });
     }
+    // Charger l'historique au démarrage
+    dispatch({ type: 'LOAD_HISTORY' });
   }, []);
 
   useEffect(() => {
