@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Camera, ImagePlus, FileText, Share2, Settings, Sparkles, Crown, Zap } from 'lucide-react';
+import { Camera, ImagePlus, FileText, Share2, Settings, Sparkles, Crown, Zap, Info } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 import { BentoCard } from './ui/Card';
 import { Button } from './ui/Button';
@@ -27,14 +27,51 @@ export function TreatmentSelector() {
     setExpandedTreatment(expandedTreatment === treatmentId ? null : treatmentId);
   };
 
+  const badgeTypes = {
+    rapide: {
+      label: 'Rapide',
+      icon: Zap,
+      color: 'bg-emerald-500',
+      textColor: 'text-white',
+      description: 'Traitement ultra-rapide, résultats immédiats'
+    },
+    premium: {
+      label: 'Premium',
+      icon: Crown,
+      color: 'bg-amber-500',
+      textColor: 'text-white',
+      description: 'Qualité professionnelle haut de gamme'
+    },
+    nouveau: {
+      label: 'Nouveau',
+      icon: Sparkles,
+      color: 'bg-blue-500',
+      textColor: 'text-white',
+      description: 'Fonctionnalité récemment ajoutée'
+    },
+    populaire: {
+      label: 'Populaire',
+      icon: Crown,
+      color: 'bg-rose-500',
+      textColor: 'text-white',
+      description: 'Très demandé par nos utilisateurs'
+    },
+    standard: {
+      label: 'Standard',
+      icon: Settings,
+      color: 'bg-slate-600',
+      textColor: 'text-white',
+      description: 'Fonctionnalité de base'
+    }
+  };
+
   const treatments = [
     {
       id: 'background-removal',
       name: 'Détourage Studio',
       description: 'Packshot professionnel sur fond blanc',
       icon: Camera,
-      badge: 'Rapide',
-      badgeColor: 'bg-blue-500',
+      badgeType: 'rapide' as const,
       gradient: 'from-blue-500 to-blue-600',
       gridArea: 'bento-item-1',
       features: ['Détourage précis', 'Fond blanc pro', 'Ombres naturelles']
@@ -44,8 +81,7 @@ export function TreatmentSelector() {
       name: 'Mise en Situation',
       description: 'Intégration dans un environnement réaliste',
       icon: ImagePlus,
-      badge: 'Premium',
-      badgeColor: 'bg-orange-500',
+      badgeType: 'premium' as const,
       gradient: 'from-orange-500 to-orange-600',
       gridArea: 'bento-item-2',
       features: ['Environnements 3D', 'Éclairage réaliste', 'Perspectives multiples']
@@ -55,8 +91,7 @@ export function TreatmentSelector() {
       name: 'Page Flyer Promotionnelle A4',
       description: 'Mise en page publicitaire professionnelle',
       icon: FileText,
-      badge: 'Nouveau',
-      badgeColor: 'bg-gradient-to-r from-blue-500 to-orange-500',
+      badgeType: 'nouveau' as const,
       gradient: 'from-blue-500 via-blue-600 to-orange-500',
       gridArea: 'bento-item-3',
       features: ['Templates premium', 'Typography pro', 'Print ready']
@@ -66,8 +101,7 @@ export function TreatmentSelector() {
       name: 'Instagram',
       description: 'Stories & Posts optimisés',
       icon: Share2,
-      badge: 'Viral',
-      badgeColor: 'bg-orange-400',
+      badgeType: 'populaire' as const,
       gradient: 'from-orange-400 to-orange-500',
       gridArea: 'bento-item-4',
       features: ['Stories 9:16', 'Posts 1:1', 'Reels ready']
@@ -77,8 +111,7 @@ export function TreatmentSelector() {
       name: 'Facebook',
       description: 'Posts & Ads performants',
       icon: Share2,
-      badge: 'Pro',
-      badgeColor: 'bg-blue-600',
+      badgeType: 'standard' as const,
       gradient: 'from-blue-600 to-blue-700',
       gridArea: 'bento-item-5',
       features: ['Ads format', 'Cover photos', 'Event banners']
@@ -88,8 +121,7 @@ export function TreatmentSelector() {
       name: 'Preview Live',
       description: 'Aperçu temps réel',
       icon: Zap,
-      badge: 'Live',
-      badgeColor: 'bg-gradient-to-r from-blue-400 to-orange-400',
+      badgeType: 'rapide' as const,
       gradient: 'from-blue-400 via-blue-500 to-orange-400',
       gridArea: 'bento-item-6',
       features: ['Temps réel', 'Comparaison', 'Export instant']
@@ -97,9 +129,37 @@ export function TreatmentSelector() {
   ];
 
   const selectedCount = state.treatments.filter(t => t.enabled).length;
+  const [hoveredBadge, setHoveredBadge] = useState<string | null>(null);
 
   return (
     <div className="space-y-8">
+      {/* Badge Legend */}
+      <div className="glass-card p-6 rounded-2xl border border-gray-200 dark:border-gray-700">
+        <div className="flex items-center mb-4">
+          <Info className="w-5 h-5 text-blue-500 mr-2" />
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Légende des badges</h3>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          {Object.entries(badgeTypes).map(([key, badge]) => {
+            const BadgeIcon = badge.icon;
+            return (
+              <div key={key} className="flex items-center space-x-2">
+                <div className={`${badge.color} ${badge.textColor} px-3 py-1.5 rounded-lg font-bold text-sm shadow-md flex items-center space-x-1.5`}>
+                  <BadgeIcon className="w-3.5 h-3.5" />
+                  <span>{badge.label}</span>
+                </div>
+                <div className="group relative">
+                  <Info className="w-4 h-4 text-gray-400 cursor-help" />
+                  <div className="absolute left-0 bottom-full mb-2 hidden group-hover:block w-48 p-2 bg-gray-900 text-white text-xs rounded-lg shadow-xl z-50">
+                    {badge.description}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Header avec stats */}
       <div className="flex items-center justify-between">
         <div>
@@ -144,7 +204,9 @@ export function TreatmentSelector() {
           const Icon = treatment.icon;
           const isEnabled = state.treatments.find(t => t.id === treatment.id)?.enabled || false;
           const isExpanded = expandedTreatment === treatment.id;
-          
+          const badge = badgeTypes[treatment.badgeType];
+          const BadgeIcon = badge.icon;
+
           return (
             <BentoCard
               key={treatment.id}
@@ -156,11 +218,11 @@ export function TreatmentSelector() {
             >
               {/* Background gradient */}
               <div className={`absolute inset-0 bg-gradient-to-br ${treatment.gradient} opacity-5 group-hover:opacity-10 transition-opacity duration-300`}></div>
-              
+
               {/* Floating orbs */}
               <div className="absolute top-2 right-2 w-16 h-16 bg-gradient-to-br from-blue-300/20 to-transparent rounded-full blur-xl animate-blob-blue"></div>
               <div className="absolute bottom-2 left-2 w-12 h-12 bg-gradient-to-br from-orange-300/20 to-transparent rounded-full blur-lg animate-blob-orange animation-delay-1000"></div>
-              
+
               {/* Content */}
               <div className="relative z-10 h-full flex flex-col">
                 {/* Header */}
@@ -168,10 +230,25 @@ export function TreatmentSelector() {
                   <div className={`p-3 rounded-2xl bg-gradient-to-br ${treatment.gradient} shadow-lg group-hover:scale-110 transition-transform duration-300`}>
                     <Icon className="w-6 h-6 text-white" />
                   </div>
-                  
-                  {/* Badge */}
-                  <div className={`px-3 py-1 ${treatment.badgeColor} text-white text-xs font-bold rounded-full shadow-lg animate-pulse`}>
-                    {treatment.badge}
+
+                  {/* Enhanced Badge */}
+                  <div
+                    className="relative"
+                    onMouseEnter={() => setHoveredBadge(treatment.id)}
+                    onMouseLeave={() => setHoveredBadge(null)}
+                  >
+                    <div className={`${badge.color} ${badge.textColor} px-4 py-2 rounded-lg font-bold text-sm shadow-lg flex items-center space-x-2 border-2 border-white/20 group-hover:scale-105 transition-transform duration-300`}>
+                      <BadgeIcon className="w-4 h-4" />
+                      <span>{badge.label}</span>
+                    </div>
+                    {hoveredBadge === treatment.id && (
+                      <div className="absolute right-0 top-full mt-2 w-56 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-xl z-50 animate-fade-in">
+                        <div className="flex items-start space-x-2">
+                          <BadgeIcon className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                          <p>{badge.description}</p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
                 
