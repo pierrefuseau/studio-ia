@@ -5,140 +5,106 @@ interface CardProps {
   children: React.ReactNode;
   className?: string;
   hover?: boolean;
-  glass?: boolean;
-  glow?: boolean;
-  magnetic?: boolean;
-  breathe?: boolean;
-  liquid?: boolean;
+  noBorder?: boolean;
+  onClick?: () => void;
 }
 
-export function Card({ 
-  children, 
-  className, 
-  hover = false, 
-  glass = false,
-  glow = false,
-  magnetic = false,
-  breathe = false,
-  liquid = false
+export function Card({
+  children,
+  className,
+  hover = false,
+  noBorder = false,
+  onClick
 }: CardProps) {
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!magnetic) return;
-    
-    const card = e.currentTarget;
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    
-    card.style.transform = `perspective(1000px) rotateX(${y * 0.05}deg) rotateY(${x * 0.05}deg) scale(1.02)`;
-  };
-  
-  const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!magnetic) return;
-    
-    const card = e.currentTarget;
-    card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)';
-  };
-
   return (
-    <div className="relative group">
-      {/* Glow effect */}
-      {glow && (
-        <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-orange-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-300"></div>
-      )}
-      
-      {/* Floating orbs for glass cards */}
-      {glass && (
-        <>
-          <div className="absolute top-4 left-4 w-20 h-20 floating-orb-blue opacity-30 animate-blob-blue"></div>
-          <div className="absolute top-4 right-4 w-16 h-16 floating-orb-orange opacity-25 animate-blob-orange animation-delay-2000"></div>
-        </>
-      )}
-      
-      <div
-        className={cn(
-          'relative rounded-2xl border transition-all duration-300 overflow-hidden',
-          {
-            // Glass effect
-            'glass-card shadow-2xl': glass,
-            
-            // Regular card
-            'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-lg': !glass,
-            
-            // Hover effects
-            'hover-lift cursor-pointer transform-gpu': hover,
-            'hover:shadow-blue-500/25 dark:hover:shadow-blue-500/25': hover && glass,
-            
-            // Animations
-            'animate-breathe': breathe,
-            'animate-liquid-morph': liquid,
-          },
-          className
-        )}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        style={{
-          transformStyle: 'preserve-3d',
-          transition: magnetic ? 'transform 0.2s ease-out' : undefined
-        }}
-      >
-        {/* Shine effect */}
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
-        
-        {/* Content */}
-        <div className="relative z-10">
-          {children}
-        </div>
-        
-        {/* Border gradient animation */}
-        {glow && (
-          <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-r from-blue-500 to-orange-500 animate-border-rotate-blue">
-            <div className="w-full h-full rounded-2xl bg-white dark:bg-gray-800"></div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// Card spécialisée avec effet néon
-export function NeonCard({ children, className, ...props }: CardProps) {
-  return (
-    <div className="relative group">
-      <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-orange-500 rounded-2xl blur opacity-20 group-hover:opacity-60 transition duration-300 animate-glow-pulse-blue"></div>
-      <Card
-        className={cn(
-          'relative bg-gray-900/90 dark:bg-white/90 border-blue-500/50 neon-glow-blue',
-          className
-        )}
-        {...props}
-      >
-        {children}
-      </Card>
-    </div>
-  );
-}
-
-// Card Bento pour la grille
-export function BentoCard({ 
-  children, 
-  className, 
-  gridArea,
-  ...props 
-}: CardProps & { gridArea?: string }) {
-  return (
-    <Card
-      glass
-      hover
-      magnetic
+    <div
       className={cn(
-        'p-6 group cursor-pointer',
+        'rounded-xl bg-white transition-all duration-200',
+        !noBorder && 'border-2 border-gray-100',
+        hover && 'hover:shadow-lg hover:border-fuseau-primary hover:-translate-y-1 cursor-pointer',
+        onClick && 'cursor-pointer',
         className
       )}
-      style={{ gridArea }}
-      {...props}
+      onClick={onClick}
     >
       {children}
-    </Card>
+    </div>
+  );
+}
+
+interface TreatmentCardProps {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  badge?: string;
+  enabled: boolean;
+  onClick?: () => void;
+  selected?: boolean;
+}
+
+export function TreatmentCard({
+  icon,
+  title,
+  description,
+  badge,
+  enabled,
+  onClick,
+  selected = false
+}: TreatmentCardProps) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={!enabled}
+      className={cn(
+        'w-full text-left rounded-xl p-6 border-2 transition-all duration-300',
+        'focus:outline-none focus:ring-2 focus:ring-fuseau-primary focus:ring-offset-2',
+        enabled
+          ? selected
+            ? 'bg-gradient-to-br from-fuseau-cream to-white border-fuseau-primary shadow-md'
+            : 'bg-white border-gray-200 hover:border-fuseau-primary hover:shadow-md hover:-translate-y-1'
+          : 'bg-gray-50 border-gray-200 opacity-60 cursor-not-allowed',
+        'group relative overflow-hidden'
+      )}
+    >
+      {badge && (
+        <div className="absolute top-4 right-4">
+          <span className="inline-block px-3 py-1 bg-fuseau-accent text-fuseau-secondary text-xs font-bold rounded-full">
+            {badge}
+          </span>
+        </div>
+      )}
+
+      <div className="flex items-start gap-4">
+        <div className={cn(
+          'flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center transition-colors duration-200',
+          selected
+            ? 'bg-fuseau-primary text-white'
+            : enabled
+              ? 'bg-fuseau-cream text-fuseau-primary group-hover:bg-fuseau-primary group-hover:text-white'
+              : 'bg-gray-100 text-gray-400'
+        )}>
+          {icon}
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <h3 className={cn(
+            'font-heading font-semibold text-lg mb-1 transition-colors duration-200',
+            selected || enabled ? 'text-gray-900' : 'text-gray-500'
+          )}>
+            {title}
+          </h3>
+          <p className={cn(
+            'text-sm leading-relaxed',
+            selected || enabled ? 'text-gray-600' : 'text-gray-400'
+          )}>
+            {description}
+          </p>
+        </div>
+      </div>
+
+      {selected && (
+        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-fuseau-primary via-fuseau-accent to-fuseau-primary" />
+      )}
+    </button>
   );
 }

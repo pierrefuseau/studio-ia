@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Wifi, WifiOff } from 'lucide-react';
+import { Sparkles, Wifi } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 import { webhookService } from '../services/webhookService';
 import { useToast } from './ui/Toast';
@@ -10,7 +10,7 @@ export function Header() {
 
   const testWebhook = async () => {
     const success = await webhookService.testConnection();
-    
+
     if (success) {
       addToast({
         type: 'success',
@@ -27,29 +27,40 @@ export function Header() {
   };
 
   return (
-    <header className="border-b border-gray-100 bg-white">
-      <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-sm">
-            <span className="text-white text-sm font-bold">SP</span>
+    <header className="border-b-2 border-gray-100 bg-white/95 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
+      <div className="container-fuseau">
+        <div className="h-20 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="relative group">
+              <div className="absolute inset-0 bg-gradient-to-br from-fuseau-primary to-fuseau-accent rounded-xl blur opacity-40 group-hover:opacity-60 transition-opacity"></div>
+              <div className="relative w-12 h-12 bg-gradient-to-br from-fuseau-primary to-fuseau-primary-dark rounded-xl flex items-center justify-center shadow-lg transform group-hover:scale-105 transition-transform">
+                <Sparkles className="w-6 h-6 text-white" />
+              </div>
+            </div>
+            <div>
+              <h1 className="text-xl font-heading font-bold text-gray-900 leading-tight">
+                Studio Produit
+              </h1>
+              <p className="text-xs text-gray-500 font-medium">
+                IA Génératrice d'images
+              </p>
+            </div>
           </div>
-          <span className="text-gray-900 font-medium text-sm">Studio Produit</span>
-        </div>
-        
-        <div className="flex items-center gap-2">
-          {/* Indicateur de statut webhook */}
-          <button
-            onClick={testWebhook}
-            className="flex items-center gap-2 px-2 py-1 text-xs text-gray-500 hover:text-gray-700 transition-colors"
-            title="Tester la connexion n8n"
-          >
-            <Wifi className="w-3 h-3" />
-            <span>n8n</span>
-          </button>
-          
-          <button className="text-gray-400 hover:text-gray-600 transition-colors p-2">
-            <Menu className="w-4 h-4" />
-          </button>
+
+          <div className="flex items-center gap-4">
+            <div className="badge-heritage">
+              Maison Familiale depuis 1973
+            </div>
+
+            <button
+              onClick={testWebhook}
+              className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:text-fuseau-primary transition-colors rounded-lg hover:bg-fuseau-cream"
+              title="Tester la connexion n8n"
+            >
+              <Wifi className="w-4 h-4" />
+              <span className="hidden sm:inline">n8n</span>
+            </button>
+          </div>
         </div>
       </div>
     </header>
