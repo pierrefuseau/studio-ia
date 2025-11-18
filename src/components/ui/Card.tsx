@@ -66,14 +66,6 @@ export function TreatmentCard({
         'group relative overflow-hidden'
       )}
     >
-      {badge && (
-        <div className="absolute top-4 right-4">
-          <span className="inline-block px-3 py-1 bg-fuseau-accent text-fuseau-secondary text-xs font-bold rounded-full">
-            {badge}
-          </span>
-        </div>
-      )}
-
       <div className="flex items-start gap-4">
         <div className={cn(
           'flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center transition-colors duration-200',

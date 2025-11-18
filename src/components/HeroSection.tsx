@@ -12,7 +12,6 @@ export function HeroSection() {
       name: 'Détourage Studio',
       description: 'Packshot professionnel sur fond blanc immaculé',
       icon: <Camera className="w-6 h-6" />,
-      badge: 'Rapide',
       enabled: true
     },
     {
@@ -20,7 +19,6 @@ export function HeroSection() {
       name: 'Mise en situation Packaging',
       description: 'Intégration de votre packaging dans un environnement réaliste et chaleureux',
       icon: <ImagePlus className="w-6 h-6" />,
-      badge: 'Premium',
       enabled: true
     },
     {
@@ -28,7 +26,6 @@ export function HeroSection() {
       name: 'Mise en situation Produit Brut',
       description: 'Intégration de produit brut dans un environnement personnalisé et professionnel',
       icon: <ImagePlus className="w-6 h-6" />,
-      badge: 'Nouveau',
       enabled: true
     },
     {
@@ -36,7 +33,6 @@ export function HeroSection() {
       name: 'Génération de vidéos',
       description: 'Créez des vidéos dynamiques à partir de vos images produits',
       icon: <Video className="w-6 h-6" />,
-      badge: 'Admin',
       enabled: true
     }
   ];
