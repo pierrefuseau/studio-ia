@@ -4,12 +4,10 @@ import { Upload, Video, Clock, Maximize, CheckCircle, XCircle } from 'lucide-rea
 import { Button } from './ui/Button';
 import { Input } from './ui/Input';
 import { ContentHeader } from './ContentHeader';
-import { useApp } from '../contexts/AppContext';
 
 const WEBHOOK_URL = 'https://n8n.srv778298.hstgr.cloud/webhook-test/1dd808fb-dae9-45bc-9406-2d948af2effc';
 
 export function VideoGenerationForm() {
-  const { dispatch } = useApp();
   const [description, setDescription] = useState('');
   const [format] = useState('16:9');
   const [duration] = useState('8 secondes');
@@ -18,11 +16,6 @@ export function VideoGenerationForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [statusMessage, setStatusMessage] = useState('');
-
-  const goHome = () => {
-    dispatch({ type: 'SELECT_TREATMENT_TYPE', payload: null });
-    dispatch({ type: 'SET_CURRENT_STEP', payload: 'hero' });
-  };
 
   const onDrop = (acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
@@ -88,7 +81,6 @@ export function VideoGenerationForm() {
     <div className="max-w-3xl">
       <ContentHeader
         breadcrumbs={[
-          { label: 'Accueil', onClick: goHome },
           { label: 'Generation de videos' },
         ]}
         title="Generation de videos"

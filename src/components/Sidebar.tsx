@@ -4,12 +4,10 @@ import {
   ImagePlus,
   Video,
   UtensilsCrossed,
-  LayoutDashboard,
   Settings,
   Archive,
   ChevronLeft,
   ChevronRight,
-  Wifi,
 } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 
@@ -19,9 +17,8 @@ interface SidebarProps {
 }
 
 const navItems = [
-  { id: null, label: 'Tableau de bord', icon: LayoutDashboard },
-  { id: 'background-removal', label: 'Detourage Studio', icon: Camera },
   { id: 'scene-composition', label: 'Mise en situation Packaging', icon: ImagePlus },
+  { id: 'background-removal', label: 'Detourage Studio', icon: Camera },
   { id: 'product-scene', label: 'Produit Brut', icon: ImagePlus },
   { id: 'recipe-scene', label: 'Recettes du Chef', icon: UtensilsCrossed },
   { id: 'video-generation', label: 'Generation Videos', icon: Video },
@@ -31,22 +28,13 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const { state, dispatch } = useApp();
 
   const currentId = state.selectedTreatmentType;
-  const isHome = !currentId || state.currentStep === 'hero';
 
-  const handleNav = (id: string | null) => {
-    if (id === null) {
-      dispatch({ type: 'SELECT_TREATMENT_TYPE', payload: null });
-      dispatch({ type: 'SET_CURRENT_STEP', payload: 'hero' });
-    } else {
-      dispatch({ type: 'SELECT_TREATMENT_TYPE', payload: id });
-      dispatch({ type: 'SET_CURRENT_STEP', payload: 'treatment' });
-    }
+  const handleNav = (id: string) => {
+    dispatch({ type: 'SELECT_TREATMENT_TYPE', payload: id });
+    dispatch({ type: 'SET_CURRENT_STEP', payload: 'treatment' });
   };
 
-  const isActive = (id: string | null) => {
-    if (id === null) return isHome;
-    return currentId === id && !isHome;
-  };
+  const isActive = (id: string) => currentId === id;
 
   return (
     <aside

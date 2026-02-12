@@ -13,11 +13,6 @@ export function TreatmentWorkspace() {
   const { state, dispatch } = useApp();
   const { addToast } = useToast();
 
-  const goHome = () => {
-    dispatch({ type: 'SELECT_TREATMENT_TYPE', payload: null });
-    dispatch({ type: 'SET_CURRENT_STEP', payload: 'hero' });
-  };
-
   const getTreatmentConfig = () => {
     switch (state.selectedTreatmentType) {
       case 'background-removal':
@@ -161,7 +156,6 @@ export function TreatmentWorkspace() {
     <div className="max-w-5xl">
       <ContentHeader
         breadcrumbs={[
-          { label: 'Accueil', onClick: goHome },
           { label: config.name },
         ]}
         title={config.name}
