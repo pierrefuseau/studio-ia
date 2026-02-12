@@ -36,7 +36,6 @@ interface TreatmentCardProps {
   icon: React.ReactNode;
   title: string;
   description: string;
-  badge?: string;
   enabled: boolean;
   onClick?: () => void;
   selected?: boolean;
@@ -46,7 +45,6 @@ export function TreatmentCard({
   icon,
   title,
   description,
-  badge,
   enabled,
   onClick,
   selected = false

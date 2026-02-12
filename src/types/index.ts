@@ -27,7 +27,6 @@ export interface Treatment {
   name: string;
   description: string;
   icon: string;
-  badge?: string;
   enabled: boolean;
   options?: Record<string, any>;
 }

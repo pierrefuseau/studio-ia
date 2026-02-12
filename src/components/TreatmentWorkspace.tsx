@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronLeft, Camera, ImagePlus, FileText, Share2 } from 'lucide-react';
+import { ChevronLeft, Camera, ImagePlus, FileText, Share2, UtensilsCrossed } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 import { UploadZone } from './UploadZone';
 import { ProductForm } from './ProductForm';
@@ -56,6 +56,26 @@ export function TreatmentWorkspace() {
               key: 'situationDescription',
               label: 'Quelle mise en situation ?',
               placeholder: 'Ex: Dans un bureau moderne avec éclairage naturel, sur un parquet en chêne, ambiance cosy et professionnelle...',
+              type: 'textarea'
+            }
+          ]
+        };
+      case 'recipe-scene':
+        return {
+          name: 'Mise en situation des recettes du chef',
+          description: 'Sublimez vos plats avec une mise en scène gastronomique',
+          icon: <UtensilsCrossed className="w-5 h-5" />,
+          fields: [
+            {
+              key: 'recipeName',
+              label: 'Nom de la recette',
+              placeholder: 'Ex: Tarte au citron meringuée, Boeuf bourguignon...',
+              type: 'input'
+            },
+            {
+              key: 'situationDescription',
+              label: 'Quelle mise en scène ?',
+              placeholder: 'Ex: Sur une table rustique en bois, avec des ingrédients frais autour, lumière chaude naturelle...',
               type: 'textarea'
             }
           ]

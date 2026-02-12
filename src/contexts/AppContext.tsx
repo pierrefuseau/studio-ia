@@ -13,7 +13,6 @@ const initialState: AppState = {
       name: 'Détourage Studio',
       description: 'Packshot professionnel sur fond blanc',
       icon: 'Camera',
-      badge: 'Rapide',
       enabled: false,
       options: {
         shadowIntensity: 50,
@@ -26,7 +25,6 @@ const initialState: AppState = {
       name: 'Mise en situation Packaging',
       description: 'Intégration packaging dans un environnement réaliste',
       icon: 'ImagePlus',
-      badge: 'Premium',
       enabled: false,
       options: {
         environment: 'modern-office',
@@ -38,11 +36,21 @@ const initialState: AppState = {
       name: 'Mise en situation Produit Brut',
       description: 'Intégration produit brut dans un environnement personnalisé',
       icon: 'ImagePlus',
-      badge: 'Nouveau',
       enabled: false,
       options: {
         environment: 'custom',
         lighting: 'natural'
+      }
+    },
+    {
+      id: 'recipe-scene',
+      name: 'Mise en situation des recettes du chef',
+      description: 'Sublimez vos plats avec une mise en scène gastronomique',
+      icon: 'UtensilsCrossed',
+      enabled: false,
+      options: {
+        environment: 'gastronomy',
+        lighting: 'warm'
       }
     }
   ],
