@@ -170,45 +170,39 @@ export function TreatmentWorkspace() {
   if (!config) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-5xl mx-auto px-6 py-12">
-        {/* Breadcrumb simple */}
-        <button 
-          onClick={handleBack} 
-          className="flex items-center gap-2 text-gray-500 hover:text-gray-700 mb-8 transition-colors"
+    <div className="min-h-screen bg-fuseau-cream">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+        <button
+          onClick={handleBack}
+          className="flex items-center gap-1.5 text-gray-400 hover:text-fuseau-secondary mb-6 transition-colors group"
         >
-          <ChevronLeft className="w-4 h-4" />
-          <span className="text-sm">Retour</span>
+          <ChevronLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
+          <span className="text-sm font-medium">Retour</span>
         </button>
 
-        {/* Titre du traitement */}
         <div className="flex items-center gap-3 mb-8">
-          <div className="text-gray-600">
+          <div className="w-10 h-10 rounded-lg bg-red-50 text-fuseau-primary flex items-center justify-center">
             {config.icon}
           </div>
           <div>
-            <h2 className="text-2xl font-light text-gray-900">
+            <h2 className="text-xl font-heading font-semibold text-gray-900">
               {config.name}
             </h2>
-            <p className="text-sm text-gray-500">
+            <p className="text-xs text-gray-500">
               {config.description}
             </p>
           </div>
         </div>
 
-        {/* Layout en 2 colonnes */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Colonne gauche - Upload et formulaire */}
-          <div className="lg:col-span-2 space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-5">
             <UploadZone />
             {state.selectedTreatmentType !== 'background-removal' && (
               <ProductForm treatmentType={state.selectedTreatmentType} />
             )}
           </div>
 
-          {/* Colonne droite - Actions et preview */}
-          <div className="space-y-6">
-            {/* État de traitement */}
+          <div className="space-y-5">
             {state.isProcessing && <ProcessingStatus />}
           </div>
         </div>

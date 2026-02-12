@@ -20,8 +20,8 @@ export function Card({
     <div
       className={cn(
         'rounded-xl bg-white transition-all duration-200',
-        !noBorder && 'border-2 border-gray-100',
-        hover && 'hover:shadow-lg hover:border-fuseau-primary hover:-translate-y-1 cursor-pointer',
+        !noBorder && 'border border-gray-200 shadow-card',
+        hover && 'hover:shadow-card-hover hover:border-fuseau-primary/30 hover:-translate-y-0.5 cursor-pointer',
         onClick && 'cursor-pointer',
         className
       )}
@@ -54,23 +54,23 @@ export function TreatmentCard({
       onClick={onClick}
       disabled={!enabled}
       className={cn(
-        'w-full text-left rounded-xl p-6 border-2 transition-all duration-300',
-        'focus:outline-none focus:ring-2 focus:ring-fuseau-primary focus:ring-offset-2',
+        'w-full text-left rounded-xl p-5 border transition-all duration-200',
+        'focus:outline-none focus:ring-2 focus:ring-fuseau-primary/20 focus:ring-offset-2',
         enabled
           ? selected
-            ? 'bg-gradient-to-br from-fuseau-cream to-white border-fuseau-primary shadow-md'
-            : 'bg-white border-gray-200 hover:border-fuseau-primary hover:shadow-md hover:-translate-y-1'
+            ? 'bg-white border-fuseau-primary shadow-card-hover'
+            : 'bg-white border-gray-200 shadow-card hover:border-fuseau-primary/30 hover:shadow-card-hover hover:-translate-y-0.5'
           : 'bg-gray-50 border-gray-200 opacity-60 cursor-not-allowed',
         'group relative overflow-hidden'
       )}
     >
       <div className="flex items-start gap-4">
         <div className={cn(
-          'flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center transition-colors duration-200',
+          'flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center transition-colors duration-150',
           selected
             ? 'bg-fuseau-primary text-white'
             : enabled
-              ? 'bg-fuseau-cream text-fuseau-primary group-hover:bg-fuseau-primary group-hover:text-white'
+              ? 'bg-red-50 text-fuseau-primary group-hover:bg-fuseau-primary group-hover:text-white'
               : 'bg-gray-100 text-gray-400'
         )}>
           {icon}
@@ -78,14 +78,14 @@ export function TreatmentCard({
 
         <div className="flex-1 min-w-0">
           <h3 className={cn(
-            'font-heading font-semibold text-lg mb-1 transition-colors duration-200',
+            'font-heading font-semibold text-sm mb-0.5 transition-colors duration-150',
             selected || enabled ? 'text-gray-900' : 'text-gray-500'
           )}>
             {title}
           </h3>
           <p className={cn(
-            'text-sm leading-relaxed',
-            selected || enabled ? 'text-gray-600' : 'text-gray-400'
+            'text-xs leading-relaxed',
+            selected || enabled ? 'text-gray-500' : 'text-gray-400'
           )}>
             {description}
           </p>

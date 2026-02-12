@@ -159,8 +159,8 @@ export function ProductForm({ treatmentType }: ProductFormProps) {
     }
   };
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-6 space-y-4">
-      <h3 className="text-sm font-medium text-gray-900 mb-4">
+    <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-4 shadow-card">
+      <h3 className="text-sm font-semibold text-gray-900 mb-4">
         Informations produit
       </h3>
       
@@ -200,11 +200,11 @@ export function ProductForm({ treatmentType }: ProductFormProps) {
           <button
             onClick={() => improveText('name', productName)}
             disabled={isImproving === 'name' || !productName.trim()}
-            className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-blue-500 hover:text-orange-500 hover:bg-orange-50 rounded transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-fuseau-accent hover:text-fuseau-primary hover:bg-red-50 rounded transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             title="Améliorer avec IA"
           >
             {isImproving === 'name' ? (
-              <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+              <div className="w-4 h-4 border-2 border-fuseau-accent border-t-transparent rounded-full animate-spin" />
             ) : (
               <Wand2 className="w-4 h-4" />
             )}
@@ -233,11 +233,11 @@ export function ProductForm({ treatmentType }: ProductFormProps) {
             <button
               onClick={() => improveText('description', productDescription)}
               disabled={isImproving === 'description' || !productDescription.trim()}
-              className="absolute right-2 top-2 p-1.5 text-blue-500 hover:text-orange-500 hover:bg-orange-50 rounded transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="absolute right-2 top-2 p-1.5 text-fuseau-accent hover:text-fuseau-primary hover:bg-red-50 rounded transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               title="Améliorer avec IA"
             >
               {isImproving === 'description' ? (
-                <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                <div className="w-4 h-4 border-2 border-fuseau-accent border-t-transparent rounded-full animate-spin" />
               ) : (
                 <Wand2 className="w-4 h-4" />
               )}
@@ -273,11 +273,11 @@ export function ProductForm({ treatmentType }: ProductFormProps) {
           <button
             onClick={() => improveText('description', productDescription)}
             disabled={isImproving === 'description' || !productDescription.trim()}
-            className="absolute right-2 top-2 p-1.5 text-blue-500 hover:text-orange-500 hover:bg-orange-50 rounded transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="absolute right-2 top-2 p-1.5 text-fuseau-accent hover:text-fuseau-primary hover:bg-red-50 rounded transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             title="Améliorer avec IA"
           >
             {isImproving === 'description' ? (
-              <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+              <div className="w-4 h-4 border-2 border-fuseau-accent border-t-transparent rounded-full animate-spin" />
             ) : (
               <Wand2 className="w-4 h-4" />
             )}

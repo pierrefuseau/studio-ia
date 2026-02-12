@@ -403,153 +403,138 @@ export function UploadZone() {
       )}
 
       <style jsx>{`
-        /* Variables du thème actuel */
         .upload-container {
-          --bg-dark: #0F0F1A;
-          --card-bg: rgba(160, 82, 45, 0.15);
-          --card-border: rgba(160, 82, 45, 0.3);
-          --primary-color: #A0522D;
-          --primary-light: rgba(160, 82, 45, 0.4);
-          --text-primary: #FFFFFF;
-          --text-secondary: rgba(255, 255, 255, 0.7);
-          --text-muted: rgba(255, 255, 255, 0.5);
+          --primary-color: #C8102E;
+          --primary-light: rgba(200, 16, 46, 0.12);
+          --accent-color: #E88C30;
+          --text-primary: #111827;
+          --text-secondary: #4B5563;
+          --text-muted: #6B7280;
+          --border-color: #E5E7EB;
+          --bg-card: #FFFFFF;
           width: 100%;
         }
 
-        /* Cards style actuel */
         .upload-card,
         .preview-card,
         .batch-card,
         .actions-card {
-          background: var(--card-bg);
-          border: 1px solid var(--card-border);
-          border-radius: 16px;
+          background: var(--bg-card);
+          border: 1px solid var(--border-color);
+          border-radius: 12px;
           padding: 20px;
-          margin-bottom: 20px;
-          backdrop-filter: blur(10px);
+          margin-bottom: 16px;
+          box-shadow: 0 1px 3px rgba(15, 29, 61, 0.06);
         }
 
         .card-header {
           color: var(--text-primary);
-          font-size: 16px;
+          font-size: 14px;
           font-weight: 600;
-          margin: 0 0 20px 0;
+          margin: 0 0 16px 0;
           padding-bottom: 12px;
-          border-bottom: 1px solid rgba(160, 82, 45, 0.2);
+          border-bottom: 1px solid var(--border-color);
           display: flex;
           justify-content: space-between;
           align-items: center;
         }
 
-        /* Zone de drop exacte comme sur le site */
         .drop-zone {
-          background: linear-gradient(135deg, 
-            rgba(196, 164, 132, 0.15) 0%, 
-            rgba(160, 82, 45, 0.25) 100%);
-          border: 2px dashed var(--primary-light);
-          border-radius: 12px;
-          padding: 40px;
+          background: #F9FAFB;
+          border: 2px dashed #D1D5DB;
+          border-radius: 10px;
+          padding: 36px;
           text-align: center;
           cursor: pointer;
-          transition: all 0.3s ease;
+          transition: all 0.2s ease;
           position: relative;
-          min-height: 250px;
+          min-height: 220px;
           display: flex;
           align-items: center;
           justify-content: center;
         }
 
         .drop-zone:hover {
-          background: linear-gradient(135deg, 
-            rgba(196, 164, 132, 0.25) 0%, 
-            rgba(160, 82, 45, 0.35) 100%);
+          background: #F3F4F6;
           border-color: var(--primary-color);
-          transform: scale(1.01);
         }
 
         .drop-zone.drag-over {
-          background: linear-gradient(135deg, 
-            rgba(196, 164, 132, 0.35) 0%, 
-            rgba(160, 82, 45, 0.45) 100%);
-          border-color: #D2691E;
+          background: rgba(200, 16, 46, 0.04);
+          border-color: var(--primary-color);
           border-style: solid;
-          box-shadow: 0 0 30px rgba(160, 82, 45, 0.3);
+          box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.08);
         }
 
         .drop-zone.has-files {
-          min-height: 150px;
-          padding: 20px;
+          min-height: 120px;
+          padding: 16px;
         }
 
-        /* Contenu de la zone de drop */
         .drop-content {
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 12px;
+          gap: 10px;
         }
 
         .drop-icon {
-          color: var(--primary-light);
-          opacity: 0.6;
-          transition: all 0.3s ease;
+          color: #D1D5DB;
+          transition: all 0.2s ease;
         }
 
         .drop-zone:hover .drop-icon {
           color: var(--primary-color);
-          opacity: 0.8;
-          transform: translateY(-5px);
+          transform: translateY(-3px);
         }
 
         .drop-title {
           color: var(--text-secondary);
-          font-size: 16px;
+          font-size: 15px;
           font-weight: 500;
           margin: 0;
         }
 
         .drop-subtitle {
           color: var(--text-muted);
-          font-size: 14px;
+          font-size: 13px;
           margin: 0;
         }
 
         .drop-formats {
           display: flex;
           gap: 8px;
-          margin-top: 8px;
+          margin-top: 6px;
         }
 
         .format-text,
         .batch-text {
           color: var(--text-muted);
-          font-size: 12px;
+          font-size: 11px;
         }
 
         .batch-text {
-          color: rgba(210, 105, 30, 0.8);
+          color: var(--accent-color);
         }
 
-        /* Badge de mode */
         .mode-badge {
           position: absolute;
-          top: 12px;
-          right: 12px;
+          top: 10px;
+          right: 10px;
           background: var(--primary-color);
           color: white;
-          padding: 4px 12px;
-          border-radius: 12px;
-          font-size: 11px;
+          padding: 3px 10px;
+          border-radius: 10px;
+          font-size: 10px;
           font-weight: 600;
           text-transform: uppercase;
           letter-spacing: 0.5px;
         }
 
-        /* Liste des fichiers */
         .files-list {
-          margin-top: 16px;
-          padding-top: 16px;
-          border-top: 1px solid rgba(160, 82, 45, 0.2);
+          margin-top: 12px;
+          padding-top: 12px;
+          border-top: 1px solid var(--border-color);
         }
 
         .file-item {
@@ -557,14 +542,15 @@ export function UploadZone() {
           align-items: center;
           justify-content: space-between;
           padding: 8px 12px;
-          background: rgba(0, 0, 0, 0.2);
+          background: #F9FAFB;
+          border: 1px solid var(--border-color);
           border-radius: 8px;
-          margin-bottom: 8px;
+          margin-bottom: 6px;
         }
 
         .file-name {
           color: var(--text-secondary);
-          font-size: 14px;
+          font-size: 13px;
           flex: 1;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -573,28 +559,28 @@ export function UploadZone() {
 
         .file-size {
           color: var(--text-muted);
-          font-size: 12px;
+          font-size: 11px;
           margin: 0 12px;
         }
 
         .file-remove {
           background: transparent;
           border: none;
-          color: rgba(239, 68, 68, 0.8);
+          color: #EF4444;
           cursor: pointer;
           padding: 4px;
-          transition: all 0.2s;
+          transition: all 0.15s;
           display: flex;
           align-items: center;
           justify-content: center;
+          opacity: 0.7;
         }
 
         .file-remove:hover {
-          color: #EF4444;
+          opacity: 1;
           transform: scale(1.1);
         }
 
-        /* Preview mode simple */
         .preview-content {
           display: grid;
           grid-template-columns: 1fr auto 1fr;
@@ -610,12 +596,13 @@ export function UploadZone() {
 
         .preview-label {
           position: absolute;
-          top: -25px;
+          top: -22px;
           left: 0;
           color: var(--text-muted);
-          font-size: 12px;
+          font-size: 11px;
           text-transform: uppercase;
           letter-spacing: 0.5px;
+          font-weight: 600;
         }
 
         .preview-original img,
@@ -623,35 +610,35 @@ export function UploadZone() {
           width: 100%;
           height: auto;
           border-radius: 8px;
-          border: 1px solid rgba(160, 82, 45, 0.2);
+          border: 1px solid var(--border-color);
         }
 
         .preview-arrow {
           color: var(--primary-color);
-          font-size: 24px;
-          opacity: 0.6;
+          font-size: 20px;
+          opacity: 0.5;
         }
 
         .result-placeholder {
           width: 100%;
           aspect-ratio: 1;
-          background: rgba(0, 0, 0, 0.3);
+          background: #F9FAFB;
+          border: 1px dashed var(--border-color);
           border-radius: 8px;
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          gap: 12px;
+          gap: 10px;
           color: var(--text-muted);
-          font-size: 14px;
+          font-size: 13px;
         }
 
-        /* Grille batch */
         .batch-items {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-          gap: 12px;
-          max-height: 300px;
+          grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+          gap: 10px;
+          max-height: 280px;
           overflow-y: auto;
           padding: 4px;
         }
@@ -661,15 +648,15 @@ export function UploadZone() {
           aspect-ratio: 1;
           border-radius: 8px;
           overflow: hidden;
-          background: rgba(0, 0, 0, 0.3);
+          background: #F3F4F6;
           border: 2px solid transparent;
-          transition: all 0.2s ease;
+          transition: all 0.15s ease;
           cursor: pointer;
         }
 
         .batch-item:hover {
           border-color: var(--primary-color);
-          transform: scale(1.05);
+          transform: scale(1.03);
         }
 
         .batch-item img {
@@ -684,13 +671,13 @@ export function UploadZone() {
           left: 4px;
           background: var(--primary-color);
           color: white;
-          width: 20px;
-          height: 20px;
+          width: 18px;
+          height: 18px;
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 10px;
+          font-size: 9px;
           font-weight: 700;
         }
 
@@ -698,17 +685,17 @@ export function UploadZone() {
           position: absolute;
           top: 4px;
           right: 4px;
-          background: rgba(239, 68, 68, 0.9);
+          background: #EF4444;
           color: white;
-          width: 20px;
-          height: 20px;
+          width: 18px;
+          height: 18px;
           border-radius: 50%;
           border: none;
           cursor: pointer;
           display: none;
           align-items: center;
           justify-content: center;
-          font-size: 12px;
+          font-size: 11px;
         }
 
         .batch-item:hover .batch-item-remove {
@@ -720,46 +707,44 @@ export function UploadZone() {
         }
 
         .batch-item.completed::after {
-          content: '✓';
+          content: '';
           position: absolute;
           bottom: 4px;
           right: 4px;
-          background: #10B981;
+          background: #059669;
           color: white;
-          width: 20px;
-          height: 20px;
+          width: 18px;
+          height: 18px;
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 12px;
+          font-size: 11px;
         }
 
-        /* Boutons style actuel */
         .btn-generate,
         .btn-reset {
           width: 100%;
-          padding: 12px;
+          padding: 10px;
           border: none;
           border-radius: 8px;
           font-weight: 600;
-          font-size: 14px;
+          font-size: 13px;
           cursor: pointer;
-          transition: all 0.2s ease;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
+          transition: all 0.15s ease;
+          letter-spacing: 0.02em;
         }
 
         .btn-generate {
-          background: linear-gradient(135deg, #A0522D, #8B4513);
+          background: var(--primary-color);
           color: white;
-          margin-bottom: 12px;
+          margin-bottom: 8px;
         }
 
         .btn-generate:hover:not(:disabled) {
-          background: linear-gradient(135deg, #8B4513, #704214);
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(160, 82, 45, 0.3);
+          background: #A00D25;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(200, 16, 46, 0.2);
         }
 
         .btn-generate:disabled {
@@ -769,41 +754,41 @@ export function UploadZone() {
 
         .btn-reset {
           background: transparent;
-          color: var(--text-secondary);
-          border: 1px solid rgba(255, 255, 255, 0.2);
+          color: var(--text-muted);
+          border: 1px solid var(--border-color);
         }
 
         .btn-reset:hover {
-          background: rgba(255, 255, 255, 0.05);
-          border-color: rgba(255, 255, 255, 0.3);
+          background: #F9FAFB;
+          border-color: #D1D5DB;
+          color: var(--text-secondary);
         }
 
-        /* Progress bar */
         .batch-progress {
-          margin-top: 20px;
-          padding-top: 20px;
-          border-top: 1px solid rgba(160, 82, 45, 0.2);
+          margin-top: 16px;
+          padding-top: 16px;
+          border-top: 1px solid var(--border-color);
         }
 
         .progress-info {
           display: flex;
           justify-content: space-between;
-          color: var(--text-secondary);
-          font-size: 12px;
-          margin-bottom: 8px;
+          color: var(--text-muted);
+          font-size: 11px;
+          margin-bottom: 6px;
         }
 
         .progress-bar {
-          height: 6px;
-          background: rgba(0, 0, 0, 0.3);
-          border-radius: 3px;
+          height: 4px;
+          background: #E5E7EB;
+          border-radius: 2px;
           overflow: hidden;
         }
 
         .progress-fill {
           height: 100%;
-          background: linear-gradient(90deg, #A0522D, #D2691E);
-          border-radius: 3px;
+          background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+          border-radius: 2px;
           transition: width 0.3s ease;
           position: relative;
         }
@@ -815,12 +800,7 @@ export function UploadZone() {
           left: 0;
           right: 0;
           bottom: 0;
-          background: linear-gradient(
-            90deg,
-            transparent,
-            rgba(255, 255, 255, 0.2),
-            transparent
-          );
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
           animation: shimmer 2s infinite;
         }
 
@@ -829,11 +809,10 @@ export function UploadZone() {
           100% { transform: translateX(100%); }
         }
 
-        /* Loading spinner */
         .loading-spinner {
-          width: 32px;
-          height: 32px;
-          border: 3px solid rgba(160, 82, 45, 0.2);
+          width: 28px;
+          height: 28px;
+          border: 2px solid #E5E7EB;
           border-top-color: var(--primary-color);
           border-radius: 50%;
           animation: spin 1s linear infinite;
@@ -843,47 +822,45 @@ export function UploadZone() {
           to { transform: rotate(360deg); }
         }
 
-        /* Scrollbar custom */
         .batch-items::-webkit-scrollbar,
         .files-list::-webkit-scrollbar {
-          width: 6px;
+          width: 4px;
         }
 
         .batch-items::-webkit-scrollbar-track,
         .files-list::-webkit-scrollbar-track {
-          background: rgba(0, 0, 0, 0.2);
-          border-radius: 3px;
+          background: #F3F4F6;
+          border-radius: 2px;
         }
 
         .batch-items::-webkit-scrollbar-thumb,
         .files-list::-webkit-scrollbar-thumb {
-          background: var(--primary-light);
-          border-radius: 3px;
+          background: #D1D5DB;
+          border-radius: 2px;
         }
 
         .batch-items::-webkit-scrollbar-thumb:hover,
         .files-list::-webkit-scrollbar-thumb:hover {
-          background: var(--primary-color);
+          background: #9CA3AF;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
           .drop-zone {
-            padding: 30px 20px;
+            padding: 24px 16px;
           }
-          
+
           .preview-content {
             grid-template-columns: 1fr;
-            gap: 20px;
+            gap: 16px;
           }
-          
+
           .preview-arrow {
             transform: rotate(90deg);
             text-align: center;
           }
-          
+
           .batch-items {
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
           }
         }
       `}</style>

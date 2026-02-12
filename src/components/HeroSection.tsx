@@ -8,38 +8,38 @@ export function HeroSection() {
   const treatments = [
     {
       id: 'background-removal',
-      name: 'Détourage Studio',
-      description: 'Packshot professionnel sur fond blanc immaculé',
-      icon: <Camera className="w-6 h-6" />,
+      name: 'Detourage Studio',
+      description: 'Packshot professionnel sur fond blanc immacule',
+      icon: <Camera className="w-5 h-5" />,
       recommended: true,
       enabled: true
     },
     {
       id: 'scene-composition',
       name: 'Mise en situation Packaging',
-      description: 'Intégration de votre packaging dans un environnement réaliste et chaleureux',
-      icon: <ImagePlus className="w-6 h-6" />,
+      description: 'Integration de votre packaging dans un environnement realiste et chaleureux',
+      icon: <ImagePlus className="w-5 h-5" />,
       enabled: true
     },
     {
       id: 'product-scene',
       name: 'Mise en situation Produit Brut',
-      description: 'Intégration de produit brut dans un environnement personnalisé et professionnel',
-      icon: <ImagePlus className="w-6 h-6" />,
+      description: 'Integration de produit brut dans un environnement personnalise et professionnel',
+      icon: <ImagePlus className="w-5 h-5" />,
       enabled: true
     },
     {
       id: 'recipe-scene',
       name: 'Mise en situation des recettes du chef',
-      description: 'Sublimez vos plats avec une mise en scène gastronomique',
-      icon: <UtensilsCrossed className="w-6 h-6" />,
+      description: 'Sublimez vos plats avec une mise en scene gastronomique',
+      icon: <UtensilsCrossed className="w-5 h-5" />,
       enabled: true
     },
     {
       id: 'video-generation',
-      name: 'Génération de vidéos',
-      description: 'Créez des vidéos dynamiques à partir de vos images produits',
-      icon: <Video className="w-6 h-6" />,
+      name: 'Generation de videos',
+      description: 'Creez des videos dynamiques a partir de vos images produits',
+      icon: <Video className="w-5 h-5" />,
       enabled: true
     }
   ];
@@ -51,9 +51,9 @@ export function HeroSection() {
 
   return (
     <div className="min-h-screen bg-gradient-fuseau">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 md:py-16">
-        <div className="text-center mb-14 animate-fade-in">
-          <div className="flex justify-center mb-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 md:py-14">
+        <div className="text-center mb-12 animate-fade-in">
+          <div className="flex justify-center mb-6">
             <img
               src="/GROUPE_FUSEAU_V2.png"
               alt="Fuseau"
@@ -61,58 +61,54 @@ export function HeroSection() {
             />
           </div>
 
-          <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/80 backdrop-blur-sm rounded-full shadow-sm border border-gray-200/60 mb-8">
-            <Sparkles className="w-4 h-4 text-fuseau-accent" />
-            <span className="text-sm font-semibold text-fuseau-secondary">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-card border border-gray-200/70 mb-7">
+            <Sparkles className="w-3.5 h-3.5 text-fuseau-accent" />
+            <span className="text-xs font-semibold text-fuseau-secondary tracking-wide">
               Intelligence Artificielle au service du visuel produit
             </span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-heading font-bold text-gray-900 mb-6 leading-tight">
+          <h1 className="text-4xl sm:text-5xl md:text-[3.5rem] font-heading font-extrabold text-gray-900 mb-5 leading-[1.1] tracking-tight">
             Transformez vos images
             <br />
             <span className="text-gradient-primary">en visuels d'exception</span>
           </h1>
 
-          <p className="text-lg text-gray-500 max-w-xl mx-auto leading-relaxed">
-            Créez des visuels marketing professionnels en quelques clics grâce à
-            notre IA de génération d'images
+          <p className="text-base text-gray-500 max-w-lg mx-auto leading-relaxed">
+            Creez des visuels marketing professionnels en quelques clics grace a
+            notre IA de generation d'images
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
           {treatments.map((treatment, index) => (
             <div
               key={treatment.id}
-              className={`relative animate-fade-in ${
-                treatments.length % 2 !== 0 && index === treatments.length - 1
-                  ? 'md:col-span-1'
-                  : ''
-              }`}
-              style={{ animationDelay: `${index * 80}ms` }}
+              className="relative animate-fade-in"
+              style={{ animationDelay: `${index * 70}ms` }}
             >
               {treatment.recommended && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-fuseau-accent text-fuseau-secondary text-xs font-bold rounded-full shadow-sm uppercase tracking-wide">
-                    <Sparkles className="w-3 h-3" />
-                    Recommandé
+                  <span className="inline-flex items-center gap-1 px-3 py-0.5 bg-fuseau-accent text-white text-[10px] font-bold rounded-full shadow-sm uppercase tracking-wider">
+                    <Sparkles className="w-2.5 h-2.5" />
+                    Recommande
                   </span>
                 </div>
               )}
               <button
                 onClick={() => handleSelectTreatment(treatment.id)}
                 disabled={!treatment.enabled}
-                className="w-full text-left rounded-2xl p-6 border border-gray-200/80 bg-white hover:border-fuseau-primary/40 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-fuseau-primary focus:ring-offset-2 group"
+                className="w-full text-left rounded-xl p-5 border border-gray-200 bg-white shadow-card hover:shadow-card-hover hover:border-fuseau-primary/30 hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-fuseau-primary/20 focus:ring-offset-2 group"
               >
-                <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-red-50 text-fuseau-primary flex items-center justify-center group-hover:bg-fuseau-primary group-hover:text-white transition-colors duration-200">
+                <div className="flex items-start gap-3.5">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-red-50 text-fuseau-primary flex items-center justify-center group-hover:bg-fuseau-primary group-hover:text-white transition-colors duration-150">
                     {treatment.icon}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-heading font-semibold text-base text-gray-900 mb-1">
+                    <h3 className="font-heading font-semibold text-sm text-gray-900 mb-0.5">
                       {treatment.name}
                     </h3>
-                    <p className="text-sm text-gray-500 leading-relaxed">
+                    <p className="text-xs text-gray-500 leading-relaxed">
                       {treatment.description}
                     </p>
                   </div>
