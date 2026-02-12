@@ -1,28 +1,27 @@
 import React from 'react';
-import { AppProvider } from './contexts/AppContext';
+import { AppProvider, useApp } from './contexts/AppContext';
 import { ToastProvider } from './components/ui/Toast';
-import { HeroSection } from './components/HeroSection';
+import { AppLayout } from './components/AppLayout';
+import { DashboardHome } from './components/DashboardHome';
 import { TreatmentWorkspace } from './components/TreatmentWorkspace';
-import { Header } from './components/Header';
-import { VideoGenerationPage } from './components/VideoGenerationPage';
-import { useApp } from './contexts/AppContext';
+import { VideoGenerationForm } from './components/VideoGenerationForm';
 
 function AppContent() {
   const { state } = useApp();
 
+  const isHome = !state.selectedTreatmentType || state.currentStep === 'hero';
+  const isVideo = state.selectedTreatmentType === 'video-generation';
+
   return (
-    <div className="min-h-screen bg-white">
-      {state.selectedTreatmentType === 'video-generation' ? (
-        <VideoGenerationPage />
-      ) : state.currentStep === 'hero' ? (
-        <HeroSection />
+    <AppLayout>
+      {isHome ? (
+        <DashboardHome />
+      ) : isVideo ? (
+        <VideoGenerationForm />
       ) : (
-        <>
-          <Header />
-          <TreatmentWorkspace />
-        </>
+        <TreatmentWorkspace />
       )}
-    </div>
+    </AppLayout>
   );
 }
 
