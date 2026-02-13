@@ -4,6 +4,7 @@ import {
   ImagePlus,
   Video,
   UtensilsCrossed,
+  Share2,
   ChevronLeft,
   ChevronRight,
   ChevronDown,
@@ -40,6 +41,7 @@ const sections: NavSection[] = [
       { id: 'product-scene', label: 'Produit Brut', icon: ImagePlus },
       { id: 'recipe-scene', label: 'Recettes du Chef', icon: UtensilsCrossed },
       { id: 'video-generation', label: 'Generation Videos', icon: Video },
+      { id: 'social-media', label: 'Reseaux Sociaux', icon: Share2 },
     ],
   },
   {
@@ -265,6 +267,9 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                     const Icon = child.icon;
                     return (
                       <li key={child.id}>
+                        {child.id === 'social-media' && (
+                          <div className="mx-3 my-2 h-px bg-white/10" />
+                        )}
                         <button
                           onClick={() => handleNav(child.id)}
                           className={`w-full flex items-center gap-3 rounded-lg transition-colors duration-150 px-3 py-2 pl-8 ${
