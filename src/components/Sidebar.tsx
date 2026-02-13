@@ -46,7 +46,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
           <div className="flex justify-center">
             <div className="bg-white rounded-lg p-1.5">
               <img
-                src="/Logo_Fuseau_Vectorisé.png"
+                src="/Logo_Fuseau.png"
                 alt="Fuseau"
                 className="h-8 w-auto object-contain"
               />
@@ -56,7 +56,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
           <div className="flex flex-col items-center text-center">
             <div className="bg-white rounded-xl px-4 py-3">
               <img
-                src="/Logo_Fuseau_Vectorisé.png"
+                src="/Logo_Fuseau.png"
                 alt="Fuseau"
                 className="h-14 w-auto object-contain"
               />
