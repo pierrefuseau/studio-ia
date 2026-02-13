@@ -18,6 +18,12 @@ export default {
           beige: '#F5F0E6',
           sand: '#EBE4D4',
         },
+        cream: {
+          50: '#FEFCF9',
+          100: '#FDF8F0',
+          200: '#FAF0E4',
+          300: '#F5E6D4',
+        },
         gray: {
           50: '#F9FAFB',
           100: '#F3F4F6',

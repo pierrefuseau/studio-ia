@@ -80,6 +80,7 @@ type Action =
   | { type: 'UPDATE_JOB'; payload: { id: string; updates: Partial<ProcessingJob> } }
   | { type: 'SET_WEBHOOK_CONFIG'; payload: WebhookConfig }
   | { type: 'SELECT_TREATMENT_TYPE'; payload: string | null }
+  | { type: 'SELECT_SOCIAL_MEDIA' }
   | { type: 'SET_CURRENT_STEP'; payload: 'hero' | 'treatment' };
 
 // Reducer
@@ -159,6 +160,12 @@ function appReducer(state: AppState, action: Action): AppState {
       };
     case 'SET_CURRENT_STEP':
       return { ...state, currentStep: action.payload };
+    case 'SELECT_SOCIAL_MEDIA':
+      return {
+        ...state,
+        selectedTreatmentType: 'social-media',
+        currentStep: 'treatment',
+      };
     default:
       return state;
   }

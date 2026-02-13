@@ -92,3 +92,33 @@ export interface WebhookPayload {
   timestamp: string;
   sessionId: string;
 }
+
+export type PlatformId = 'linkedin' | 'tiktok' | 'instagram' | 'facebook' | 'x' | 'hellowork';
+export type ToneId = 'professionnel' | 'decontracte' | 'inspirant' | 'humoristique' | 'promotionnel' | 'informatif';
+export type PostType = 'personnalise' | 'generique';
+export type CategoryId = 'nouveau-produit' | 'recette' | 'evenement' | 'promotion' | 'engagement' | 'coulisses' | 'temoignage' | 'conseil' | 'actualite';
+
+export interface SocialMediaState {
+  entreprise: string;
+  platforms: PlatformId[];
+  postType: PostType;
+  tone: ToneId;
+  category: CategoryId | '';
+  textePersonnalise: string;
+  url: string;
+  uploadedFiles: UploadedFile[];
+}
+
+export interface GeneratedPost {
+  network: PlatformId;
+  content: string;
+  image?: string;
+  hashtags?: string[];
+}
+
+export interface SocialMediaApiResponse {
+  post?: string;
+  response?: string;
+  image?: string;
+  imageUrl?: string;
+}
