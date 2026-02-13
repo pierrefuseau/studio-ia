@@ -1,5 +1,6 @@
 import type { GeneratedPost } from '../../../types';
 import { generateStats, formatCount } from './engagementStats';
+import { ENTREPRISE_LOGOS } from '../wizard/types';
 
 interface TikTokPreviewProps {
   post: GeneratedPost;
@@ -50,6 +51,9 @@ function MusicIcon({ className }: { className?: string }) {
 export default function TikTokPreview({ post }: TikTokPreviewProps) {
   const stats = generateStats(post.content, 'tiktok');
   const truncated = post.content.length > 100 ? post.content.slice(0, 100) + '...' : post.content;
+  const companyName = post.entreprise || 'Fuseau';
+  const logoUrl = post.entreprise ? ENTREPRISE_LOGOS[post.entreprise] : null;
+  const handle = '@' + companyName.toLowerCase().replace(/[^a-z0-9]/g, '_') + '_officiel';
 
   return (
     <div className="relative aspect-[9/16] w-full overflow-hidden bg-[#161823] text-white" style={{ fontFamily: FONT }}>
@@ -63,7 +67,7 @@ export default function TikTokPreview({ post }: TikTokPreviewProps) {
 
       <div className="absolute bottom-0 left-0 right-14 z-10 px-3 pb-16">
         <div className="flex items-center gap-2">
-          <span className="text-[15px] font-bold">@fuseau_officiel</span>
+          <span className="text-[15px] font-bold">{handle}</span>
         </div>
         <p className="mt-1.5 text-[13px] leading-[1.4] text-white/90">{truncated}</p>
         {post.hashtags && post.hashtags.length > 0 && (
@@ -75,7 +79,7 @@ export default function TikTokPreview({ post }: TikTokPreviewProps) {
           <MusicIcon className="h-3 w-3 text-white" />
           <div className="overflow-hidden">
             <p className="animate-marquee whitespace-nowrap text-[12px] text-white/80">
-              Son original - Fuseau SAS
+              Son original - {companyName}
             </p>
           </div>
         </div>
@@ -83,9 +87,15 @@ export default function TikTokPreview({ post }: TikTokPreviewProps) {
 
       <div className="absolute bottom-14 right-2 z-10 flex flex-col items-center gap-4">
         <div className="relative mb-2">
-          <div className="flex h-[42px] w-[42px] items-center justify-center rounded-full bg-[#C8102E] text-xs font-bold text-white ring-2 ring-white">
-            F
-          </div>
+          {logoUrl ? (
+            <div className="flex h-[42px] w-[42px] items-center justify-center rounded-full overflow-hidden bg-white ring-2 ring-white">
+              <img src={logoUrl} alt={companyName} className="h-full w-full object-contain p-0.5" />
+            </div>
+          ) : (
+            <div className="flex h-[42px] w-[42px] items-center justify-center rounded-full bg-[#C8102E] text-xs font-bold text-white ring-2 ring-white">
+              {companyName.charAt(0)}
+            </div>
+          )}
           <div className="absolute -bottom-1.5 left-1/2 flex h-[18px] w-[18px] -translate-x-1/2 items-center justify-center rounded-full bg-[#FE2C55] text-[12px] font-bold text-white">
             +
           </div>

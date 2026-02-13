@@ -39,6 +39,14 @@ export const ENTREPRISES = [
   'TRESORS DE CHEFS',
 ] as const;
 
+export const ENTREPRISE_LOGOS: Record<string, string | null> = {
+  'FUSEAU': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSy06NyrFCZ6Q9N_hozmG5OYoWN5UKLM1n5Nw&s',
+  'DELICES AGRO': 'https://www.delicesagro.com/front/fonts/logo-delices-agro-dark.svg',
+  "C'Propre": 'https://media.licdn.com/dms/image/v2/D4E0BAQHcMlzH3wufKg/company-logo_200_200/company-logo_200_200/0/1724166861258/cpropre_logo?e=2147483647&v=beta&t=qrgINLFfHxPzBrtOc5wuc_vcl19eUbILYibmBRK0dW0',
+  'Xavier': null,
+  'TRESORS DE CHEFS': 'https://cdn.laboutiquedeschefs.fr/125/tresors-de-chefs-1687439039.jpg',
+};
+
 export const TONES: ToneConfig[] = [
   { id: 'professionnel', label: 'Professionnel', emoji: '\uD83D\uDC54', description: 'Ton corporate et serieux' },
   { id: 'decontracte', label: 'Decontracte', emoji: '\u270C\uFE0F', description: 'Ton leger et accessible' },

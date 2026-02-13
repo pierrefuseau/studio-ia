@@ -1,5 +1,6 @@
 import type { GeneratedPost } from '../../../types';
 import { generateStats, formatCount } from './engagementStats';
+import { ENTREPRISE_LOGOS } from '../wizard/types';
 
 interface LinkedInPreviewProps {
   post: GeneratedPost;
@@ -51,19 +52,27 @@ function GlobeIcon({ className }: { className?: string }) {
 
 export default function LinkedInPreview({ post }: LinkedInPreviewProps) {
   const stats = generateStats(post.content, 'linkedin');
+  const companyName = post.entreprise || 'Fuseau';
+  const logoUrl = post.entreprise ? ENTREPRISE_LOGOS[post.entreprise] : null;
 
   return (
     <div className="bg-white text-[14px] text-[#191919]" style={{ fontFamily: FONT }}>
       <div className="flex items-start gap-2 px-4 pt-3">
-        <div
-          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-lg font-bold text-white"
-          style={{ backgroundColor: LI_BLUE }}
-        >
-          F
-        </div>
+        {logoUrl ? (
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full overflow-hidden bg-white border border-[#E0E0E0]">
+            <img src={logoUrl} alt={companyName} className="h-full w-full object-contain p-1" />
+          </div>
+        ) : (
+          <div
+            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-lg font-bold text-white"
+            style={{ backgroundColor: LI_BLUE }}
+          >
+            {companyName.charAt(0)}
+          </div>
+        )}
         <div className="min-w-0 flex-1 pt-0.5">
           <div className="flex items-center gap-1">
-            <span className="text-[14px] font-semibold text-[#191919]">Fuseau SAS</span>
+            <span className="text-[14px] font-semibold text-[#191919]">{companyName}</span>
             <span className="text-[12px] text-[#666666]">&middot; 1er</span>
           </div>
           <p className="text-[12px] leading-tight text-[#666666]">Industrie Agroalimentaire</p>

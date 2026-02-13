@@ -1,5 +1,6 @@
 import type { GeneratedPost } from '../../../types';
 import { generateStats, formatCount } from './engagementStats';
+import { ENTREPRISE_LOGOS } from '../wizard/types';
 
 interface FacebookPreviewProps {
   post: GeneratedPost;
@@ -50,18 +51,26 @@ function ShareIcon({ className }: { className?: string }) {
 
 export default function FacebookPreview({ post }: FacebookPreviewProps) {
   const stats = generateStats(post.content, 'facebook');
+  const companyName = post.entreprise || 'Fuseau';
+  const logoUrl = post.entreprise ? ENTREPRISE_LOGOS[post.entreprise] : null;
 
   return (
     <div className="bg-white text-[15px] text-[#050505]" style={{ fontFamily: FONT }}>
       <div className="flex items-start gap-2 px-4 pt-3">
-        <div
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white"
-          style={{ backgroundColor: FB_BLUE }}
-        >
-          F
-        </div>
+        {logoUrl ? (
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full overflow-hidden bg-white border border-[#E0E0E0]">
+            <img src={logoUrl} alt={companyName} className="h-full w-full object-contain p-1" />
+          </div>
+        ) : (
+          <div
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white"
+            style={{ backgroundColor: FB_BLUE }}
+          >
+            {companyName.charAt(0)}
+          </div>
+        )}
         <div className="flex-1">
-          <p className="text-[15px] font-semibold text-[#050505]">Fuseau</p>
+          <p className="text-[15px] font-semibold text-[#050505]">{companyName}</p>
           <div className="flex items-center gap-1 text-[13px] text-[#65676B]">
             <span>2 h</span>
             <span>&middot;</span>

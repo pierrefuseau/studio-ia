@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check } from 'lucide-react';
 import type { SocialMediaState, PlatformId } from '../../../types';
-import { PLATFORMS, ENTREPRISES } from './types';
+import { PLATFORMS, ENTREPRISES, ENTREPRISE_LOGOS } from './types';
 import PlatformIcon from './PlatformIcon';
 
 interface StepConfigurationProps {
@@ -148,11 +148,21 @@ export default function StepConfiguration({
                     <Check className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-white" />
                   </motion.div>
                 )}
-                <div
-                  className={`flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full text-[11px] sm:text-sm font-bold text-white ${ENTREPRISE_COLORS[i]}`}
-                >
-                  {getInitials(name)}
-                </div>
+                {ENTREPRISE_LOGOS[name] ? (
+                  <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full overflow-hidden bg-white border border-gray-100">
+                    <img
+                      src={ENTREPRISE_LOGOS[name]!}
+                      alt={name}
+                      className="h-full w-full object-contain p-1"
+                    />
+                  </div>
+                ) : (
+                  <div
+                    className={`flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full text-[11px] sm:text-sm font-bold text-white ${ENTREPRISE_COLORS[i]}`}
+                  >
+                    {getInitials(name)}
+                  </div>
+                )}
                 <span className="text-center text-[10px] sm:text-xs font-medium text-gray-700 leading-tight">
                   {name}
                 </span>

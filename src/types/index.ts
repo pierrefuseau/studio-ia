@@ -114,6 +114,7 @@ export interface GeneratedPost {
   content: string;
   image?: string;
   hashtags?: string[];
+  entreprise?: string;
 }
 
 export interface SocialMediaApiResponse {

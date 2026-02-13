@@ -64,8 +64,9 @@ export default function StepGeneration({ state, result, isLoading, onGenerate }:
       content: postContent,
       image: postImage,
       hashtags: [],
+      entreprise: state.entreprise,
     }),
-    [activeTab, postContent, postImage]
+    [activeTab, postContent, postImage, state.entreprise]
   );
 
   const toneName = TONES.find((t) => t.id === state.tone)?.label || state.tone;

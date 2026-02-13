@@ -1,5 +1,6 @@
 import type { GeneratedPost } from '../../../types';
 import { generateStats, formatCount } from './engagementStats';
+import { ENTREPRISE_LOGOS } from '../wizard/types';
 
 interface HelloworkPreviewProps {
   post: GeneratedPost;
@@ -40,6 +41,8 @@ function ShareIconEl({ className }: { className?: string }) {
 
 export default function HelloworkPreview({ post }: HelloworkPreviewProps) {
   const stats = generateStats(post.content, 'hellowork');
+  const companyName = post.entreprise || 'Fuseau';
+  const logoUrl = post.entreprise ? ENTREPRISE_LOGOS[post.entreprise] : null;
 
   const hasOffer =
     post.content.toLowerCase().includes('offre') ||
@@ -50,15 +53,21 @@ export default function HelloworkPreview({ post }: HelloworkPreviewProps) {
   return (
     <div className="bg-white text-[14px] text-[#1A1A2E]" style={{ fontFamily: FONT }}>
       <div className="flex items-start gap-3 px-4 pt-4">
-        <div
-          className="flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white"
-          style={{ backgroundColor: HW_GREEN }}
-        >
-          F
-        </div>
+        {logoUrl ? (
+          <div className="flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-xl overflow-hidden bg-white border border-[#E5E7EB]">
+            <img src={logoUrl} alt={companyName} className="h-full w-full object-contain p-1" />
+          </div>
+        ) : (
+          <div
+            className="flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white"
+            style={{ backgroundColor: HW_GREEN }}
+          >
+            {companyName.charAt(0)}
+          </div>
+        )}
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
-            <span className="text-[14px] font-semibold" style={{ color: HW_DARK }}>Fuseau SAS</span>
+            <span className="text-[14px] font-semibold" style={{ color: HW_DARK }}>{companyName}</span>
             <svg className="h-4 w-4" viewBox="0 0 20 20" fill={HW_GREEN}>
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
             </svg>
@@ -97,7 +106,7 @@ export default function HelloworkPreview({ post }: HelloworkPreviewProps) {
           <div className="flex items-center justify-between p-3">
             <div>
               <p className="text-[13px] font-semibold" style={{ color: HW_DARK }}>Nouvelle opportunite</p>
-              <p className="text-[12px] text-[#6B7280]">Fuseau SAS recrute</p>
+              <p className="text-[12px] text-[#6B7280]">{companyName} recrute</p>
             </div>
             <button
               className="flex items-center gap-1.5 rounded-lg px-4 py-2 text-[13px] font-semibold text-white transition-opacity hover:opacity-90"
