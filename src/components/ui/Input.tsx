@@ -24,7 +24,7 @@ export function Input({
     <div className="space-y-2">
       {label && (
         <label className={cn(
-          'block text-sm font-semibold transition-colors duration-200',
+          'block text-xs sm:text-sm font-semibold transition-colors duration-200',
           focused ? 'text-fuseau-primary' : 'text-gray-700',
           error && 'text-red-600'
         )}>
@@ -39,7 +39,7 @@ export function Input({
         )}
         <input
           className={cn(
-            'w-full px-3.5 py-2.5 rounded-lg border transition-all duration-150',
+            'w-full px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-lg border transition-all duration-150',
             'bg-white text-gray-900 placeholder-gray-400',
             'focus:outline-none focus:ring-2 focus:ring-fuseau-primary/20',
             leftIcon && 'pl-10',
@@ -93,7 +93,7 @@ export function Textarea({
     <div className="space-y-2">
       {label && (
         <label className={cn(
-          'block text-sm font-semibold transition-colors duration-200',
+          'block text-xs sm:text-sm font-semibold transition-colors duration-200',
           focused ? 'text-fuseau-primary' : 'text-gray-700',
           error && 'text-red-600'
         )}>
@@ -102,7 +102,7 @@ export function Textarea({
       )}
       <textarea
         className={cn(
-          'w-full px-3.5 py-2.5 rounded-lg border transition-all duration-150 resize-none',
+          'w-full px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-lg border transition-all duration-150 resize-none',
           'bg-white text-gray-900 placeholder-gray-400',
           'focus:outline-none focus:ring-2 focus:ring-fuseau-primary/20',
           error

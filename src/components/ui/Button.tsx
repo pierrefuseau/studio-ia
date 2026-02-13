@@ -5,6 +5,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'accent';
   size?: 'sm' | 'md' | 'lg';
   loading?: boolean;
+  fullWidth?: boolean;
   children: React.ReactNode;
 }
 
@@ -12,6 +13,7 @@ export function Button({
   variant = 'primary',
   size = 'md',
   loading = false,
+  fullWidth = false,
   className,
   disabled,
   children,
@@ -38,6 +40,7 @@ export function Button({
         'focus-ring-primary',
         variants[variant],
         sizes[size],
+        fullWidth && 'w-full sm:w-auto',
         className
       )}
       disabled={disabled || loading}
@@ -45,7 +48,7 @@ export function Button({
     >
       {loading ? (
         <>
-          <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
           <span>Chargement...</span>
         </>
       ) : (

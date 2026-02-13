@@ -47,11 +47,13 @@ function ToastComponent({ id, type, title, description, duration = 5000, onRemov
 
   return (
     <div
-      className={`fixed bottom-4 right-4 bg-white border border-gray-200 rounded-lg shadow-sm p-4 max-w-sm transition-all duration-300 ${
-        isVisible ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
+      className={`fixed bottom-0 inset-x-0 p-3 sm:p-0 sm:bottom-4 sm:right-4 sm:left-auto bg-white border border-gray-200 rounded-t-lg sm:rounded-lg shadow-sm sm:max-w-sm transition-all duration-300 ${
+        isVisible
+          ? 'translate-y-0 sm:translate-y-0 sm:translate-x-0 opacity-100'
+          : 'translate-y-full sm:translate-y-0 sm:translate-x-full opacity-0'
       }`}
     >
-      <div className="flex gap-3">
+      <div className="flex gap-3 p-3 sm:p-4">
         <Icon className={`w-5 h-5 ${toastColors[type]} flex-shrink-0 mt-0.5`} />
         <div className="flex-1">
           <p className="text-sm font-medium text-gray-900">{title}</p>
@@ -64,7 +66,7 @@ function ToastComponent({ id, type, title, description, duration = 5000, onRemov
             setIsVisible(false);
             setTimeout(() => onRemove(id), 300);
           }}
-          className="text-gray-400 hover:text-gray-600 transition-colors"
+          className="min-w-[44px] min-h-[44px] sm:min-w-0 sm:min-h-0 p-2 sm:p-0 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
         >
           <X className="w-4 h-4" />
         </button>
