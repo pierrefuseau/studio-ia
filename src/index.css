@@ -97,25 +97,31 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--text-primary);
 }
 
-h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; }
-h2 { font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; }
-h3 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.01em; }
-h4 { font-size: 1.25rem; font-weight: 600; }
-h5 { font-size: 1.125rem; font-weight: 600; }
-h6 { font-size: 1rem; font-weight: 600; }
+h1 { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.03em; }
+h2 { font-size: 1.125rem; font-weight: 700; letter-spacing: -0.02em; }
+h3 { font-size: 1rem; font-weight: 600; letter-spacing: -0.01em; }
+h4 { font-size: 0.875rem; font-weight: 600; }
+h5 { font-size: 0.875rem; font-weight: 600; }
+h6 { font-size: 0.875rem; font-weight: 600; }
 
-@media (max-width: 768px) {
-  h1 { font-size: 2rem; }
-  h2 { font-size: 1.75rem; }
-  h3 { font-size: 1.375rem; }
+@media (min-width: 640px) {
+  h1 { font-size: 1.5rem; }
+  h2 { font-size: 1.25rem; }
+  h3 { font-size: 1.125rem; }
+  h4 { font-size: 1rem; }
 }
 
-* {
-  transition: color var(--transition-fast),
-              border-color var(--transition-fast),
-              background-color var(--transition-fast),
-              box-shadow var(--transition-base),
-              transform var(--transition-base);
+@media (min-width: 1024px) {
+  h1 { font-size: 1.875rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.25rem; }
+  h4 { font-size: 1.125rem; }
+}
+
+*,
+*::before,
+*::after {
+  transition: none;
 }
 
 .focus-ring {
@@ -210,17 +216,25 @@ h6 { font-size: 1rem; font-weight: 600; }
 }
 
 .container-fuseau {
-  max-width: 1280px;
+  max-width: 100%;
   margin-left: auto;
   margin-right: auto;
-  padding-left: var(--spacing-md);
-  padding-right: var(--spacing-md);
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 640px) {
   .container-fuseau {
-    padding-left: var(--spacing-xl);
-    padding-right: var(--spacing-xl);
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-fuseau {
+    max-width: 1280px;
+    padding-left: 2rem;
+    padding-right: 2rem;
   }
 }
 
@@ -268,4 +282,31 @@ h6 { font-size: 1rem; font-weight: 600; }
   font-weight: 600;
   border-radius: var(--radius-full);
   letter-spacing: 0.03em;
+}
+
+@layer utilities {
+  .transition-theme {
+    transition: color var(--transition-fast),
+                border-color var(--transition-fast),
+                background-color var(--transition-fast),
+                box-shadow var(--transition-base),
+                transform var(--transition-base);
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .hover-lift:hover {
+    transform: none;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .hover-glow:hover {
+    box-shadow: none;
+  }
+
+  .card-fuseau:hover {
+    transform: none;
+    box-shadow: var(--shadow-sm);
+    border-color: var(--border);
+  }
 }
