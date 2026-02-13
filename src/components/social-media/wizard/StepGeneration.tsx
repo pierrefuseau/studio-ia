@@ -33,7 +33,7 @@ type Device = 'mobile' | 'desktop';
 function SummaryRow({ icon: Icon, label, value }: { icon: React.ElementType; label: string; value: string }) {
   return (
     <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-4 py-3">
-      <Icon className="h-4 w-4 shrink-0 text-fuseau-primary" />
+      <Icon className="h-4 w-4 shrink-0 text-fuseau-secondary" />
       <span className="text-xs font-medium text-gray-500">{label}</span>
       <span className="ml-auto text-sm font-semibold text-gray-800">{value}</span>
     </div>

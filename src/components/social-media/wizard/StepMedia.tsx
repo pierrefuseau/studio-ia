@@ -142,9 +142,9 @@ export default function StepMedia({ state, onChange }: StepMediaProps) {
                   ) : (
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-fuseau-cream">
                       {f.file.type === 'application/pdf' ? (
-                        <FileText className="h-5 w-5 text-fuseau-primary" />
+                        <FileText className="h-5 w-5 text-fuseau-secondary" />
                       ) : (
-                        <Image className="h-5 w-5 text-fuseau-primary" />
+                        <Image className="h-5 w-5 text-fuseau-secondary" />
                       )}
                     </div>
                   )}
@@ -168,7 +168,7 @@ export default function StepMedia({ state, onChange }: StepMediaProps) {
         </AnimatePresence>
 
         <div className="mt-4 flex items-start gap-2 rounded-xl bg-fuseau-cream p-3">
-          <Info className="mt-0.5 h-4 w-4 shrink-0 text-fuseau-primary" />
+          <Info className="mt-0.5 h-4 w-4 shrink-0 text-fuseau-secondary" />
           <p className="text-xs leading-relaxed text-gray-600">
             Les fichiers joints seront analyses par l'IA pour enrichir le post.
             Les images pourront etre utilisees comme visuels du post.

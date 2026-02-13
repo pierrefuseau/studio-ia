@@ -83,7 +83,7 @@ export default function StepContent({ state, onChange }: StepContentProps) {
                 <div
                   className={`flex h-12 w-12 items-center justify-center rounded-xl transition-colors duration-200 ${
                     selected || hovered
-                      ? 'bg-fuseau-primary text-white'
+                      ? 'bg-fuseau-secondary text-white'
                       : 'bg-gray-100 text-gray-500'
                   }`}
                 >
