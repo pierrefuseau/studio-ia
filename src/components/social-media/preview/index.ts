@@ -6,5 +6,7 @@ export { default as TikTokPreview } from './TikTokPreview';
 export { default as XPreview } from './XPreview';
 export { default as HelloworkPreview } from './HelloworkPreview';
 export { default as PreviewRenderer } from './PreviewRenderer';
+export { default as SocialPreviewDemo } from './SocialPreviewDemo';
+export { default as UniversalSocialPreview } from './UniversalSocialPreview';
 export { generateStats, formatCount } from './engagementStats';
 export type { EngagementStats } from './engagementStats';
