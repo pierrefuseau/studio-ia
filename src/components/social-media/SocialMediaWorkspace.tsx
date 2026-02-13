@@ -86,7 +86,7 @@ export default function SocialMediaWorkspace() {
         icon={<Share2 className="h-5 w-5" />}
       />
 
-      <div className="mb-6 flex items-center gap-1">
+      <nav aria-label="Etapes du formulaire" className="mb-6 flex items-center gap-1">
         {STEPS.map((s, i) => {
           const done = i < step;
           const active = i === step;
@@ -97,6 +97,8 @@ export default function SocialMediaWorkspace() {
                   if (i < step) goTo(i);
                 }}
                 disabled={i > step}
+                aria-label={`Etape ${i + 1} : ${s.label}${done ? ' (terminee)' : active ? ' (en cours)' : ''}`}
+                aria-current={active ? 'step' : undefined}
                 className="flex w-full items-center gap-2"
               >
                 <div
@@ -119,7 +121,7 @@ export default function SocialMediaWorkspace() {
                 </span>
               </button>
               {i < STEPS.length - 1 && (
-                <div className="mx-2 h-px flex-1">
+                <div className="mx-2 h-px flex-1" aria-hidden="true">
                   <div
                     className={`h-full rounded-full transition-colors duration-300 ${
                       i < step ? 'bg-fuseau-primary' : 'bg-gray-200'
@@ -130,7 +132,7 @@ export default function SocialMediaWorkspace() {
             </div>
           );
         })}
-      </div>
+      </nav>
 
       <div className="min-h-0 flex-1 overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-card">
         <AnimatePresence mode="wait" custom={direction}>
@@ -167,7 +169,7 @@ export default function SocialMediaWorkspace() {
       <div className="mt-4 flex items-center justify-between">
         <div>
           {step > 0 && (
-            <Button variant="ghost" size="sm" onClick={() => goTo(step - 1)}>
+            <Button variant="ghost" size="sm" onClick={() => goTo(step - 1)} aria-label="Retour a l'etape precedente">
               <ChevronLeft className="h-4 w-4" />
               Precedent
             </Button>
@@ -175,7 +177,7 @@ export default function SocialMediaWorkspace() {
         </div>
         <div>
           {step < STEPS.length - 1 && (
-            <Button size="sm" disabled={!canProceed} onClick={() => goTo(step + 1)}>
+            <Button size="sm" disabled={!canProceed} onClick={() => goTo(step + 1)} aria-label="Passer a l'etape suivante">
               Suivant
               <ChevronRight className="h-4 w-4" />
             </Button>

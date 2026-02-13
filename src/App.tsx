@@ -1,10 +1,24 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { AppProvider, useApp } from './contexts/AppContext';
 import { ToastProvider } from './components/ui/Toast';
 import { AppLayout } from './components/AppLayout';
-import { TreatmentWorkspace } from './components/TreatmentWorkspace';
-import { VideoGenerationForm } from './components/VideoGenerationForm';
-import SocialMediaWorkspace from './components/social-media/SocialMediaWorkspace';
+import { Loader2 } from 'lucide-react';
+
+const TreatmentWorkspace = React.lazy(() =>
+  import('./components/TreatmentWorkspace').then((m) => ({ default: m.TreatmentWorkspace }))
+);
+const VideoGenerationForm = React.lazy(() =>
+  import('./components/VideoGenerationForm').then((m) => ({ default: m.VideoGenerationForm }))
+);
+const SocialMediaWorkspace = React.lazy(() => import('./components/social-media/SocialMediaWorkspace'));
+
+function WorkspaceLoader() {
+  return (
+    <div className="flex h-full items-center justify-center">
+      <Loader2 className="h-8 w-8 animate-spin text-fuseau-primary" />
+    </div>
+  );
+}
 
 function AppContent() {
   const { state } = useApp();
@@ -22,7 +36,9 @@ function AppContent() {
 
   return (
     <AppLayout>
-      {renderWorkspace()}
+      <Suspense fallback={<WorkspaceLoader />}>
+        {renderWorkspace()}
+      </Suspense>
     </AppLayout>
   );
 }

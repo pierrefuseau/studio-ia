@@ -143,7 +143,29 @@ export default function StepGeneration({ state, result, isLoading, onGenerate }:
   }
 
   return (
-    <div className="space-y-6">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: 'easeOut' }}
+      className="space-y-6"
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3 }}
+        className="flex items-center gap-3 rounded-xl bg-green-50 px-4 py-3"
+      >
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 15, delay: 0.15 }}
+          className="flex h-7 w-7 items-center justify-center rounded-full bg-green-500"
+        >
+          <Check className="h-4 w-4 text-white" />
+        </motion.div>
+        <p className="text-sm font-medium text-green-800">Post genere avec succes</p>
+      </motion.div>
+
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="space-y-4">
           <h3 className="text-base font-semibold text-gray-900">Contenu genere</h3>
@@ -154,7 +176,7 @@ export default function StepGeneration({ state, result, isLoading, onGenerate }:
 
           {postImage && (
             <div className="overflow-hidden rounded-2xl border border-gray-200">
-              <img src={postImage} alt="" className="w-full object-cover" />
+              <img src={postImage} alt="Visuel genere pour le post" className="w-full object-cover" />
             </div>
           )}
 
@@ -177,13 +199,16 @@ export default function StepGeneration({ state, result, isLoading, onGenerate }:
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-base font-semibold text-gray-900">Apercu</h3>
-            <div className="flex items-center gap-1 rounded-lg bg-gray-100 p-1">
+            <div role="tablist" aria-label="Type d'apercu" className="flex items-center gap-1 rounded-lg bg-gray-100 p-1">
               {(['mobile', 'desktop'] as Device[]).map((d) => {
                 const active = device === d;
                 const Icon = d === 'mobile' ? Smartphone : Monitor;
                 return (
                   <button
                     key={d}
+                    role="tab"
+                    aria-selected={active}
+                    aria-label={`Apercu ${d === 'mobile' ? 'mobile' : 'bureau'}`}
                     onClick={() => setDevice(d)}
                     className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-all ${
                       active
@@ -200,13 +225,16 @@ export default function StepGeneration({ state, result, isLoading, onGenerate }:
           </div>
 
           {state.platforms.length > 1 && (
-            <div className="flex gap-1.5 overflow-x-auto rounded-xl bg-gray-100 p-1">
+            <div role="tablist" aria-label="Plateformes" className="flex gap-1.5 overflow-x-auto rounded-xl bg-gray-100 p-1">
               {state.platforms.map((p) => {
                 const platform = PLATFORMS.find((pl) => pl.id === p);
                 const active = activeTab === p;
                 return (
                   <button
                     key={p}
+                    role="tab"
+                    aria-selected={active}
+                    aria-label={`Apercu ${platform?.label}`}
                     onClick={() => setActiveTab(p)}
                     className={`flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium transition-all ${
                       active
@@ -240,6 +268,6 @@ export default function StepGeneration({ state, result, isLoading, onGenerate }:
           </AnimatePresence>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

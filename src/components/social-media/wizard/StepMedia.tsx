@@ -3,6 +3,7 @@ import { useDropzone } from 'react-dropzone';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Upload, X, FileText, Image, Link as LinkIcon, Info } from 'lucide-react';
 import type { SocialMediaState, UploadedFile } from '../../../types';
+import { useToast } from '../../ui/Toast';
 
 interface StepMediaProps {
   state: SocialMediaState;
@@ -30,6 +31,8 @@ function isImage(file: File): boolean {
 }
 
 export default function StepMedia({ state, onChange }: StepMediaProps) {
+  const { addToast } = useToast();
+
   const onDrop = useCallback(
     (accepted: File[]) => {
       const newFiles: UploadedFile[] = accepted.map((file) => ({
@@ -39,8 +42,13 @@ export default function StepMedia({ state, onChange }: StepMediaProps) {
         status: 'pending' as const,
       }));
       onChange({ uploadedFiles: [...state.uploadedFiles, ...newFiles] });
+      if (accepted.length === 1) {
+        addToast({ type: 'success', title: 'Fichier ajoute' });
+      } else if (accepted.length > 1) {
+        addToast({ type: 'success', title: `${accepted.length} fichiers ajoutes` });
+      }
     },
-    [state.uploadedFiles, onChange]
+    [state.uploadedFiles, onChange, addToast]
   );
 
   const removeFile = useCallback(
@@ -136,7 +144,7 @@ export default function StepMedia({ state, onChange }: StepMediaProps) {
                   {f.preview ? (
                     <img
                       src={f.preview}
-                      alt=""
+                      alt={`Apercu de ${f.file.name}`}
                       className="h-10 w-10 shrink-0 rounded-lg object-cover"
                     />
                   ) : (
@@ -157,6 +165,7 @@ export default function StepMedia({ state, onChange }: StepMediaProps) {
                       e.stopPropagation();
                       removeFile(f.id);
                     }}
+                    aria-label={`Supprimer ${f.file.name}`}
                     className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500"
                   >
                     <X className="h-4 w-4" />

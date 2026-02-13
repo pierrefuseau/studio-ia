@@ -67,6 +67,8 @@ export default function StepConfiguration({ state, onChange }: StepConfiguration
               <motion.button
                 key={name}
                 variants={itemVariants}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
                 onClick={() => onChange({ entreprise: name })}
                 className={`relative flex flex-col items-center gap-2.5 rounded-2xl border-2 px-3 py-4 transition-all duration-200 ${
                   selected
@@ -115,6 +117,8 @@ export default function StepConfiguration({ state, onChange }: StepConfiguration
               <motion.button
                 key={platform.id}
                 variants={itemVariants}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
                 onClick={() => togglePlatform(platform.id)}
                 className={`relative flex items-center gap-3 rounded-2xl border-2 px-4 py-3.5 text-left transition-all duration-200 ${
                   selected
