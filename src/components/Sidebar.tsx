@@ -172,6 +172,8 @@ export function Sidebar({ collapsed, onToggle, mobile, onNavigate }: SidebarProp
         mobile ? 'w-[280px] max-w-[85vw]' : collapsed ? 'w-[68px]' : 'w-[260px]'
       }`}
       style={{ background: '#0F172A' }}
+      role="navigation"
+      aria-label="Menu principal"
     >
       <div className="px-5 pt-6 pb-4">
         {collapsed ? (
@@ -215,7 +217,9 @@ export function Sidebar({ collapsed, onToggle, mobile, onNavigate }: SidebarProp
                 <button
                   onClick={(e) => handleCollapsedClick(section, e)}
                   title={section.label}
-                  className={`w-full flex items-center justify-center rounded-lg px-2 py-2.5 transition-colors duration-150 ${
+                  aria-label={section.label}
+                  aria-disabled={section.disabled || undefined}
+                  className={`w-full flex items-center justify-center rounded-lg px-2 py-2.5 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-fuseau-accent/40 ${
                     section.disabled
                       ? 'opacity-30 cursor-not-allowed'
                       : hasActive
@@ -240,7 +244,10 @@ export function Sidebar({ collapsed, onToggle, mobile, onNavigate }: SidebarProp
               <div className="px-2">
                 <button
                   onClick={() => !section.disabled && toggleSection(section.id)}
-                  className={`w-full flex items-center gap-2.5 rounded-lg px-3 py-2 transition-colors duration-150 ${
+                  aria-expanded={isOpen}
+                  aria-disabled={section.disabled || undefined}
+                  aria-label={`${section.label}${section.disabled ? ' (bientot disponible)' : ''}`}
+                  className={`w-full flex items-center gap-2.5 rounded-lg px-3 py-2 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-fuseau-accent/40 ${
                     section.disabled
                       ? 'opacity-30 cursor-not-allowed'
                       : hasActive
@@ -280,7 +287,9 @@ export function Sidebar({ collapsed, onToggle, mobile, onNavigate }: SidebarProp
                       <li key={child.id}>
                         <button
                           onClick={() => handleNav(child.id)}
-                          className={`w-full flex items-center gap-3 rounded-lg transition-colors duration-150 px-3 py-2 pl-8 ${
+                          aria-current={active ? 'page' : undefined}
+                          aria-label={child.label}
+                          className={`w-full flex items-center gap-3 rounded-lg transition-colors duration-150 px-3 py-2 pl-8 focus:outline-none focus:ring-2 focus:ring-fuseau-accent/40 ${
                             active
                               ? 'bg-[#E88C30] text-white'
                               : 'text-white/60 hover:text-white hover:bg-white/8'
@@ -303,7 +312,8 @@ export function Sidebar({ collapsed, onToggle, mobile, onNavigate }: SidebarProp
 
       <button
         onClick={onToggle}
-        className={`absolute -right-3 top-20 w-6 h-6 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors z-50 ${
+        aria-label={collapsed ? 'Ouvrir le menu' : 'Reduire le menu'}
+        className={`absolute -right-3 top-20 w-6 h-6 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors z-50 focus:outline-none focus:ring-2 focus:ring-fuseau-primary/30 ${
           mobile ? 'hidden' : ''
         }`}
       >

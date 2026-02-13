@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useId } from 'react';
 import { cn } from '../../utils/cn';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -16,18 +16,26 @@ export function Input({
   leftIcon,
   rightIcon,
   className,
+  id: externalId,
   ...props
 }: InputProps) {
   const [focused, setFocused] = useState(false);
+  const autoId = useId();
+  const inputId = externalId || autoId;
+  const errorId = `${inputId}-error`;
+  const helperId = `${inputId}-helper`;
 
   return (
     <div className="space-y-2">
       {label && (
-        <label className={cn(
-          'block text-xs sm:text-sm font-semibold transition-colors duration-200',
-          focused ? 'text-fuseau-primary' : 'text-gray-700',
-          error && 'text-red-600'
-        )}>
+        <label
+          htmlFor={inputId}
+          className={cn(
+            'block text-xs sm:text-sm font-semibold transition-colors duration-200',
+            focused ? 'text-fuseau-primary' : 'text-gray-700',
+            error && 'text-red-600'
+          )}
+        >
           {label}
         </label>
       )}
@@ -38,6 +46,9 @@ export function Input({
           </div>
         )}
         <input
+          id={inputId}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? errorId : helperText ? helperId : undefined}
           className={cn(
             'w-full px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-lg border transition-all duration-150',
             'bg-white text-gray-900 placeholder-gray-400',
@@ -60,15 +71,15 @@ export function Input({
         )}
       </div>
       {error && (
-        <p className="text-sm text-red-600 flex items-center gap-1">
-          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+        <p id={errorId} role="alert" className="text-sm text-red-600 flex items-center gap-1">
+          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
             <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
           </svg>
           {error}
         </p>
       )}
       {helperText && !error && (
-        <p className="text-sm text-gray-500">{helperText}</p>
+        <p id={helperId} className="text-sm text-gray-500">{helperText}</p>
       )}
     </div>
   );
@@ -85,22 +96,33 @@ export function Textarea({
   error,
   helperText,
   className,
+  id: externalId,
   ...props
 }: TextareaProps) {
   const [focused, setFocused] = useState(false);
+  const autoId = useId();
+  const textareaId = externalId || autoId;
+  const errorId = `${textareaId}-error`;
+  const helperId = `${textareaId}-helper`;
 
   return (
     <div className="space-y-2">
       {label && (
-        <label className={cn(
-          'block text-xs sm:text-sm font-semibold transition-colors duration-200',
-          focused ? 'text-fuseau-primary' : 'text-gray-700',
-          error && 'text-red-600'
-        )}>
+        <label
+          htmlFor={textareaId}
+          className={cn(
+            'block text-xs sm:text-sm font-semibold transition-colors duration-200',
+            focused ? 'text-fuseau-primary' : 'text-gray-700',
+            error && 'text-red-600'
+          )}
+        >
           {label}
         </label>
       )}
       <textarea
+        id={textareaId}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={error ? errorId : helperText ? helperId : undefined}
         className={cn(
           'w-full px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-lg border transition-all duration-150 resize-none',
           'bg-white text-gray-900 placeholder-gray-400',
@@ -115,15 +137,15 @@ export function Textarea({
         {...props}
       />
       {error && (
-        <p className="text-sm text-red-600 flex items-center gap-1">
-          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+        <p id={errorId} role="alert" className="text-sm text-red-600 flex items-center gap-1">
+          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
             <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
           </svg>
           {error}
         </p>
       )}
       {helperText && !error && (
-        <p className="text-sm text-gray-500">{helperText}</p>
+        <p id={helperId} className="text-sm text-gray-500">{helperText}</p>
       )}
     </div>
   );

@@ -1,8 +1,10 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { AppProvider, useApp } from './contexts/AppContext';
 import { ToastProvider } from './components/ui/Toast';
 import { AppLayout } from './components/AppLayout';
-import { Loader2 } from 'lucide-react';
+import { CommandPalette } from './components/CommandPalette';
+import { WorkspaceSkeleton } from './components/ui/Skeleton';
 
 const TreatmentWorkspace = React.lazy(() =>
   import('./components/TreatmentWorkspace').then((m) => ({ default: m.TreatmentWorkspace }))
@@ -12,18 +14,17 @@ const VideoGenerationForm = React.lazy(() =>
 );
 const SocialMediaWorkspace = React.lazy(() => import('./components/social-media/SocialMediaWorkspace'));
 
-function WorkspaceLoader() {
-  return (
-    <div className="flex h-full items-center justify-center">
-      <Loader2 className="h-8 w-8 animate-spin text-fuseau-primary" />
-    </div>
-  );
-}
+const pageTransition = {
+  initial: { opacity: 0, x: 24 },
+  animate: { opacity: 1, x: 0, transition: { duration: 0.3, ease: [0.25, 0.1, 0.25, 1] } },
+  exit: { opacity: 0, x: -24, transition: { duration: 0.2, ease: [0.25, 0.1, 0.25, 1] } },
+};
 
 function AppContent() {
   const { state } = useApp();
+  const workspaceKey = state.selectedTreatmentType || 'default';
 
-  const renderWorkspace = () => {
+  const workspace = useMemo(() => {
     switch (state.selectedTreatmentType) {
       case 'video-generation':
         return <VideoGenerationForm />;
@@ -32,13 +33,24 @@ function AppContent() {
       default:
         return <TreatmentWorkspace />;
     }
-  };
+  }, [state.selectedTreatmentType]);
 
   return (
     <AppLayout>
-      <Suspense fallback={<WorkspaceLoader />}>
-        {renderWorkspace()}
+      <Suspense fallback={<WorkspaceSkeleton />}>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={workspaceKey}
+            variants={pageTransition}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+          >
+            {workspace}
+          </motion.div>
+        </AnimatePresence>
       </Suspense>
+      <CommandPalette />
     </AppLayout>
   );
 }

@@ -91,26 +91,29 @@ export function VideoGenerationForm() {
       <div className="bg-white rounded-xl border border-gray-200 shadow-card p-4 sm:p-6">
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            <label htmlFor="video-description" className="block text-sm font-medium text-gray-700 mb-1.5">
               Description
             </label>
             <textarea
+              id="video-description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Decrivez votre video..."
               className="w-full px-3.5 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-fuseau-primary/20 focus:border-fuseau-primary hover:border-gray-300 resize-none text-gray-900 placeholder-gray-400 transition-all duration-150"
               rows={4}
               required
+              aria-required="true"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label htmlFor="video-format" className="block text-sm font-medium text-gray-700 mb-1.5">
                 <Maximize className="w-3.5 h-3.5 inline mr-1 text-gray-400" />
                 Format
               </label>
               <Input
+                id="video-format"
                 type="text"
                 value={format}
                 disabled
@@ -119,11 +122,12 @@ export function VideoGenerationForm() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label htmlFor="video-duration" className="block text-sm font-medium text-gray-700 mb-1.5">
                 <Clock className="w-3.5 h-3.5 inline mr-1 text-gray-400" />
                 Temps
               </label>
               <Input
+                id="video-duration"
                 type="text"
                 value={duration}
                 disabled
@@ -133,9 +137,9 @@ export function VideoGenerationForm() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            <p className="block text-sm font-medium text-gray-700 mb-1.5" id="image-upload-label">
               Image
-            </label>
+            </p>
             <div
               {...getRootProps()}
               className={`border-2 border-dashed rounded-lg p-4 sm:p-6 text-center cursor-pointer transition-all duration-150 ${
@@ -144,7 +148,7 @@ export function VideoGenerationForm() {
                   : 'border-gray-200 hover:border-gray-300 bg-gray-50/50'
               }`}
             >
-              <input {...getInputProps()} />
+              <input {...getInputProps()} aria-labelledby="image-upload-label" />
               {previewUrl ? (
                 <div className="space-y-3">
                   <img
@@ -182,7 +186,7 @@ export function VideoGenerationForm() {
             </div>
           )}
 
-          <Button type="submit" className="w-full sm:w-auto" disabled={isSubmitting}>
+          <Button type="submit" className="w-full sm:w-auto" disabled={isSubmitting} aria-label="Generer la video">
             {isSubmitting ? 'Envoi en cours...' : 'Generer la video'}
           </Button>
         </form>

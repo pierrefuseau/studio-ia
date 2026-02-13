@@ -15,6 +15,13 @@ export function AppLayout({ children }: AppLayoutProps) {
 
   return (
     <div className="min-h-screen bg-fuseau-cream">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:z-[999] focus:top-2 focus:left-2 focus:rounded-lg focus:bg-fuseau-primary focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white focus:shadow-lg"
+      >
+        Aller au contenu principal
+      </a>
+
       <div className="hidden lg:block">
         <Sidebar collapsed={collapsed} onToggle={() => setCollapsed(!collapsed)} />
       </div>
@@ -28,6 +35,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             transition={{ duration: 0.2 }}
             className="fixed inset-0 bg-black/30 z-40 lg:hidden"
             onClick={closeMobile}
+            aria-hidden="true"
           />
         )}
       </AnimatePresence>
@@ -56,22 +64,23 @@ export function AppLayout({ children }: AppLayoutProps) {
           collapsed ? 'lg:ml-[68px]' : 'lg:ml-[260px]'
         }`}
       >
-        <div className="sticky top-0 z-30 bg-white border-b border-gray-200 px-4 h-14 flex items-center gap-3 lg:hidden">
+        <header className="sticky top-0 z-30 bg-white border-b border-gray-200 px-4 h-14 flex items-center gap-3 lg:hidden">
           <button
             onClick={() => setMobileOpen(true)}
-            className="p-1.5 -ml-1 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
+            className="p-1.5 -ml-1 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-fuseau-primary/30"
+            aria-label="Ouvrir le menu de navigation"
           >
             <Menu className="w-5 h-5" />
           </button>
           <img
             src="/GROUPE_FUSEAU_V2.png"
-            alt="Fuseau"
+            alt="Logo Groupe Fuseau"
             className="h-7 object-contain"
           />
           <span className="text-xs font-semibold text-fuseau-secondary">Studio Produit</span>
-        </div>
+        </header>
 
-        <main className="p-3 sm:p-4 md:p-6 lg:p-8">
+        <main id="main-content" className="p-3 sm:p-4 md:p-6 lg:p-8" role="main">
           {children}
         </main>
       </div>

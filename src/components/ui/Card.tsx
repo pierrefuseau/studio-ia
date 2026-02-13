@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion, type HTMLMotionProps } from 'framer-motion';
 import { cn } from '../../utils/cn';
 
 interface CardProps {
@@ -96,5 +97,27 @@ export function TreatmentCard({
         <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-fuseau-primary via-fuseau-accent to-fuseau-primary" />
       )}
     </button>
+  );
+}
+
+interface BentoCardProps extends HTMLMotionProps<'div'> {
+  children: React.ReactNode;
+  className?: string;
+}
+
+export function BentoCard({ children, className, onClick, ...rest }: BentoCardProps) {
+  return (
+    <motion.div
+      whileHover={{ y: -2, transition: { duration: 0.2 } }}
+      className={cn(
+        'rounded-2xl border border-gray-200 bg-white shadow-card transition-shadow hover:shadow-card-hover',
+        onClick && 'cursor-pointer',
+        className
+      )}
+      onClick={onClick}
+      {...rest}
+    >
+      {children}
+    </motion.div>
   );
 }

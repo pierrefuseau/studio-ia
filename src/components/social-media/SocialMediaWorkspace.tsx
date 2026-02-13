@@ -108,17 +108,20 @@ export default function SocialMediaWorkspace() {
                 aria-current={active ? 'step' : undefined}
                 className="flex w-full items-center gap-1.5 sm:gap-2"
               >
-                <div
-                  className={`flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-full text-[10px] sm:text-xs font-bold transition-all duration-300 ${
+                <motion.div
+                  layout
+                  className={`flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-full text-[10px] sm:text-xs font-bold ${
                     done
                       ? 'bg-fuseau-primary text-white'
                       : active
                         ? 'bg-fuseau-primary text-white shadow-md shadow-fuseau-primary/30'
                         : 'bg-gray-200 text-gray-500'
                   }`}
+                  animate={active ? { scale: [1, 1.12, 1] } : { scale: 1 }}
+                  transition={{ duration: 0.35 }}
                 >
                   {done ? <Check className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> : i + 1}
-                </div>
+                </motion.div>
                 <span
                   className={`hidden sm:block text-xs font-medium ${
                     active ? 'text-gray-900' : done ? 'text-fuseau-primary' : 'text-gray-400'
@@ -128,14 +131,12 @@ export default function SocialMediaWorkspace() {
                 </span>
               </button>
               {i < STEPS.length - 1 && (
-                <div className="mx-1 sm:mx-2 h-px flex-1" aria-hidden="true">
-                  <div
-                    className={`h-full rounded-full transition-colors duration-300 ${
-                      i < step
-                        ? 'bg-fuseau-primary'
-                        : 'bg-gray-200 border-0 sm:border-0 border-dashed'
-                    }`}
-                    style={i >= step ? { backgroundImage: 'none', borderTop: '1.5px dashed', borderColor: i >= step ? '#e5e7eb' : undefined } : undefined}
+                <div className="mx-1 sm:mx-2 h-0.5 flex-1 rounded-full bg-gray-200 overflow-hidden" aria-hidden="true">
+                  <motion.div
+                    className="h-full rounded-full bg-fuseau-primary origin-left"
+                    initial={false}
+                    animate={{ scaleX: i < step ? 1 : 0 }}
+                    transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
                   />
                 </div>
               )}
@@ -196,11 +197,14 @@ export default function SocialMediaWorkspace() {
 
         <div className="hidden sm:flex flex-1 justify-center gap-2">
           {STEPS.map((_, i) => (
-            <div
+            <motion.div
               key={i}
-              className={`h-2 w-2 rounded-full transition-colors duration-300 ${
-                i === step ? 'bg-fuseau-primary' : i < step ? 'bg-fuseau-primary/40' : 'bg-gray-300'
-              }`}
+              animate={{
+                scale: i === step ? 1.3 : 1,
+                backgroundColor: i === step ? '#C8102E' : i < step ? 'rgba(200,16,46,0.4)' : '#D1D5DB',
+              }}
+              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              className="h-2 w-2 rounded-full"
             />
           ))}
         </div>
