@@ -36,12 +36,12 @@ export default function StepContent({ state, onChange }: StepContentProps) {
   const charOverflow = charCount > minCharLimit;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       <div>
         <h3 className="mb-1 text-base font-semibold text-gray-900">Type de post</h3>
-        <p className="mb-4 text-sm text-gray-500">Choisissez comment creer votre contenu</p>
+        <p className="mb-3 sm:mb-4 text-sm text-gray-500">Choisissez comment creer votre contenu</p>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
           {([
             {
               type: 'personnalise' as PostType,
@@ -65,7 +65,7 @@ export default function StepContent({ state, onChange }: StepContentProps) {
                 onHoverStart={() => setHoveredType(type)}
                 onHoverEnd={() => setHoveredType(null)}
                 onClick={() => onChange({ postType: type })}
-                className={`relative flex flex-col items-center gap-3 rounded-2xl border-2 p-6 text-center transition-all duration-200 ${
+                className={`relative flex flex-row sm:flex-col items-center sm:items-center gap-3 rounded-2xl border-2 p-3 sm:p-4 text-left sm:text-center transition-all duration-200 ${
                   selected
                     ? 'border-fuseau-primary bg-fuseau-cream shadow-md'
                     : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm'
@@ -75,23 +75,23 @@ export default function StepContent({ state, onChange }: StepContentProps) {
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="absolute right-3 top-3 flex h-5 w-5 items-center justify-center rounded-full bg-fuseau-primary"
+                    className="absolute right-2.5 top-2.5 sm:right-3 sm:top-3 flex h-5 w-5 items-center justify-center rounded-full bg-fuseau-primary"
                   >
                     <Check className="h-3 w-3 text-white" />
                   </motion.div>
                 )}
                 <div
-                  className={`flex h-12 w-12 items-center justify-center rounded-xl transition-colors duration-200 ${
+                  className={`flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl transition-colors duration-200 ${
                     selected || hovered
                       ? 'bg-fuseau-secondary text-white'
                       : 'bg-gray-100 text-gray-500'
                   }`}
                 >
-                  <Icon className="h-6 w-6" />
+                  <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <p className="text-sm font-semibold text-gray-800">{title}</p>
-                  <p className="mt-1 text-xs leading-relaxed text-gray-500">{desc}</p>
+                  <p className="mt-0.5 sm:mt-1 text-xs leading-relaxed text-gray-500">{desc}</p>
                 </div>
               </motion.button>
             );
@@ -108,8 +108,7 @@ export default function StepContent({ state, onChange }: StepContentProps) {
                 value={state.textePersonnalise}
                 onChange={(e) => onChange({ textePersonnalise: e.target.value })}
                 placeholder="Redigez le contenu de votre post..."
-                rows={6}
-                className="w-full resize-none rounded-xl border-2 border-gray-200 bg-white px-4 py-3 text-sm text-gray-800 placeholder-gray-400 transition-colors focus:border-fuseau-primary focus:outline-none"
+                className="w-full resize-y rounded-xl border-2 border-gray-200 bg-white px-4 py-3 text-sm text-gray-800 placeholder-gray-400 transition-colors focus:border-fuseau-primary focus:outline-none min-h-[120px] sm:min-h-[160px]"
               />
               <div className="mt-1 flex items-center justify-between px-1">
                 <span className="text-xs text-gray-400">
@@ -126,13 +125,13 @@ export default function StepContent({ state, onChange }: StepContentProps) {
             </div>
           </motion.div>
         ) : (
-          <motion.div key="generique" {...fadeSlide} className="space-y-8">
+          <motion.div key="generique" {...fadeSlide} className="space-y-6 sm:space-y-8">
             <div>
               <h3 className="mb-1 text-base font-semibold text-gray-900">Ton</h3>
-              <p className="mb-4 text-sm text-gray-500">Definissez le style d'ecriture</p>
+              <p className="mb-3 sm:mb-4 text-sm text-gray-500">Definissez le style d'ecriture</p>
 
               <motion.div
-                className="grid grid-cols-2 gap-3 sm:grid-cols-3"
+                className="flex flex-wrap gap-1.5 sm:gap-2"
                 variants={stagger}
                 initial="hidden"
                 animate="visible"
@@ -144,26 +143,16 @@ export default function StepContent({ state, onChange }: StepContentProps) {
                       key={tone.id}
                       variants={item}
                       onClick={() => onChange({ tone: tone.id as ToneId })}
-                      className={`relative flex items-center gap-3 rounded-2xl border-2 px-4 py-3 text-left transition-all duration-200 ${
+                      className={`relative inline-flex items-center gap-1.5 sm:gap-2 rounded-full border-2 px-2 sm:px-3 py-1 sm:py-1.5 text-left transition-all duration-200 ${
                         selected
-                          ? 'border-fuseau-primary bg-fuseau-cream shadow-md'
-                          : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm'
+                          ? 'border-fuseau-primary bg-fuseau-cream shadow-sm'
+                          : 'border-gray-200 bg-white hover:border-gray-300'
                       }`}
                     >
-                      {selected && (
-                        <motion.div
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          className="absolute right-2 top-2 flex h-4 w-4 items-center justify-center rounded-full bg-fuseau-primary"
-                        >
-                          <Check className="h-2.5 w-2.5 text-white" />
-                        </motion.div>
-                      )}
-                      <span className="text-xl">{tone.emoji}</span>
-                      <div className="min-w-0">
-                        <p className="text-sm font-medium text-gray-800">{tone.label}</p>
-                        <p className="truncate text-[11px] text-gray-400">{tone.description}</p>
-                      </div>
+                      <span className="text-sm sm:text-base">{tone.emoji}</span>
+                      <span className={`text-[11px] sm:text-xs font-medium ${selected ? 'text-fuseau-primary' : 'text-gray-600'}`}>
+                        {tone.label}
+                      </span>
                     </motion.button>
                   );
                 })}
@@ -172,10 +161,10 @@ export default function StepContent({ state, onChange }: StepContentProps) {
 
             <div>
               <h3 className="mb-1 text-base font-semibold text-gray-900">Categorie</h3>
-              <p className="mb-4 text-sm text-gray-500">Quel type de contenu souhaitez-vous ?</p>
+              <p className="mb-3 sm:mb-4 text-sm text-gray-500">Quel type de contenu souhaitez-vous ?</p>
 
               <motion.div
-                className="grid grid-cols-2 gap-3 sm:grid-cols-3"
+                className="flex flex-wrap gap-1.5 sm:gap-2"
                 variants={stagger}
                 initial="hidden"
                 animate="visible"
@@ -187,26 +176,16 @@ export default function StepContent({ state, onChange }: StepContentProps) {
                       key={cat.id}
                       variants={item}
                       onClick={() => onChange({ category: cat.id as CategoryId })}
-                      className={`relative flex items-center gap-3 rounded-2xl border-2 px-4 py-3 text-left transition-all duration-200 ${
+                      className={`relative inline-flex items-center gap-1.5 sm:gap-2 rounded-full border-2 px-2 sm:px-3 py-1 sm:py-1.5 text-left transition-all duration-200 ${
                         selected
-                          ? 'border-fuseau-primary bg-fuseau-cream shadow-md'
-                          : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm'
+                          ? 'border-fuseau-primary bg-fuseau-cream shadow-sm'
+                          : 'border-gray-200 bg-white hover:border-gray-300'
                       }`}
                     >
-                      {selected && (
-                        <motion.div
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          className="absolute right-2 top-2 flex h-4 w-4 items-center justify-center rounded-full bg-fuseau-primary"
-                        >
-                          <Check className="h-2.5 w-2.5 text-white" />
-                        </motion.div>
-                      )}
-                      <span className="text-xl">{cat.emoji}</span>
-                      <div className="min-w-0">
-                        <p className="text-sm font-medium text-gray-800">{cat.label}</p>
-                        <p className="truncate text-[11px] text-gray-400">{cat.description}</p>
-                      </div>
+                      <span className="text-sm sm:text-base">{cat.emoji}</span>
+                      <span className={`text-[11px] sm:text-xs font-medium ${selected ? 'text-fuseau-primary' : 'text-gray-600'}`}>
+                        {cat.label}
+                      </span>
                     </motion.button>
                   );
                 })}
