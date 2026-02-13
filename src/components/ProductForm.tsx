@@ -159,138 +159,137 @@ export function ProductForm({ treatmentType }: ProductFormProps) {
     }
   };
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-4 shadow-card">
-      <h3 className="text-sm font-semibold text-gray-900 mb-4">
+    <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 shadow-card">
+      <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-3 sm:mb-4">
         Informations produit
       </h3>
-      
-      {/* Code Article - uniquement pour le détourage */}
-      {treatmentType === 'background-removal' && (
-        <div>
-          <label className="block text-sm text-gray-700 mb-1.5">
-            Code Article
-          </label>
-          <input
-            type="text"
-            value={productCode}
-            onChange={handleCodeChange}
-            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
-            placeholder="Ex: REF-001-2024"
-          />
-        </div>
-      )}
 
-      <div>
-        <label className="block text-sm text-gray-700 mb-1.5">
-          Nom du produit {(treatmentType === 'scene-composition' || treatmentType === 'product-scene') && <span className="text-red-500">*</span>}
-        </label>
-        <div className="relative">
-          <input
-            type="text"
-            value={productName}
-            onChange={handleNameChange}
-            className={`w-full px-3 py-2 pr-10 border rounded-lg focus-ring ${
-              (treatmentType === 'scene-composition' || treatmentType === 'product-scene') && !productName.trim()
-                ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
-                : 'border-gray-200 focus:border-gray-400'
-            }`}
-            placeholder={treatmentType === 'product-scene' ? "Ex: Chaise ergonomique, Gamme mobilier bureau..." : "Ex: Chaise de bureau ergonomique"}
-            required={treatmentType === 'scene-composition' || treatmentType === 'product-scene'}
-          />
-          <button
-            onClick={() => improveText('name', productName)}
-            disabled={isImproving === 'name' || !productName.trim()}
-            className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-fuseau-accent hover:text-fuseau-primary hover:bg-red-50 rounded transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            title="Améliorer avec IA"
-          >
-            {isImproving === 'name' ? (
-              <div className="w-4 h-4 border-2 border-fuseau-accent border-t-transparent rounded-full animate-spin" />
-            ) : (
-              <Wand2 className="w-4 h-4" />
-            )}
-          </button>
-        </div>
-        {(treatmentType === 'scene-composition' || treatmentType === 'product-scene') && !productName.trim() && (
-          <p className="text-xs text-red-500 mt-1">Le nom du produit est obligatoire pour la mise en situation</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+        {treatmentType === 'background-removal' && (
+          <div>
+            <label className="block text-sm sm:text-base text-gray-700 mb-1.5">
+              Code Article
+            </label>
+            <input
+              type="text"
+              value={productCode}
+              onChange={handleCodeChange}
+              className="w-full px-2 sm:px-3 py-2 sm:py-3 text-sm sm:text-base border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
+              placeholder="Ex: REF-001-2024"
+            />
+          </div>
         )}
-      </div>
 
-      {/* Description de la mise en situation - uniquement pour Produit Brut */}
-      {treatmentType === 'product-scene' && (
         <div>
-          <label className="block text-sm text-gray-700 mb-1.5">
-            Quelle mise en situation ?
-            <span className="text-gray-400 ml-1 font-normal">(optionnel)</span>
+          <label className="block text-sm sm:text-base text-gray-700 mb-1.5">
+            Nom du produit {(treatmentType === 'scene-composition' || treatmentType === 'product-scene') && <span className="text-red-500">*</span>}
           </label>
           <div className="relative">
-            <textarea
-              value={productDescription}
-              onChange={handleDescriptionChange}
-              className="w-full px-3 py-2 pr-10 border border-gray-200 rounded-lg focus-ring resize-none"
-              rows={3}
-              placeholder="Ex: Dans un bureau moderne avec éclairage naturel, sur un parquet en chêne, ambiance cosy et professionnelle..."
+            <input
+              type="text"
+              value={productName}
+              onChange={handleNameChange}
+              className={`w-full px-2 sm:px-3 py-2 sm:py-3 pr-10 text-sm sm:text-base border rounded-lg focus-ring ${
+                (treatmentType === 'scene-composition' || treatmentType === 'product-scene') && !productName.trim()
+                  ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
+                  : 'border-gray-200 focus:border-gray-400'
+              }`}
+              placeholder={treatmentType === 'product-scene' ? "Ex: Chaise ergonomique, Gamme mobilier bureau..." : "Ex: Chaise de bureau ergonomique"}
+              required={treatmentType === 'scene-composition' || treatmentType === 'product-scene'}
             />
             <button
-              onClick={() => improveText('description', productDescription)}
-              disabled={isImproving === 'description' || !productDescription.trim()}
-              className="absolute right-2 top-2 p-1.5 text-fuseau-accent hover:text-fuseau-primary hover:bg-red-50 rounded transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={() => improveText('name', productName)}
+              disabled={isImproving === 'name' || !productName.trim()}
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-fuseau-accent hover:text-fuseau-primary hover:bg-red-50 rounded transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               title="Améliorer avec IA"
             >
-              {isImproving === 'description' ? (
+              {isImproving === 'name' ? (
                 <div className="w-4 h-4 border-2 border-fuseau-accent border-t-transparent rounded-full animate-spin" />
               ) : (
                 <Wand2 className="w-4 h-4" />
               )}
             </button>
           </div>
-        </div>
-      )}
-
-      {/* Description - masquée pour le détourage */}
-      {treatmentType !== 'background-removal' && treatmentType !== 'product-scene' && (
-        <div>
-        <label className="block text-sm text-gray-700 mb-1.5">
-          Description
-          {treatmentType === 'scene-composition' ? (
-            <span className="text-red-500 ml-1">*</span>
-          ) : (
-            <span className="text-gray-400 ml-1 font-normal">(optionnel)</span>
+          {(treatmentType === 'scene-composition' || treatmentType === 'product-scene') && !productName.trim() && (
+            <p className="text-xs text-red-500 mt-1">Le nom du produit est obligatoire pour la mise en situation</p>
           )}
-        </label>
-        <div className="relative">
-          <textarea
-            value={productDescription}
-            onChange={handleDescriptionChange}
-            className={`w-full px-3 py-2 pr-10 border rounded-lg focus-ring resize-none ${
-              treatmentType === 'scene-composition' && !productDescription.trim()
-                ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
-                : 'border-gray-200 focus:border-gray-400'
-            }`}
-            rows={3}
-            placeholder="Décrivez votre produit..."
-            required={treatmentType === 'scene-composition'}
-          />
-          <button
-            onClick={() => improveText('description', productDescription)}
-            disabled={isImproving === 'description' || !productDescription.trim()}
-            className="absolute right-2 top-2 p-1.5 text-fuseau-accent hover:text-fuseau-primary hover:bg-red-50 rounded transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            title="Améliorer avec IA"
-          >
-            {isImproving === 'description' ? (
-              <div className="w-4 h-4 border-2 border-fuseau-accent border-t-transparent rounded-full animate-spin" />
-            ) : (
-              <Wand2 className="w-4 h-4" />
-            )}
-          </button>
         </div>
-        {treatmentType === 'scene-composition' && !productDescription.trim() && (
-          <p className="text-xs text-red-500 mt-1">La description est obligatoire pour la mise en situation</p>
+
+        {treatmentType === 'product-scene' && (
+          <div className="md:col-span-2">
+            <label className="block text-sm sm:text-base text-gray-700 mb-1.5">
+              Quelle mise en situation ?
+              <span className="text-gray-400 ml-1 font-normal">(optionnel)</span>
+            </label>
+            <div className="relative">
+              <textarea
+                value={productDescription}
+                onChange={handleDescriptionChange}
+                className="w-full px-2 sm:px-3 py-2 sm:py-3 pr-10 text-sm sm:text-base border border-gray-200 rounded-lg focus-ring resize-none"
+                rows={3}
+                placeholder="Ex: Dans un bureau moderne avec éclairage naturel, sur un parquet en chêne, ambiance cosy et professionnelle..."
+              />
+              <button
+                onClick={() => improveText('description', productDescription)}
+                disabled={isImproving === 'description' || !productDescription.trim()}
+                className="absolute right-2 top-2 p-1.5 text-fuseau-accent hover:text-fuseau-primary hover:bg-red-50 rounded transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Améliorer avec IA"
+              >
+                {isImproving === 'description' ? (
+                  <div className="w-4 h-4 border-2 border-fuseau-accent border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <Wand2 className="w-4 h-4" />
+                )}
+              </button>
+            </div>
+          </div>
         )}
-        <div className="mt-1 text-xs text-gray-400 text-right">
-          {productDescription.length}/500
-        </div>
-        </div>
-      )}
+
+        {treatmentType !== 'background-removal' && treatmentType !== 'product-scene' && (
+          <div className="md:col-span-2">
+            <label className="block text-sm sm:text-base text-gray-700 mb-1.5">
+              Description
+              {treatmentType === 'scene-composition' ? (
+                <span className="text-red-500 ml-1">*</span>
+              ) : (
+                <span className="text-gray-400 ml-1 font-normal">(optionnel)</span>
+              )}
+            </label>
+            <div className="relative">
+              <textarea
+                value={productDescription}
+                onChange={handleDescriptionChange}
+                className={`w-full px-2 sm:px-3 py-2 sm:py-3 pr-10 text-sm sm:text-base border rounded-lg focus-ring resize-none ${
+                  treatmentType === 'scene-composition' && !productDescription.trim()
+                    ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
+                    : 'border-gray-200 focus:border-gray-400'
+                }`}
+                rows={3}
+                placeholder="Décrivez votre produit..."
+                required={treatmentType === 'scene-composition'}
+              />
+              <button
+                onClick={() => improveText('description', productDescription)}
+                disabled={isImproving === 'description' || !productDescription.trim()}
+                className="absolute right-2 top-2 p-1.5 text-fuseau-accent hover:text-fuseau-primary hover:bg-red-50 rounded transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Améliorer avec IA"
+              >
+                {isImproving === 'description' ? (
+                  <div className="w-4 h-4 border-2 border-fuseau-accent border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <Wand2 className="w-4 h-4" />
+                )}
+              </button>
+            </div>
+            {treatmentType === 'scene-composition' && !productDescription.trim() && (
+              <p className="text-xs text-red-500 mt-1">La description est obligatoire pour la mise en situation</p>
+            )}
+            <div className="mt-1 text-xs text-gray-400 text-right">
+              {productDescription.length}/500
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
