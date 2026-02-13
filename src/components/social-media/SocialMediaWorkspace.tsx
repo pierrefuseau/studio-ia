@@ -75,7 +75,7 @@ export default function SocialMediaWorkspace() {
   }, [state, addToast]);
 
   return (
-    <div className="flex flex-col min-h-screen supports-[min-height:100dvh]:min-h-[100dvh]">
+    <div className="flex flex-col h-[calc(100dvh-5rem)] sm:h-[calc(100dvh-5.5rem)] md:h-[calc(100dvh-6.5rem)] lg:h-[calc(100dvh-4rem)]">
       <ContentHeader
         breadcrumbs={[
           { label: 'Studio IA' },
@@ -178,7 +178,7 @@ export default function SocialMediaWorkspace() {
         </div>
       </div>
 
-      <div className="mt-3 sm:mt-4 py-3 px-1 sm:py-4 sm:px-2 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2 sm:gap-0">
+      <div className="shrink-0 mt-2 sm:mt-3 py-2 px-1 sm:py-3 sm:px-2 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2 sm:gap-0">
         <div className="sm:flex-1">
           {step > 0 && (
             <Button
@@ -194,11 +194,11 @@ export default function SocialMediaWorkspace() {
           )}
         </div>
 
-        <div className="hidden sm:flex flex-1 justify-center gap-1.5">
+        <div className="hidden sm:flex flex-1 justify-center gap-2">
           {STEPS.map((_, i) => (
             <div
               key={i}
-              className={`h-1.5 w-1.5 rounded-full transition-colors duration-300 ${
+              className={`h-2 w-2 rounded-full transition-colors duration-300 ${
                 i === step ? 'bg-fuseau-primary' : i < step ? 'bg-fuseau-primary/40' : 'bg-gray-300'
               }`}
             />
