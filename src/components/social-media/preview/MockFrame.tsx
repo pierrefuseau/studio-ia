@@ -40,7 +40,7 @@ function MobileFrame({ url, children }: { url: string; children: React.ReactNode
 
 function DesktopFrame({ url, children }: { url: string; children: React.ReactNode }) {
   return (
-    <div className="mx-auto w-full max-w-full sm:max-w-[700px] lg:max-w-[900px] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
+    <div className="mx-auto w-full max-w-full sm:max-w-[620px] md:max-w-[700px] lg:max-w-[900px] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
       <div className="flex items-center gap-2 border-b border-gray-200 bg-gray-50 px-4 py-2.5">
         <div className="flex gap-1.5">
           <span className="h-3 w-3 rounded-full bg-[#FF5F57]" />

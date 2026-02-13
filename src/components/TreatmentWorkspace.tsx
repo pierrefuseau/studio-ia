@@ -157,7 +157,7 @@ export function TreatmentWorkspace() {
   const hasSideContent = state.isProcessing;
 
   return (
-    <div className="max-w-full md:max-w-4xl lg:max-w-5xl xl:max-w-6xl p-3 sm:p-4 md:p-6">
+    <div className="max-w-full md:max-w-4xl lg:max-w-5xl xl:max-w-6xl mx-auto p-3 sm:p-4 md:p-6">
       <ContentHeader
         breadcrumbs={[
           { label: config.name },

@@ -78,7 +78,7 @@ export function VideoGenerationForm() {
   };
 
   return (
-    <div className="max-w-full sm:max-w-xl md:max-w-2xl lg:max-w-3xl">
+    <div className="max-w-full sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto">
       <ContentHeader
         breadcrumbs={[
           { label: 'Generation de videos' },
