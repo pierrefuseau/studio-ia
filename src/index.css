@@ -294,6 +294,57 @@ h6 { font-size: 0.875rem; font-weight: 600; }
   }
 }
 
+.bento-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+@media (min-width: 640px) {
+  .bento-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .bento-grid {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      "bento-item-1 bento-item-2 bento-item-3"
+      "bento-item-4 bento-item-5 bento-item-6";
+    gap: 20px;
+  }
+  .bento-grid > :nth-child(1) { grid-area: bento-item-1; }
+  .bento-grid > :nth-child(2) { grid-area: bento-item-2; }
+  .bento-grid > :nth-child(3) { grid-area: bento-item-3; }
+  .bento-grid > :nth-child(4) { grid-area: bento-item-4; }
+  .bento-grid > :nth-child(5) { grid-area: bento-item-5; }
+  .bento-grid > :nth-child(6) { grid-area: bento-item-6; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bento-grid *,
+  .bento-grid *::before,
+  .bento-grid *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .animate-blob-blue,
+  .animate-blob-orange,
+  .animate-pulse,
+  .animate-ping {
+    animation: none !important;
+  }
+
+  .hover-lift:hover {
+    transform: none;
+  }
+}
+
 @media (hover: none) and (pointer: coarse) {
   .hover-lift:hover {
     transform: none;
