@@ -152,25 +152,23 @@ export function ProductInfoForm() {
   };
 
   return (
-    <Card glass className="p-6">
-      <div className="space-y-6">
-        {/* En-tête */}
-        <div className="flex items-center justify-between">
+    <Card glass className="p-4 sm:p-5 lg:p-6">
+      <div className="space-y-4 sm:space-y-6">
+        <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
               <Package className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+              <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">
                 Informations Produit
               </h2>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                 Décrivez votre produit pour optimiser les traitements IA
               </p>
             </div>
           </div>
-          
-          {/* Indicateur de statut */}
+
           <div className="flex items-center space-x-2">
             {state.product?.name && state.product?.description ? (
               <div className="flex items-center space-x-2 px-3 py-1 bg-blue-100 dark:bg-blue-900/30 rounded-full">
@@ -190,8 +188,7 @@ export function ProductInfoForm() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Nom du produit */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           <div className="space-y-3">
             <div className="relative">
               <Input
@@ -205,33 +202,32 @@ export function ProductInfoForm() {
                     <button
                       onClick={() => improveProductName()}
                       disabled={isGenerating || !state.product?.name?.trim()}
-                      className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors disabled:opacity-50"
+                      className="p-2 sm:p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors disabled:opacity-50"
                       title="Améliorer avec IA"
                     >
                       {isGenerating && generatingField === 'name' ? (
-                        <div className="w-4 h-4 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
+                        <div className="w-5 h-5 sm:w-4 sm:h-4 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
                       ) : (
-                        <Wand2 className="w-4 h-4 text-orange-500" />
+                        <Wand2 className="w-5 h-5 sm:w-4 sm:h-4 text-orange-500" />
                       )}
                     </button>
                     <button
                       onClick={generateSuggestions}
                       disabled={isGenerating}
-                      className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors disabled:opacity-50"
+                      className="p-2 sm:p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors disabled:opacity-50"
                       title="Générer avec IA"
                     >
                       {isGenerating && generatingField === 'suggestions' ? (
-                        <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                        <div className="w-5 h-5 sm:w-4 sm:h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
                       ) : (
-                        <Sparkles className="w-4 h-4 text-blue-500" />
+                        <Sparkles className="w-5 h-5 sm:w-4 sm:h-4 text-blue-500" />
                       )}
                     </button>
                   </div>
                 }
               />
             </div>
-            
-            {/* Suggestions IA */}
+
             {suggestions.length > 0 && (
               <div className="space-y-2">
                 <p className="text-xs font-medium text-gray-600 dark:text-gray-400 flex items-center">
@@ -246,7 +242,7 @@ export function ProductInfoForm() {
                         updateProduct({ name: suggestion });
                         setSuggestions([]);
                       }}
-                      className="block w-full text-left text-xs p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-700 dark:hover:text-orange-300 transition-all duration-200 hover:scale-[1.02] border border-blue-200/50 dark:border-blue-700/50 hover:border-orange-300 dark:hover:border-orange-600"
+                      className="block w-full text-left text-xs p-2 sm:p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-700 dark:hover:text-orange-300 transition-all duration-200 sm:hover:scale-[1.02] border border-blue-200/50 dark:border-blue-700/50 hover:border-orange-300 dark:hover:border-orange-600"
                     >
                       {suggestion}
                     </button>
@@ -256,9 +252,8 @@ export function ProductInfoForm() {
             )}
           </div>
 
-          {/* Description du produit */}
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Description du produit
               </label>
@@ -291,17 +286,16 @@ export function ProductInfoForm() {
                 </button>
               </div>
             </div>
-            
+
             <div className="relative">
               <textarea
                 placeholder="Décrivez votre produit : caractéristiques principales, utilisation, public cible, points forts..."
                 value={state.product?.description || ''}
                 onChange={(e) => updateProduct({ description: e.target.value })}
-                className="w-full px-3 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 resize-none"
+                className="w-full px-3 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 resize-none min-h-[80px] sm:min-h-[100px]"
                 rows={4}
-                style={{ minHeight: '100px' }}
               />
-              <div className="absolute bottom-3 right-3 flex items-center space-x-2">
+              <div className="sm:absolute sm:bottom-3 sm:right-3 mt-1 sm:mt-0 text-right flex items-center justify-end space-x-2">
                 <span className="text-xs text-gray-400">
                   {state.product?.description?.split(' ').filter(word => word.length > 0).length || 0} mots
                 </span>
@@ -311,9 +305,8 @@ export function ProductInfoForm() {
                 </span>
               </div>
             </div>
-            
-            {/* Toolbar de mise en forme */}
-            <div className="flex items-center justify-between">
+
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center space-x-2">
                 <button className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors">
                   <Type className="w-4 h-4 text-gray-500" />
@@ -322,19 +315,18 @@ export function ProductInfoForm() {
                   Utilisez des mots-clés pour optimiser l'IA
                 </div>
               </div>
-              
-              {/* Score de qualité */}
+
               {state.product?.description && (
                 <div className="flex items-center space-x-2">
                   <div className="text-xs text-gray-500">Qualité:</div>
                   <div className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    state.product.description.length > 100 
+                    state.product.description.length > 100
                       ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
                       : state.product.description.length > 50
                       ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300'
                       : 'bg-gray-100 dark:bg-gray-900/30 text-gray-700 dark:text-gray-300'
                   }`}>
-                    {state.product.description.length > 100 ? 'Excellente' : 
+                    {state.product.description.length > 100 ? 'Excellente' :
                      state.product.description.length > 50 ? 'Bonne' : 'Basique'}
                   </div>
                 </div>
@@ -343,16 +335,15 @@ export function ProductInfoForm() {
           </div>
         </div>
 
-        {/* Conseils IA */}
         {(!state.product?.name || !state.product?.description) && (
-          <div className="p-4 bg-gradient-to-r from-blue-50 to-orange-50 dark:from-blue-900/20 dark:to-orange-900/20 rounded-lg border border-blue-200 dark:border-blue-700/30">
+          <div className="p-3 sm:p-4 bg-gradient-to-r from-blue-50 to-orange-50 dark:from-blue-900/20 dark:to-orange-900/20 rounded-lg border border-blue-200 dark:border-blue-700/30">
             <div className="flex items-start space-x-3">
               <Sparkles className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0 animate-pulse" />
               <div>
-                <h4 className="text-sm font-medium gradient-text mb-1">
+                <h4 className="text-xs sm:text-sm font-medium gradient-text mb-1">
                   Optimisez vos résultats avec l'IA
                 </h4>
-                <p className="text-sm text-gray-700 dark:text-gray-300">
+                <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
                   Plus vous fournissez d'informations détaillées, plus nos algorithmes pourront créer des visuels précis et adaptés à votre produit.
                 </p>
               </div>
