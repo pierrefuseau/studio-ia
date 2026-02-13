@@ -39,20 +39,36 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       className={`fixed top-0 left-0 h-screen z-40 flex flex-col transition-all duration-200 ${
         collapsed ? 'w-[68px]' : 'w-[260px]'
       }`}
-      style={{ background: '#0F1D3D' }}
+      style={{ background: '#0F172A' }}
     >
-      <div className={`flex items-center h-16 border-b border-white/10 ${collapsed ? 'justify-center px-2' : 'px-5'}`}>
-        <img
-          src="/GROUPE_FUSEAU_V2.png"
-          alt="Fuseau"
-          className={`object-contain transition-all ${collapsed ? 'h-7' : 'h-9'}`}
-        />
-        {!collapsed && (
-          <div className="ml-3 min-w-0">
-            <p className="text-white text-xs font-semibold leading-tight truncate">Studio Produit</p>
-            <p className="text-white/40 text-[10px] font-medium truncate">IA Generatrice d'images</p>
+      <div className="px-5 pt-6 pb-4">
+        {collapsed ? (
+          <div className="flex justify-center">
+            <div className="bg-white rounded-lg p-1.5">
+              <img
+                src="/Logo_Fuseau_Vectorisé.png"
+                alt="Fuseau"
+                className="h-8 w-auto object-contain"
+              />
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center text-center">
+            <div className="bg-white rounded-xl px-4 py-3">
+              <img
+                src="/Logo_Fuseau_Vectorisé.png"
+                alt="Fuseau"
+                className="h-14 w-auto object-contain"
+              />
+            </div>
+            <p className="text-slate-400 text-xs leading-snug mt-3">
+              Gestion de Contrats clients
+            </p>
           </div>
         )}
+      </div>
+      <div className="px-3 mb-2">
+        <div className="h-px bg-slate-700/60" />
       </div>
 
       <nav className="flex-1 py-4 overflow-y-auto">
