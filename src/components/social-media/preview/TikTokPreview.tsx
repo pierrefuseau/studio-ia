@@ -92,7 +92,7 @@ export default function TikTokPreview({ post }: TikTokPreviewProps) {
               <img src={logoUrl} alt={companyName} className="h-full w-full object-contain p-0.5" />
             </div>
           ) : (
-            <div className="flex h-[42px] w-[42px] items-center justify-center rounded-full bg-[#C8102E] text-xs font-bold text-white ring-2 ring-white">
+            <div className="flex h-[42px] w-[42px] items-center justify-center rounded-full bg-[#0F1D3D] text-xs font-bold text-white ring-2 ring-white">
               {companyName.charAt(0)}
             </div>
           )}

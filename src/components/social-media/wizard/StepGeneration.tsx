@@ -136,7 +136,7 @@ export default function StepGeneration({ state, result, isLoading, onGenerate }:
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ repeat: Infinity, duration: 1.2, ease: 'linear' }}
-          className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-fuseau-cream"
+          className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100"
         >
           <Sparkles className="h-7 w-7 text-fuseau-primary" />
         </motion.div>

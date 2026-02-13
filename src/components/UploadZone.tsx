@@ -269,7 +269,7 @@ export function UploadZone() {
             min-h-[120px] sm:min-h-[180px] lg:min-h-[220px]
             ${uploadedFiles.length > 0 ? 'min-h-[80px] sm:min-h-[120px] p-3 sm:p-4' : ''}
             ${isDragActive
-              ? 'border-fuseau-primary bg-fuseau-primary/[0.04] shadow-[0_0_0_3px_rgba(200,16,46,0.08)]'
+              ? 'border-fuseau-primary bg-fuseau-primary/[0.04] shadow-[0_0_0_3px_rgba(15,29,61,0.08)]'
               : 'border-gray-300 bg-gray-50 hover:bg-gray-100 hover:border-fuseau-primary'
             }`}
         >
@@ -311,7 +311,7 @@ export function UploadZone() {
                 <span className="text-[13px] text-gray-600 flex-1 truncate">{file.file.name}</span>
                 <span className="text-[11px] text-gray-500 mx-3 shrink-0">{formatFileSize(file.file.size)}</span>
                 <button
-                  className="text-red-500 p-1 opacity-70 hover:opacity-100 hover:scale-110 transition-all touch:opacity-100"
+                  className="text-gray-400 p-1 opacity-70 hover:opacity-100 hover:text-gray-600 hover:scale-110 transition-all touch:opacity-100"
                   onClick={() => removeFile(file.id)}
                 >
                   <X size={14} />
@@ -343,7 +343,7 @@ export function UploadZone() {
                     {index + 1}
                   </span>
                   <button
-                    className="absolute top-1 right-1 bg-red-500/80 backdrop-blur-sm text-white w-[18px] h-[18px] rounded-full flex items-center justify-center opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
+                    className="absolute top-1 right-1 bg-gray-700/80 backdrop-blur-sm text-white w-[18px] h-[18px] rounded-full flex items-center justify-center opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
                     onClick={() => removeFile(file.id)}
                   >
                     <X size={10} strokeWidth={2.5} />
@@ -361,7 +361,7 @@ export function UploadZone() {
             <button
               onClick={processImages}
               disabled={isProcessing || state.products.length === 0}
-              className="w-full rounded-lg bg-fuseau-primary py-2.5 text-[13px] font-semibold text-white tracking-wide transition-all duration-150 hover:bg-fuseau-primary-dark hover:-translate-y-px hover:shadow-lg hover:shadow-fuseau-primary/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none"
+              className="w-full rounded-lg bg-fuseau-accent py-2.5 text-[13px] font-semibold text-white tracking-wide transition-all duration-150 hover:bg-fuseau-accent-dark hover:-translate-y-px hover:shadow-lg hover:shadow-fuseau-accent/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none"
             >
               {isProcessing ? 'Traitement...' : `Traiter ${state.products.length} image(s)`}
             </button>

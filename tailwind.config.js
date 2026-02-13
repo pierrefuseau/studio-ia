@@ -18,24 +18,15 @@ export default {
       },
       colors: {
         fuseau: {
-          primary: '#C8102E',
-          'primary-dark': '#A00D25',
-          'primary-light': '#E8253F',
+          primary: '#0F1D3D',
+          'primary-dark': '#0A1428',
+          'primary-light': '#1A2D54',
           secondary: '#0F1D3D',
           'secondary-dark': '#0A1428',
           'secondary-light': '#1A2D54',
           accent: '#E88C30',
           'accent-dark': '#D07A20',
           'accent-light': '#F4A24E',
-          cream: '#FBF8F2',
-          beige: '#F5F0E6',
-          sand: '#EBE4D4',
-        },
-        cream: {
-          50: '#FEFCF9',
-          100: '#FDF8F0',
-          200: '#FAF0E4',
-          300: '#F5E6D4',
         },
         gray: {
           50: '#F9FAFB',

@@ -200,7 +200,7 @@ export function ProductForm({ treatmentType }: ProductFormProps) {
             <button
               onClick={() => improveText('name', productName)}
               disabled={isImproving === 'name' || !productName.trim()}
-              className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-fuseau-accent hover:text-fuseau-primary hover:bg-red-50 rounded transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-fuseau-accent hover:text-fuseau-primary hover:bg-gray-100 rounded transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               title="Améliorer avec IA"
             >
               {isImproving === 'name' ? (
@@ -232,7 +232,7 @@ export function ProductForm({ treatmentType }: ProductFormProps) {
               <button
                 onClick={() => improveText('description', productDescription)}
                 disabled={isImproving === 'description' || !productDescription.trim()}
-                className="absolute right-2 top-2 p-1.5 text-fuseau-accent hover:text-fuseau-primary hover:bg-red-50 rounded transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="absolute right-2 top-2 p-1.5 text-fuseau-accent hover:text-fuseau-primary hover:bg-gray-100 rounded transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Améliorer avec IA"
               >
                 {isImproving === 'description' ? (
@@ -271,7 +271,7 @@ export function ProductForm({ treatmentType }: ProductFormProps) {
               <button
                 onClick={() => improveText('description', productDescription)}
                 disabled={isImproving === 'description' || !productDescription.trim()}
-                className="absolute right-2 top-2 p-1.5 text-fuseau-accent hover:text-fuseau-primary hover:bg-red-50 rounded transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="absolute right-2 top-2 p-1.5 text-fuseau-accent hover:text-fuseau-primary hover:bg-gray-100 rounded transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Améliorer avec IA"
               >
                 {isImproving === 'description' ? (

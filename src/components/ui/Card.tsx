@@ -71,7 +71,7 @@ export function TreatmentCard({
           selected
             ? 'bg-fuseau-primary text-white'
             : enabled
-              ? 'bg-red-50 text-fuseau-primary group-hover:bg-fuseau-primary group-hover:text-white'
+              ? 'bg-gray-100 text-fuseau-primary group-hover:bg-fuseau-primary group-hover:text-white'
               : 'bg-gray-100 text-gray-400'
         )}>
           {icon}

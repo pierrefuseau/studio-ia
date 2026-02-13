@@ -67,7 +67,7 @@ export default function StepContent({ state, onChange }: StepContentProps) {
                 onClick={() => onChange({ postType: type })}
                 className={`relative flex flex-row sm:flex-col items-center sm:items-center gap-3 rounded-2xl border-2 p-3 sm:p-4 text-left sm:text-center transition-all duration-200 ${
                   selected
-                    ? 'border-fuseau-primary bg-fuseau-cream shadow-md'
+                    ? 'border-fuseau-primary bg-gray-50 shadow-md'
                     : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm'
                 }`}
               >
@@ -145,7 +145,7 @@ export default function StepContent({ state, onChange }: StepContentProps) {
                       onClick={() => onChange({ tone: tone.id as ToneId })}
                       className={`relative inline-flex items-center gap-1.5 sm:gap-2 rounded-full border-2 px-2 sm:px-3 py-1 sm:py-1.5 text-left transition-all duration-200 ${
                         selected
-                          ? 'border-fuseau-primary bg-fuseau-cream shadow-sm'
+                          ? 'border-fuseau-primary bg-gray-50 shadow-sm'
                           : 'border-gray-200 bg-white hover:border-gray-300'
                       }`}
                     >
@@ -178,7 +178,7 @@ export default function StepContent({ state, onChange }: StepContentProps) {
                       onClick={() => onChange({ category: cat.id as CategoryId })}
                       className={`relative inline-flex items-center gap-1.5 sm:gap-2 rounded-full border-2 px-2 sm:px-3 py-1 sm:py-1.5 text-left transition-all duration-200 ${
                         selected
-                          ? 'border-fuseau-primary bg-fuseau-cream shadow-sm'
+                          ? 'border-fuseau-primary bg-gray-50 shadow-sm'
                           : 'border-gray-200 bg-white hover:border-gray-300'
                       }`}
                     >

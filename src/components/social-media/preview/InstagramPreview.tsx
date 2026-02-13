@@ -58,7 +58,7 @@ export default function InstagramPreview({ post }: InstagramPreviewProps) {
               </div>
             ) : (
               <div className="flex h-[30px] w-[30px] items-center justify-center rounded-full bg-white ring-[2px] ring-white">
-                <span className="text-[10px] font-bold text-[#C8102E]">{companyName.charAt(0)}</span>
+                <span className="text-[10px] font-bold text-[#0F1D3D]">{companyName.charAt(0)}</span>
               </div>
             )}
           </div>

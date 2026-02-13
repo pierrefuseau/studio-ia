@@ -144,7 +144,7 @@ export function VideoGenerationForm() {
               {...getRootProps()}
               className={`border-2 border-dashed rounded-lg p-4 sm:p-6 text-center cursor-pointer transition-all duration-150 ${
                 isDragActive
-                  ? 'border-fuseau-primary bg-red-50/30'
+                  ? 'border-fuseau-primary bg-gray-50/50'
                   : 'border-gray-200 hover:border-gray-300 bg-gray-50/50'
               }`}
             >

@@ -211,7 +211,7 @@ export function CommandPalette() {
                         onMouseEnter={() => setSelectedIndex(i)}
                         className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors ${
                           active
-                            ? 'bg-fuseau-cream text-fuseau-primary'
+                            ? 'bg-gray-50 text-fuseau-primary'
                             : 'text-gray-700 hover:bg-gray-50'
                         }`}
                       >

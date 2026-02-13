@@ -23,7 +23,7 @@ export function Button({
     primary: 'bg-fuseau-primary text-white hover:bg-fuseau-primary-dark shadow-md hover:shadow-lg active:scale-95',
     secondary: 'bg-fuseau-secondary text-white hover:bg-fuseau-secondary-dark shadow-md hover:shadow-lg active:scale-95',
     outline: 'border-2 border-fuseau-primary text-fuseau-primary hover:bg-fuseau-primary hover:text-white active:scale-95',
-    ghost: 'text-fuseau-primary hover:bg-fuseau-cream active:scale-95',
+    ghost: 'text-fuseau-primary hover:bg-gray-50 active:scale-95',
     accent: 'bg-fuseau-accent text-fuseau-secondary hover:bg-fuseau-accent-dark shadow-md hover:shadow-lg active:scale-95'
   };
 

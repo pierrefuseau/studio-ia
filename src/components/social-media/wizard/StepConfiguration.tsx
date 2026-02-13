@@ -135,7 +135,7 @@ export default function StepConfiguration({
                 onClick={() => onChange({ entreprise: name })}
                 className={`relative flex flex-col items-center gap-2 sm:gap-2.5 rounded-2xl border-2 p-3 sm:p-4 transition-all duration-200 ${
                   selected
-                    ? 'border-fuseau-primary bg-fuseau-cream shadow-md'
+                    ? 'border-fuseau-primary bg-gray-50 shadow-md'
                     : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm'
                 }`}
               >

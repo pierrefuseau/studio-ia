@@ -201,7 +201,7 @@ export default function SocialMediaWorkspace() {
               key={i}
               animate={{
                 scale: i === step ? 1.3 : 1,
-                backgroundColor: i === step ? '#C8102E' : i < step ? 'rgba(200,16,46,0.4)' : '#D1D5DB',
+                backgroundColor: i === step ? '#0F1D3D' : i < step ? 'rgba(15,29,61,0.4)' : '#D1D5DB',
               }}
               transition={{ type: 'spring', stiffness: 300, damping: 20 }}
               className="h-2 w-2 rounded-full"

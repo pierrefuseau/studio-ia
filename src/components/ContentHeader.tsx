@@ -34,7 +34,7 @@ export function ContentHeader({ breadcrumbs, title, subtitle, icon, action }: Co
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2 sm:gap-3">
             {icon && (
-              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-red-50 text-fuseau-primary flex items-center justify-center">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-gray-100 text-fuseau-primary flex items-center justify-center">
                 {icon}
               </div>
             )}

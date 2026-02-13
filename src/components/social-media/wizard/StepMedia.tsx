@@ -97,7 +97,7 @@ export default function StepMedia({ state, onChange }: StepMediaProps) {
           {...getRootProps()}
           className={`cursor-pointer rounded-2xl border-2 border-dashed p-4 sm:p-6 lg:p-8 text-center transition-all duration-200 min-h-[100px] sm:min-h-[140px] flex items-center justify-center ${
             isDragActive
-              ? 'border-fuseau-primary bg-fuseau-cream'
+              ? 'border-fuseau-primary bg-gray-50'
               : 'border-gray-300 bg-gray-50 hover:border-gray-400 hover:bg-gray-100'
           }`}
         >
@@ -182,7 +182,7 @@ export default function StepMedia({ state, onChange }: StepMediaProps) {
                         removeFile(f.id);
                       }}
                       aria-label={`Supprimer ${f.file.name}`}
-                      className="absolute -top-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-red-500/80 text-white opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity backdrop-blur-sm"
+                      className="absolute -top-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-gray-700/80 text-white opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity backdrop-blur-sm"
                     >
                       <X className="h-3 w-3" strokeWidth={2.5} />
                     </button>
@@ -193,7 +193,7 @@ export default function StepMedia({ state, onChange }: StepMediaProps) {
           )}
         </AnimatePresence>
 
-        <div className="mt-3 sm:mt-4 flex items-start gap-2 rounded-xl bg-fuseau-cream p-3">
+        <div className="mt-3 sm:mt-4 flex items-start gap-2 rounded-xl bg-gray-50 p-3">
           <Info className="mt-0.5 h-4 w-4 shrink-0 text-fuseau-secondary" />
           <p className="text-[10px] sm:text-xs leading-relaxed text-gray-600">
             Les fichiers joints seront analyses par l'IA pour enrichir le post.

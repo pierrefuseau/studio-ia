@@ -14,7 +14,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   const closeMobile = useCallback(() => setMobileOpen(false), []);
 
   return (
-    <div className="min-h-screen bg-fuseau-cream">
+    <div className="min-h-screen bg-white">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:z-[999] focus:top-2 focus:left-2 focus:rounded-lg focus:bg-fuseau-primary focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white focus:shadow-lg"
