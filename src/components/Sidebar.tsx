@@ -4,8 +4,6 @@ import {
   ImagePlus,
   Video,
   UtensilsCrossed,
-  Settings,
-  Archive,
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
@@ -91,44 +89,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         </ul>
       </nav>
 
-      <div className={`border-t border-white/10 py-3 ${collapsed ? 'px-2' : 'px-2'}`}>
-        <ul className="space-y-0.5">
-          <li>
-            <button
-              title={collapsed ? 'Archives' : undefined}
-              className={`w-full flex items-center gap-3 rounded-lg text-white/40 hover:text-white/70 transition-colors duration-150 ${
-                collapsed ? 'justify-center px-2 py-2' : 'px-3 py-2'
-              }`}
-            >
-              <Archive className="w-4 h-4 flex-shrink-0" />
-              {!collapsed && <span className="text-[12px] font-medium">Archives</span>}
-            </button>
-          </li>
-          <li>
-            <button
-              title={collapsed ? 'Parametres' : undefined}
-              className={`w-full flex items-center gap-3 rounded-lg text-white/40 hover:text-white/70 transition-colors duration-150 ${
-                collapsed ? 'justify-center px-2 py-2' : 'px-3 py-2'
-              }`}
-            >
-              <Settings className="w-4 h-4 flex-shrink-0" />
-              {!collapsed && <span className="text-[12px] font-medium">Parametres</span>}
-            </button>
-          </li>
-        </ul>
-
-        {!collapsed && (
-          <div className="mt-3 mx-1 p-3 rounded-lg bg-white/5 flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-[#E88C30] flex items-center justify-center flex-shrink-0">
-              <span className="text-white text-xs font-bold">F</span>
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-white text-[11px] font-semibold truncate">Fuseau Admin</p>
-              <p className="text-white/40 text-[10px] truncate">admin@fuseau.fr</p>
-            </div>
-          </div>
-        )}
-      </div>
+      <div className="border-t border-white/10" />
 
       <button
         onClick={onToggle}
