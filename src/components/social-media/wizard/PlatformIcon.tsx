@@ -34,7 +34,9 @@ export default function PlatformIcon({ platform, className = 'w-6 h-6' }: Platfo
     ),
     hellowork: (
       <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" />
+        <rect x="4" y="3" width="4" height="18" rx="1.5" />
+        <rect x="16" y="3" width="4" height="18" rx="1.5" />
+        <rect x="8" y="9.5" width="8" height="5" rx="1" />
       </svg>
     ),
   };
