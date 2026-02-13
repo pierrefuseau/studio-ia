@@ -62,7 +62,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
               />
             </div>
             <p className="text-slate-400 text-xs leading-snug mt-3">
-              Gestion de Contrats clients
+              Centre Marketing du groupe
             </p>
           </div>
         )}
