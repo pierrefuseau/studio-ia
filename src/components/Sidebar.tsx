@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Camera,
   ImagePlus,
@@ -6,33 +6,152 @@ import {
   UtensilsCrossed,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
+  Palette,
+  MessageCircle,
+  type LucideIcon,
 } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
+
+interface NavChild {
+  id: string;
+  label: string;
+  icon: LucideIcon;
+}
+
+interface NavSection {
+  id: string;
+  label: string;
+  icon: LucideIcon;
+  defaultOpen: boolean;
+  disabled?: boolean;
+  children: NavChild[];
+}
+
+const sections: NavSection[] = [
+  {
+    id: 'designer',
+    label: 'Designer',
+    icon: Palette,
+    defaultOpen: true,
+    children: [
+      { id: 'scene-composition', label: 'Mise en situation Packaging', icon: ImagePlus },
+      { id: 'background-removal', label: 'Detourage Studio', icon: Camera },
+      { id: 'product-scene', label: 'Produit Brut', icon: ImagePlus },
+      { id: 'recipe-scene', label: 'Recettes du Chef', icon: UtensilsCrossed },
+      { id: 'video-generation', label: 'Generation Videos', icon: Video },
+    ],
+  },
+  {
+    id: 'community-manager',
+    label: 'Community Manager',
+    icon: MessageCircle,
+    defaultOpen: false,
+    disabled: true,
+    children: [],
+  },
+];
 
 interface SidebarProps {
   collapsed: boolean;
   onToggle: () => void;
 }
 
-const navItems = [
-  { id: 'scene-composition', label: 'Mise en situation Packaging', icon: ImagePlus },
-  { id: 'background-removal', label: 'Detourage Studio', icon: Camera },
-  { id: 'product-scene', label: 'Produit Brut', icon: ImagePlus },
-  { id: 'recipe-scene', label: 'Recettes du Chef', icon: UtensilsCrossed },
-  { id: 'video-generation', label: 'Generation Videos', icon: Video },
-];
+function CollapsedFlyout({
+  section,
+  anchorRect,
+  onSelect,
+  activeId,
+  onClose,
+}: {
+  section: NavSection;
+  anchorRect: DOMRect;
+  onSelect: (id: string) => void;
+  activeId: string | null;
+  onClose: () => void;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        onClose();
+      }
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [onClose]);
+
+  return (
+    <div
+      ref={ref}
+      className="fixed z-[60] bg-slate-800 rounded-lg shadow-xl border border-white/10 py-2 min-w-[220px]"
+      style={{
+        left: anchorRect.right + 8,
+        top: anchorRect.top,
+      }}
+    >
+      <p className="px-3 pb-1.5 text-[10px] font-semibold text-white/30 uppercase tracking-wider">
+        {section.label}
+      </p>
+      {section.children.map((child) => {
+        const Icon = child.icon;
+        const active = activeId === child.id;
+        return (
+          <button
+            key={child.id}
+            onClick={() => {
+              onSelect(child.id);
+              onClose();
+            }}
+            className={`w-full flex items-center gap-2.5 px-3 py-2 text-left transition-colors duration-150 ${
+              active
+                ? 'bg-[#E88C30] text-white'
+                : 'text-white/60 hover:text-white hover:bg-white/8'
+            }`}
+          >
+            <Icon className="w-4 h-4 flex-shrink-0" />
+            <span className="text-[13px] font-medium truncate">{child.label}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
 
 export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const { state, dispatch } = useApp();
-
   const currentId = state.selectedTreatmentType;
+
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>(() => {
+    const initial: Record<string, boolean> = {};
+    sections.forEach((s) => {
+      initial[s.id] = s.defaultOpen;
+    });
+    return initial;
+  });
+
+  const [flyout, setFlyout] = useState<{ sectionId: string; rect: DOMRect } | null>(null);
+
+  const toggleSection = (id: string) => {
+    setOpenSections((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
 
   const handleNav = (id: string) => {
     dispatch({ type: 'SELECT_TREATMENT_TYPE', payload: id });
     dispatch({ type: 'SET_CURRENT_STEP', payload: 'treatment' });
   };
 
-  const isActive = (id: string) => currentId === id;
+  const sectionHasActive = (section: NavSection) =>
+    section.children.some((c) => c.id === currentId);
+
+  const handleCollapsedClick = (section: NavSection, e: React.MouseEvent<HTMLButtonElement>) => {
+    if (section.disabled) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    setFlyout((prev) =>
+      prev?.sectionId === section.id ? null : { sectionId: section.id, rect }
+    );
+  };
 
   return (
     <aside
@@ -71,38 +190,100 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         <div className="h-px bg-slate-700/60" />
       </div>
 
-      <nav className="flex-1 py-4 overflow-y-auto">
-        {!collapsed && (
-          <p className="px-5 mb-2 text-[10px] font-semibold text-white/30 uppercase tracking-wider">
-            Traitements
-          </p>
-        )}
-        <ul className="space-y-0.5 px-2">
-          {navItems.map((item) => {
-            const active = isActive(item.id);
-            const Icon = item.icon;
+      <nav className="flex-1 py-2 overflow-y-auto">
+        {sections.map((section, idx) => {
+          const SectionIcon = section.icon;
+          const isOpen = openSections[section.id];
+          const hasActive = sectionHasActive(section);
+
+          if (collapsed) {
             return (
-              <li key={item.id ?? 'home'}>
+              <div key={section.id} className="px-2 mb-1">
                 <button
-                  onClick={() => handleNav(item.id)}
-                  title={collapsed ? item.label : undefined}
-                  className={`w-full flex items-center gap-3 rounded-lg transition-colors duration-150 ${
-                    collapsed ? 'justify-center px-2 py-2.5' : 'px-3 py-2.5'
-                  } ${
-                    active
-                      ? 'bg-[#E88C30] text-white'
-                      : 'text-white/60 hover:text-white hover:bg-white/8'
+                  onClick={(e) => handleCollapsedClick(section, e)}
+                  title={section.label}
+                  className={`w-full flex items-center justify-center rounded-lg px-2 py-2.5 transition-colors duration-150 ${
+                    section.disabled
+                      ? 'opacity-30 cursor-not-allowed'
+                      : hasActive
+                        ? 'text-[#E88C30]'
+                        : 'text-white/50 hover:text-white hover:bg-white/8'
                   }`}
                 >
-                  <Icon className="w-[18px] h-[18px] flex-shrink-0" />
-                  {!collapsed && (
-                    <span className="text-[13px] font-medium truncate">{item.label}</span>
+                  <SectionIcon className="w-[18px] h-[18px]" />
+                </button>
+              </div>
+            );
+          }
+
+          return (
+            <div key={section.id}>
+              {idx > 0 && (
+                <div className="px-4 my-2">
+                  <div className="h-px bg-white/5" />
+                </div>
+              )}
+
+              <div className="px-2">
+                <button
+                  onClick={() => !section.disabled && toggleSection(section.id)}
+                  className={`w-full flex items-center gap-2.5 rounded-lg px-3 py-2 transition-colors duration-150 ${
+                    section.disabled
+                      ? 'opacity-30 cursor-not-allowed'
+                      : hasActive
+                        ? 'text-[#E88C30]/90'
+                        : 'text-white/40 hover:text-white/70'
+                  }`}
+                >
+                  <SectionIcon className="w-4 h-4 flex-shrink-0" />
+                  <span className="text-[11px] font-semibold uppercase tracking-wider flex-1 text-left truncate">
+                    {section.label}
+                  </span>
+                  {!section.disabled && section.children.length > 0 && (
+                    <ChevronDown
+                      className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                        isOpen ? '' : '-rotate-90'
+                      }`}
+                    />
+                  )}
+                  {section.disabled && (
+                    <span className="text-[9px] bg-white/10 text-white/30 rounded px-1.5 py-0.5 font-medium">
+                      Bientot
+                    </span>
                   )}
                 </button>
-              </li>
-            );
-          })}
-        </ul>
+              </div>
+
+              <div
+                className={`overflow-hidden transition-all duration-200 ${
+                  isOpen && !section.disabled ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
+                }`}
+              >
+                <ul className="space-y-0.5 px-2 pt-1 pb-1">
+                  {section.children.map((child) => {
+                    const active = currentId === child.id;
+                    const Icon = child.icon;
+                    return (
+                      <li key={child.id}>
+                        <button
+                          onClick={() => handleNav(child.id)}
+                          className={`w-full flex items-center gap-3 rounded-lg transition-colors duration-150 px-3 py-2 pl-8 ${
+                            active
+                              ? 'bg-[#E88C30] text-white'
+                              : 'text-white/60 hover:text-white hover:bg-white/8'
+                          }`}
+                        >
+                          <Icon className="w-[16px] h-[16px] flex-shrink-0" />
+                          <span className="text-[13px] font-medium truncate">{child.label}</span>
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            </div>
+          );
+        })}
       </nav>
 
       <div className="border-t border-white/10" />
@@ -117,6 +298,21 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
           <ChevronLeft className="w-3.5 h-3.5" />
         )}
       </button>
+
+      {flyout &&
+        (() => {
+          const section = sections.find((s) => s.id === flyout.sectionId);
+          if (!section) return null;
+          return (
+            <CollapsedFlyout
+              section={section}
+              anchorRect={flyout.rect}
+              onSelect={handleNav}
+              activeId={currentId}
+              onClose={() => setFlyout(null)}
+            />
+          );
+        })()}
     </aside>
   );
 }
