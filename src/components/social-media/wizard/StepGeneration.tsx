@@ -30,6 +30,15 @@ interface StepGenerationProps {
 
 type Device = 'mobile' | 'desktop';
 
+const SHORT_LABELS: Record<PlatformId, string> = {
+  linkedin: 'Li',
+  instagram: 'Ig',
+  facebook: 'Fb',
+  tiktok: 'Tk',
+  x: 'X',
+  hellowork: 'Hw',
+};
+
 function SummaryRow({ icon: Icon, label, value }: { icon: React.ElementType; label: string; value: string }) {
   return (
     <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-4 py-3">
@@ -122,7 +131,7 @@ export default function StepGeneration({ state, result, isLoading, onGenerate }:
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center py-20">
+      <div className="flex min-h-[250px] sm:min-h-[350px] lg:min-h-[400px] flex-col items-center justify-center py-20">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ repeat: Infinity, duration: 1.2, ease: 'linear' }}
@@ -166,11 +175,11 @@ export default function StepGeneration({ state, result, isLoading, onGenerate }:
         <p className="text-sm font-medium text-green-800">Post genere avec succes</p>
       </motion.div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        <div className="space-y-4">
+      <div className="flex flex-col gap-6 lg:grid lg:grid-cols-2">
+        <div className="order-2 lg:order-1 space-y-4">
           <h3 className="text-base font-semibold text-gray-900">Contenu genere</h3>
 
-          <div className="rounded-2xl border border-gray-200 bg-white p-5">
+          <div className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-5">
             <p className="whitespace-pre-wrap text-sm leading-relaxed text-gray-800">{postContent}</p>
           </div>
 
@@ -180,23 +189,23 @@ export default function StepGeneration({ state, result, isLoading, onGenerate }:
             </div>
           )}
 
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={handleCopy}>
+          <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+            <Button variant="outline" size="sm" onClick={handleCopy} className="w-full sm:w-auto">
               {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               {copied ? 'Copie' : 'Copier'}
             </Button>
-            <Button variant="ghost" size="sm" onClick={onGenerate}>
+            <Button variant="ghost" size="sm" onClick={onGenerate} className="w-full sm:w-auto">
               <RefreshCw className="h-4 w-4" />
               Regenerer
             </Button>
-            <Button variant="ghost" size="sm" onClick={onGenerate}>
+            <Button variant="ghost" size="sm" onClick={onGenerate} className="w-full sm:w-auto">
               <Shuffle className="h-4 w-4" />
               Variante
             </Button>
           </div>
         </div>
 
-        <div className="space-y-4">
+        <div className="order-1 lg:order-2 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-base font-semibold text-gray-900">Apercu</h3>
             <div role="tablist" aria-label="Type d'apercu" className="flex items-center gap-1 rounded-lg bg-gray-100 p-1">
@@ -210,7 +219,7 @@ export default function StepGeneration({ state, result, isLoading, onGenerate }:
                     aria-selected={active}
                     aria-label={`Apercu ${d === 'mobile' ? 'mobile' : 'bureau'}`}
                     onClick={() => setDevice(d)}
-                    className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-all ${
+                    className={`flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[11px] sm:text-xs font-medium transition-all ${
                       active
                         ? 'bg-white text-gray-800 shadow-sm'
                         : 'text-gray-500 hover:text-gray-700'
@@ -225,7 +234,7 @@ export default function StepGeneration({ state, result, isLoading, onGenerate }:
           </div>
 
           {state.platforms.length > 1 && (
-            <div role="tablist" aria-label="Plateformes" className="flex gap-1.5 overflow-x-auto rounded-xl bg-gray-100 p-1">
+            <div role="tablist" aria-label="Plateformes" className="flex gap-1 overflow-x-auto rounded-xl bg-gray-100 p-1">
               {state.platforms.map((p) => {
                 const platform = PLATFORMS.find((pl) => pl.id === p);
                 const active = activeTab === p;
@@ -236,14 +245,15 @@ export default function StepGeneration({ state, result, isLoading, onGenerate }:
                     aria-selected={active}
                     aria-label={`Apercu ${platform?.label}`}
                     onClick={() => setActiveTab(p)}
-                    className={`flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium transition-all ${
+                    className={`flex min-w-0 shrink items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[11px] sm:text-xs font-medium transition-all ${
                       active
                         ? 'bg-white text-gray-800 shadow-sm'
                         : 'text-gray-500 hover:text-gray-700'
                     }`}
                   >
-                    <PlatformIcon platform={p} className="h-3.5 w-3.5" />
-                    {platform?.label}
+                    <PlatformIcon platform={p} className="h-3.5 w-3.5 shrink-0" />
+                    <span className="sm:hidden">{SHORT_LABELS[p]}</span>
+                    <span className="hidden sm:inline">{platform?.label}</span>
                   </button>
                 );
               })}
@@ -257,6 +267,7 @@ export default function StepGeneration({ state, result, isLoading, onGenerate }:
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.98 }}
               transition={{ duration: 0.2 }}
+              className="max-h-[60vh] overflow-y-auto lg:max-h-none"
             >
               <PreviewRenderer
                 post={generatedPost}

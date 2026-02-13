@@ -171,7 +171,7 @@ export default function StepConfiguration({
         </p>
 
         <motion.div
-          className="grid grid-cols-1 xs:grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3"
+          className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
