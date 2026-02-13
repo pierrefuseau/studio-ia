@@ -65,6 +65,8 @@ const sections: NavSection[] = [
 interface SidebarProps {
   collapsed: boolean;
   onToggle: () => void;
+  mobile?: boolean;
+  onNavigate?: () => void;
 }
 
 function CollapsedFlyout({
@@ -129,7 +131,7 @@ function CollapsedFlyout({
   );
 }
 
-export function Sidebar({ collapsed, onToggle }: SidebarProps) {
+export function Sidebar({ collapsed, onToggle, mobile, onNavigate }: SidebarProps) {
   const { state, dispatch } = useApp();
   const currentId = state.selectedTreatmentType;
 
@@ -150,6 +152,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const handleNav = (id: string) => {
     dispatch({ type: 'SELECT_TREATMENT_TYPE', payload: id });
     dispatch({ type: 'SET_CURRENT_STEP', payload: 'treatment' });
+    onNavigate?.();
   };
 
   const sectionHasActive = (section: NavSection) =>
@@ -166,7 +169,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   return (
     <aside
       className={`fixed top-0 left-0 h-screen z-40 flex flex-col transition-all duration-200 ${
-        collapsed ? 'w-[68px]' : 'w-[260px]'
+        mobile ? 'w-[280px] max-w-[85vw]' : collapsed ? 'w-[68px]' : 'w-[260px]'
       }`}
       style={{ background: '#0F172A' }}
     >
@@ -300,7 +303,9 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
 
       <button
         onClick={onToggle}
-        className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors z-50"
+        className={`absolute -right-3 top-20 w-6 h-6 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors z-50 ${
+          mobile ? 'hidden' : ''
+        }`}
       >
         {collapsed ? (
           <ChevronRight className="w-3.5 h-3.5" />
