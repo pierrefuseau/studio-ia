@@ -1,5 +1,6 @@
-import React from 'react';
-import { Camera, ImagePlus, UtensilsCrossed } from 'lucide-react';
+import React, { useState } from 'react';
+import { Camera, ImagePlus, UtensilsCrossed, ChevronUp, X } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useApp } from '../contexts/AppContext';
 import { UploadZone } from './UploadZone';
 import { ProductForm } from './ProductForm';
@@ -12,6 +13,7 @@ import { WebhookPayload } from '../types';
 export function TreatmentWorkspace() {
   const { state, dispatch } = useApp();
   const { addToast } = useToast();
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const getTreatmentConfig = () => {
     switch (state.selectedTreatmentType) {
@@ -152,8 +154,10 @@ export function TreatmentWorkspace() {
   const config = getTreatmentConfig();
   if (!config) return null;
 
+  const hasSideContent = state.isProcessing;
+
   return (
-    <div className="max-w-5xl">
+    <div className="max-w-full md:max-w-4xl lg:max-w-5xl xl:max-w-6xl p-3 sm:p-4 md:p-6">
       <ContentHeader
         breadcrumbs={[
           { label: config.name },
@@ -163,18 +167,63 @@ export function TreatmentWorkspace() {
         icon={config.icon}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
+        <div className="md:col-span-1 lg:col-span-2 space-y-4 sm:space-y-5">
           <UploadZone />
           {state.selectedTreatmentType !== 'background-removal' && (
             <ProductForm treatmentType={state.selectedTreatmentType} />
           )}
         </div>
 
-        <div className="space-y-5">
+        <div className="hidden md:block md:col-span-1 space-y-5">
           {state.isProcessing && <ProcessingStatus />}
         </div>
       </div>
+
+      {hasSideContent && (
+        <button
+          onClick={() => setIsDrawerOpen(true)}
+          className="md:hidden fixed bottom-5 right-5 z-40 flex items-center gap-2 px-4 py-3 bg-gray-900 text-white rounded-full shadow-lg hover:bg-gray-800 transition-colors"
+        >
+          <ChevronUp className="w-4 h-4" />
+          <span className="text-sm font-medium">Statut</span>
+        </button>
+      )}
+
+      <AnimatePresence>
+        {hasSideContent && isDrawerOpen && (
+          <>
+            <motion.div
+              className="md:hidden fixed inset-0 z-40 bg-black/40"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsDrawerOpen(false)}
+            />
+            <motion.div
+              className="md:hidden fixed inset-x-0 bottom-0 z-50 bg-white rounded-t-2xl shadow-2xl max-h-[70vh] overflow-y-auto"
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            >
+              <div className="sticky top-0 bg-white border-b border-gray-100 px-4 py-3 flex items-center justify-between rounded-t-2xl">
+                <div className="w-10 h-1 bg-gray-300 rounded-full absolute left-1/2 -translate-x-1/2 top-2" />
+                <span className="text-sm font-semibold text-gray-900 mt-2">Statut du traitement</span>
+                <button
+                  onClick={() => setIsDrawerOpen(false)}
+                  className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors mt-2"
+                >
+                  <X className="w-4 h-4 text-gray-500" />
+                </button>
+              </div>
+              <div className="p-4 space-y-4">
+                {state.isProcessing && <ProcessingStatus />}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
