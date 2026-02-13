@@ -74,6 +74,10 @@ export default {
           'from': { opacity: '0', transform: 'scale(0.95)' },
           'to': { opacity: '1', transform: 'scale(1)' },
         },
+        shimmer: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' },
+        },
       },
       boxShadow: {
         'sm': '0 1px 2px 0 rgba(15, 29, 61, 0.04)',
