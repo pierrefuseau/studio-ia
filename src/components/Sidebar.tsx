@@ -10,6 +10,7 @@ import {
   ChevronDown,
   Palette,
   MessageCircle,
+  Sparkles,
   type LucideIcon,
 } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
@@ -307,6 +308,25 @@ export function Sidebar({ collapsed, onToggle, mobile, onNavigate }: SidebarProp
           );
         })}
       </nav>
+
+      <div className="px-2 pb-3">
+        <button
+          onClick={() => handleNav('liens-utiles')}
+          className={`w-full flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-fuseau-accent/40 ${
+            currentId === 'liens-utiles'
+              ? 'bg-[#E88C30] text-white'
+              : 'text-white/50 hover:text-white hover:bg-white/8'
+          } ${collapsed ? 'justify-center' : ''}`}
+          title="Liens utiles IA"
+          aria-label="Liens utiles IA"
+          aria-current={currentId === 'liens-utiles' ? 'page' : undefined}
+        >
+          <Sparkles className="w-[16px] h-[16px] flex-shrink-0" />
+          {!collapsed && (
+            <span className="text-[13px] font-medium truncate">Liens utiles IA</span>
+          )}
+        </button>
+      </div>
 
       <div className="border-t border-white/10" />
 
