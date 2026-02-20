@@ -1,9 +1,10 @@
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Upload, X, Image as ImageIcon } from 'lucide-react';
+import { Upload, X } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 import { useToast } from './ui/Toast';
-import { webhookService } from '../services/webhookService';
+import { webhookService, WebhookResponse } from '../services/webhookService';
+import { ResultDisplay } from './ResultDisplay';
 
 interface UploadedFile {
   file: File;
@@ -19,9 +20,10 @@ export function UploadZone() {
   const [currentMode, setCurrentMode] = useState<'none' | 'single' | 'batch'>('none');
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState({ current: 0, total: 0 });
+  const [result, setResult] = useState<WebhookResponse | null>(null);
 
   const MAX_FILES = 50;
-  const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+  const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
   const getMaxFiles = () => {
     if (state.selectedTreatmentType === 'scene-composition') {
@@ -78,6 +80,7 @@ export function UploadZone() {
     console.log("✅ Fichiers validés :", newFiles.length);
     setUploadedFiles(newFiles);
     setCurrentMode(newFiles.length === 1 ? 'single' : 'batch');
+    setResult(null);
 
     if (newFiles.length > 0) {
       dispatch({ type: 'CLEAR_PRODUCTS' });
@@ -91,7 +94,7 @@ export function UploadZone() {
         }))
       });
     }
-  }, [addToast, dispatch]);
+  }, [addToast, dispatch, state.selectedTreatmentType]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (acceptedFiles: File[]) => {
@@ -113,6 +116,7 @@ export function UploadZone() {
       const newFiles = prev.filter(f => f.id !== id);
       if (newFiles.length === 0) {
         setCurrentMode('none');
+        setResult(null);
         dispatch({ type: 'CLEAR_PRODUCTS' });
       } else {
         setCurrentMode(newFiles.length === 1 ? 'single' : 'batch');
@@ -128,14 +132,6 @@ export function UploadZone() {
     if (state.selectedTreatmentType === 'scene-composition' || state.selectedTreatmentType === 'product-scene') {
       const productName = state.product?.name || state.products[0]?.name || state.selectedProduct?.name;
       const productDescription = state.product?.description || state.products[0]?.description || state.selectedProduct?.description;
-
-      console.log('🔍 Validation mise en situation:', {
-        productName,
-        productDescription,
-        stateProduct: state.product,
-        firstProduct: state.products[0],
-        selectedProduct: state.selectedProduct
-      });
 
       if (!productName?.trim()) {
         addToast({
@@ -157,19 +153,12 @@ export function UploadZone() {
     }
 
     console.log('🎬 === DÉBUT TRAITEMENT IMAGES ===');
-    console.log('📊 État initial:', {
-      nombreFichiers: state.products.length,
-      fichiers: state.products.map(p => ({ name: p.file.name, size: p.file.size })),
-      produitSélectionné: state.selectedProduct?.name || 'Aucun sélectionné',
-      traitement: state.selectedTreatmentType
-    });
 
     setIsProcessing(true);
+    setResult(null);
     setProgress({ current: 0, total: state.products.length });
 
     try {
-      console.log('📦 Préparation des fichiers...');
-
       const allFiles = state.products.map(product => product.file);
 
       state.products.forEach(product => {
@@ -181,7 +170,7 @@ export function UploadZone() {
 
       setUploadedFiles(prev => prev.map(f => ({ ...f, status: 'processing' })));
 
-      const success = await webhookService.sendTreatmentRequest({
+      const webhookResult = await webhookService.sendTreatmentRequest({
         treatmentType: state.selectedTreatmentType || 'background-removal',
         treatmentDisplayName: state.products.length === 1 ? 'Traitement Simple' : 'Traitement Batch',
         productData: {
@@ -194,7 +183,9 @@ export function UploadZone() {
         sessionId: 'session-' + Date.now()
       });
 
-      if (success) {
+      setResult(webhookResult);
+
+      if (webhookResult.success) {
         state.products.forEach(product => {
           dispatch({
             type: 'UPDATE_PRODUCT',
@@ -206,17 +197,30 @@ export function UploadZone() {
 
         addToast({
           type: 'success',
-          title: 'Images traitées',
-          description: `${state.products.length} image(s) envoyée(s) pour traitement`
+          title: 'Image générée',
+          description: 'Votre image est prête au téléchargement'
         });
       } else {
-        throw new Error('Échec du traitement');
+        state.products.forEach(product => {
+          dispatch({
+            type: 'UPDATE_PRODUCT',
+            payload: { id: product.id, updates: { status: 'error' } }
+          });
+        });
+
+        setUploadedFiles(prev => prev.map(f => ({ ...f, status: 'error' })));
       }
 
       setProgress({ current: state.products.length, total: state.products.length });
 
     } catch (error) {
       console.error('💥 Erreur de traitement:', error);
+
+      const errResult: WebhookResponse = {
+        success: false,
+        error: 'Une erreur inattendue s\'est produite'
+      };
+      setResult(errResult);
 
       state.products.forEach(product => {
         dispatch({
@@ -226,12 +230,6 @@ export function UploadZone() {
       });
 
       setUploadedFiles(prev => prev.map(f => ({ ...f, status: 'error' })));
-
-      addToast({
-        type: 'error',
-        title: 'Erreur de traitement',
-        description: 'Impossible de traiter les images'
-      });
     } finally {
       setIsProcessing(false);
       console.log('🏁 === FIN TRAITEMENT ===');
@@ -244,6 +242,7 @@ export function UploadZone() {
     setCurrentMode('none');
     setIsProcessing(false);
     setProgress({ current: 0, total: 0 });
+    setResult(null);
     dispatch({ type: 'CLEAR_PRODUCTS' });
   }, [uploadedFiles, dispatch]);
 
@@ -356,19 +355,20 @@ export function UploadZone() {
       )}
 
       {uploadedFiles.length > 0 && (
-        <div className="rounded-xl border border-gray-200 bg-white p-4 sm:p-5 shadow-sm">
+        <div className="rounded-xl border border-gray-200 bg-white p-4 sm:p-5 shadow-sm mb-4">
           <div className="space-y-2">
             <button
               onClick={processImages}
               disabled={isProcessing || state.products.length === 0}
               className="w-full rounded-lg bg-fuseau-accent py-2.5 text-[13px] font-semibold text-white tracking-wide transition-all duration-150 hover:bg-fuseau-accent-dark hover:-translate-y-px hover:shadow-lg hover:shadow-fuseau-accent/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none"
             >
-              {isProcessing ? 'Traitement...' : `Traiter ${state.products.length} image(s)`}
+              {isProcessing ? 'Génération en cours...' : `Générer ${state.products.length} image(s)`}
             </button>
 
             <button
               onClick={resetAll}
-              className="w-full rounded-lg border border-gray-200 bg-transparent py-2.5 text-[13px] font-semibold text-gray-500 tracking-wide transition-all duration-150 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-600"
+              disabled={isProcessing}
+              className="w-full rounded-lg border border-gray-200 bg-transparent py-2.5 text-[13px] font-semibold text-gray-500 tracking-wide transition-all duration-150 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Réinitialiser
             </button>
@@ -377,7 +377,7 @@ export function UploadZone() {
           {isProcessing && (
             <div className="mt-4 pt-4 border-t border-gray-200">
               <div className="flex justify-between text-[11px] text-gray-500 mb-1.5">
-                <span>Traitement en cours...</span>
+                <span>Génération en cours...</span>
                 <span>{progress.current}/{progress.total}</span>
               </div>
               <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
@@ -390,6 +390,12 @@ export function UploadZone() {
           )}
         </div>
       )}
+
+      <ResultDisplay
+        result={result}
+        isLoading={isProcessing}
+        onRegenerate={processImages}
+      />
     </div>
   );
 }

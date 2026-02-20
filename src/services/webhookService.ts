@@ -1,12 +1,20 @@
 import { WebhookPayload } from '../types';
 
-// Fonction utilitaire pour convertir un fichier en base64 pur (sans préfixe)
 const toB64 = (file: File): Promise<string> =>
   new Promise<string>((resolve) => {
     const reader = new FileReader();
     reader.onload = () => resolve(String(reader.result).split(',')[1] || '');
     reader.readAsDataURL(file);
   });
+
+export interface WebhookResponse {
+  success: boolean;
+  imageBase64?: string;
+  mimeType?: string;
+  fileName?: string;
+  treatmentType?: string;
+  error?: string;
+}
 
 export class WebhookService {
   private static instance: WebhookService;
@@ -23,76 +31,71 @@ export class WebhookService {
     return WebhookService.instance;
   }
 
-  async sendTreatmentRequest(payload: WebhookPayload): Promise<boolean> {
+  async sendTreatmentRequest(payload: WebhookPayload): Promise<WebhookResponse> {
     try {
       console.log('🚀 === DÉBUT ENVOI MULTI-UPLOAD WEBHOOK N8N ===');
 
-      // 📂 Collecte de TOUS les fichiers dans un tableau
       let filesToConvert: File[] = [];
-      
+
       if (payload.productData.imageFiles?.length) {
-        // 📂 Multi-images
         filesToConvert = payload.productData.imageFiles;
         console.log('📁 Multi-images:', filesToConvert.length, 'fichiers');
-      } else if (payload.productData.imageFile) {
-        // 📂 Single image fallback
-        filesToConvert = [payload.productData.imageFile];
-        console.log('📁 Single image fallback');
       } else {
         throw new Error('Aucun fichier image fourni');
       }
-      
-      // ⚡ Conversion de TOUS les fichiers en Base64 pur
+
       const imagesBase64 = await Promise.all(filesToConvert.map(toB64));
-      
-      // 🚀 PAYLOAD JSON FINAL
+
       const jsonPayload = {
         client: 'Studio Produit',
         productName: payload.productData.name || '',
         productDescription: payload.productData.description || '',
         treatmentType: payload.treatmentType,
-        imagesBase64: imagesBase64,   // ⚡ tableau complet d'images en base64
-        originalFileNames: filesToConvert.map(file => file.name),  // 📝 noms des fichiers originaux
+        imagesBase64: imagesBase64,
+        originalFileNames: filesToConvert.map(file => file.name),
         situationDescription: payload.treatmentParams?.situationPrompt || payload.productData.description || ''
       };
-      
+
       console.log('📤 JSON final à envoyer:', {
         productName: jsonPayload.productName,
-        productDescription: jsonPayload.productDescription,
         treatmentType: jsonPayload.treatmentType,
         imagesCount: jsonPayload.imagesBase64.length,
         fileNames: jsonPayload.originalFileNames,
-        situationDescription: jsonPayload.situationDescription
-      });
-      
-      console.log('📤 Envoi vers n8n:', {
-        productName: jsonPayload.productName,
-        productDescription: jsonPayload.productDescription,
-        treatmentType: jsonPayload.treatmentType,
-        imagesCount: jsonPayload.imagesBase64.length,
-        originalFiles: jsonPayload.originalFileNames
       });
 
-      // 📡 Envoi POST vers n8n
-      const response = await fetch(this.webhookUrl, {
-        method: 'POST',
-        body: JSON.stringify(jsonPayload),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        }
-      });
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 120000);
 
-      if (!response.ok) {
-        throw new Error(`Webhook failed: ${response.status} ${response.statusText}`);
+      let response: Response;
+      try {
+        response = await fetch(this.webhookUrl, {
+          method: 'POST',
+          body: JSON.stringify(jsonPayload),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          signal: controller.signal
+        });
+      } finally {
+        clearTimeout(timeoutId);
       }
 
-      console.log('✅ === MULTI-UPLOAD RÉUSSI ===');
-      
-      return true;
+      if (!response.ok) {
+        return { success: false, error: `Erreur HTTP: ${response.status}` };
+      }
+
+      const data: WebhookResponse = await response.json();
+      console.log('✅ === RÉPONSE REÇUE ===', { success: data.success, fileName: data.fileName });
+      return data;
+
     } catch (error) {
+      const message = error instanceof Error ? error.message : 'Erreur inconnue';
       console.error('❌ Erreur Webhook n8n:', error);
-      return false;
+      if (message.toLowerCase().includes('abort')) {
+        return { success: false, error: 'Délai dépassé : la génération a pris trop longtemps' };
+      }
+      return { success: false, error: `Erreur réseau : ${message}` };
     }
   }
 
@@ -108,7 +111,8 @@ export class WebhookService {
         sessionId: 'test-' + Date.now()
       };
 
-      return await this.sendTreatmentRequest(testPayload);
+      const result = await this.sendTreatmentRequest(testPayload);
+      return result.success;
     } catch (error) {
       console.error('❌ Test connexion échoué:', error);
       return false;
