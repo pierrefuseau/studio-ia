@@ -58,7 +58,7 @@ export function TreatmentWorkspace() {
             }
           ]
         };
-      case 'recipe-scene':
+      case 'chef-recipe':
         return {
           name: 'Recettes du Chef',
           description: 'Sublimez vos plats avec une mise en scene gastronomique',

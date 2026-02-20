@@ -40,7 +40,7 @@ const sections: NavSection[] = [
       { id: 'scene-composition', label: 'Mise en situation Packaging', icon: ImagePlus },
       { id: 'background-removal', label: 'Detourage Studio', icon: Camera },
       { id: 'product-scene', label: 'Produit Brut', icon: ImagePlus },
-      { id: 'recipe-scene', label: 'Recettes du Chef', icon: UtensilsCrossed },
+      { id: 'chef-recipe', label: 'Recettes du Chef', icon: UtensilsCrossed },
       { id: 'video-generation', label: 'Generation Videos', icon: Video },
     ],
   },

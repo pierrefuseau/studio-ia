@@ -43,7 +43,7 @@ const initialState: AppState = {
       }
     },
     {
-      id: 'recipe-scene',
+      id: 'chef-recipe',
       name: 'Mise en situation des recettes du chef',
       description: 'Sublimez vos plats avec une mise en scène gastronomique',
       icon: 'UtensilsCrossed',

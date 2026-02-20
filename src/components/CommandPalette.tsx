@@ -42,7 +42,7 @@ const COMMANDS: CommandItem[] = [
     keywords: ['produit', 'brut', 'mise en situation'],
   },
   {
-    id: 'recipe-scene',
+    id: 'chef-recipe',
     label: 'Recettes du Chef',
     section: 'Designer',
     icon: UtensilsCrossed,
