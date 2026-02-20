@@ -4,16 +4,27 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useApp } from '../contexts/AppContext';
 import { UploadZone } from './UploadZone';
 import { ProductForm } from './ProductForm';
+import { BackgroundSelector } from './BackgroundSelector';
 import { ProcessingStatus } from './ProcessingStatus';
 import { ContentHeader } from './ContentHeader';
 import { useToast } from './ui/Toast';
 import { webhookService } from '../services/webhookService';
-import { WebhookPayload } from '../types';
+import { WebhookPayload, BackgroundOption } from '../types';
 
 export function TreatmentWorkspace() {
   const { state, dispatch } = useApp();
   const { addToast } = useToast();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [backgroundOption, setBackgroundOption] = useState<BackgroundOption>('white');
+
+  const handleBackgroundChange = (option: BackgroundOption) => {
+    setBackgroundOption(option);
+    const currentProduct = state.product || { id: Date.now().toString() };
+    dispatch({
+      type: 'SET_PRODUCT',
+      payload: { ...currentProduct, backgroundOption: option }
+    });
+  };
 
   const getTreatmentConfig = () => {
     switch (state.selectedTreatmentType) {
@@ -170,6 +181,9 @@ export function TreatmentWorkspace() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
         <div className="md:col-span-1 lg:col-span-2 space-y-4 sm:space-y-5">
           <UploadZone />
+          {state.selectedTreatmentType === 'background-removal' && (
+            <BackgroundSelector value={backgroundOption} onChange={handleBackgroundChange} />
+          )}
           {state.selectedTreatmentType !== 'background-removal' && (
             <ProductForm treatmentType={state.selectedTreatmentType} />
           )}

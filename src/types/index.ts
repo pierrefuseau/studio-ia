@@ -74,9 +74,12 @@ export interface WebhookConfig {
   enabled: boolean;
 }
 
+export type BackgroundOption = 'white' | 'black' | 'transparent';
+
 export interface WebhookPayload {
   treatmentType: string;
   treatmentDisplayName?: string;
+  backgroundOption?: BackgroundOption;
   productData: {
     name?: string;
     code?: string;

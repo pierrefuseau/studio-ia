@@ -13,6 +13,9 @@ export interface WebhookResponse {
   mimeType?: string;
   fileName?: string;
   treatmentType?: string;
+  backgroundOption?: string;
+  transparentRequested?: boolean;
+  chromaKeyColor?: string;
   error?: string;
 }
 
@@ -51,6 +54,7 @@ export class WebhookService {
         productName: payload.productData.name || '',
         productDescription: payload.productData.description || '',
         treatmentType: payload.treatmentType,
+        backgroundOption: payload.backgroundOption || 'white',
         imagesBase64: imagesBase64,
         originalFileNames: filesToConvert.map(file => file.name),
         situationDescription: payload.treatmentParams?.situationPrompt || payload.productData.description || ''

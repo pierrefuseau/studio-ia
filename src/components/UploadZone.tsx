@@ -173,6 +173,7 @@ export function UploadZone() {
       const webhookResult = await webhookService.sendTreatmentRequest({
         treatmentType: state.selectedTreatmentType || 'background-removal',
         treatmentDisplayName: state.products.length === 1 ? 'Traitement Simple' : 'Traitement Batch',
+        backgroundOption: (state.product as any)?.backgroundOption || 'white',
         productData: {
           name: state.product?.name || state.selectedProduct?.name || `Batch ${state.products.length} images`,
           description: state.product?.description || state.selectedProduct?.description || 'Traitement par lot',
