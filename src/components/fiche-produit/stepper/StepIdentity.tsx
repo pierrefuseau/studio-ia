@@ -2,6 +2,7 @@ import { useFiche } from '../FicheProduitContext';
 import { FPInput } from '../ui/FPInput';
 import { FPSelect } from '../ui/FPSelect';
 import { FPFileUpload } from '../ui/FPFileUpload';
+import { ProductSearch } from '../ui/ProductSearch';
 import type { Marque, Gamme } from '../../../types/product';
 
 const MARQUES = [
@@ -28,6 +29,8 @@ export function StepIdentity() {
         <h2 className="text-lg font-bold text-slate-100">Identite produit</h2>
         <p className="text-sm text-slate-400 mt-1">Informations generales sur le produit</p>
       </div>
+
+      <ProductSearch />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <FPSelect
