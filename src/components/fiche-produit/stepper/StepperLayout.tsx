@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, ChevronRight, ChevronLeft } from 'lucide-react';
+import { Check, ChevronRight, ChevronLeft, AlertTriangle } from 'lucide-react';
 import { cn } from '../../../utils/cn';
+import { useFiche } from '../FicheProduitContext';
 import { StepIdentity } from './StepIdentity';
 import { StepTechnical } from './StepTechnical';
 import { StepRecipe } from './StepRecipe';
@@ -21,9 +22,20 @@ interface StepperLayoutProps {
 export function StepperLayout({ onGenerate }: StepperLayoutProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const [direction, setDirection] = useState(0);
+  const { state } = useFiche();
+  const { formData } = state;
+
+  const hasPdf = !!formData.pdfBase64;
+
+  const step2Valid = hasPdf
+    ? !!formData.poidsNet.trim() && !!formData.conditionnement.trim()
+    : !!formData.poidsNet.trim() && !!formData.conditionnement.trim() && !!formData.ingredients.trim();
+
+  const step2Blocked = currentStep === 2 && !hasPdf;
 
   const goTo = (step: number) => {
     if (step < 1 || step > 4) return;
+    if (currentStep === 2 && step > 2 && !step2Valid) return;
     setDirection(step > currentStep ? 1 : -1);
     setCurrentStep(step);
   };
@@ -36,6 +48,8 @@ export function StepperLayout({ onGenerate }: StepperLayoutProps) {
     center: { x: 0, opacity: 1 },
     exit: (d: number) => ({ x: d > 0 ? -60 : 60, opacity: 0 }),
   };
+
+  const nextDisabled = currentStep === 2 && !step2Valid;
 
   return (
     <div className="space-y-6">
@@ -96,28 +110,42 @@ export function StepperLayout({ onGenerate }: StepperLayoutProps) {
         </motion.div>
       </AnimatePresence>
 
-      <div className="flex items-center justify-between pt-4 border-t border-slate-700/50">
-        <button
-          onClick={prev}
-          disabled={currentStep === 1}
-          className={cn(
-            'flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
-            currentStep === 1
-              ? 'text-slate-600 cursor-not-allowed'
-              : 'text-slate-300 hover:bg-slate-700/50 hover:text-white'
-          )}
-        >
-          <ChevronLeft className="w-4 h-4" />
-          Precedent
-        </button>
-        {currentStep < 4 && (
+      <div className="flex flex-col gap-2 pt-4 border-t border-slate-700/50">
+        <div className="flex items-center justify-between">
           <button
-            onClick={next}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold bg-amber-500 text-slate-900 hover:bg-amber-400 transition-all duration-150 shadow-md hover:shadow-lg"
+            onClick={prev}
+            disabled={currentStep === 1}
+            className={cn(
+              'flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
+              currentStep === 1
+                ? 'text-slate-600 cursor-not-allowed'
+                : 'text-slate-300 hover:bg-slate-700/50 hover:text-white'
+            )}
           >
-            Suivant
-            <ChevronRight className="w-4 h-4" />
+            <ChevronLeft className="w-4 h-4" />
+            Precedent
           </button>
+          {currentStep < 4 && (
+            <button
+              onClick={next}
+              disabled={nextDisabled}
+              className={cn(
+                'flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-150 shadow-md',
+                nextDisabled
+                  ? 'bg-slate-600 text-slate-400 cursor-not-allowed'
+                  : 'bg-amber-500 text-slate-900 hover:bg-amber-400 hover:shadow-lg'
+              )}
+            >
+              Suivant
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+        {step2Blocked && !hasPdf && currentStep === 2 && (
+          <div className="flex items-center gap-2 justify-end">
+            <AlertTriangle className="w-3 h-3 text-amber-400" />
+            <p className="text-[11px] text-amber-400/70">Veuillez uploader la fiche technique PDF pour continuer</p>
+          </div>
         )}
       </div>
     </div>

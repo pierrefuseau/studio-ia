@@ -40,6 +40,8 @@ export async function generateFicheProduit(
     gamme: formData.gamme,
     photoBase64,
     photoMimeType: formData.photoFile?.type || '',
+    pdfBase64: formData.pdfBase64,
+    pdfFileName: formData.pdfFileName,
     poidsNet: formData.poidsNet,
     conditionnement: formData.conditionnement,
     ingredients: formData.ingredients,

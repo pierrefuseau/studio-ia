@@ -58,6 +58,10 @@ export interface ProductFormData {
   photoFile: File | null;
   photoPreview: string;
 
+  pdfFile: File | null;
+  pdfBase64: string;
+  pdfFileName: string;
+
   poidsNet: string;
   conditionnement: string;
   ingredients: string;

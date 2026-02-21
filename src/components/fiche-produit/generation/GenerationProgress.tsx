@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { PenLine, ChefHat, Camera, FileText, Check, Loader2 } from 'lucide-react';
+import { PenLine, ChefHat, Camera, FileText, FileSearch, FileOutput, Check, Loader2 } from 'lucide-react';
 
 const GENERATION_STEPS = [
-  { id: 1, label: 'Redaction du contenu marketing...', icon: PenLine, duration: 8000 },
-  { id: 2, label: 'Creation de la recette professionnelle...', icon: ChefHat, duration: 10000 },
-  { id: 3, label: 'Shooting photo de la recette...', icon: Camera, duration: 12000 },
-  { id: 4, label: 'Mise en page du PDF...', icon: FileText, duration: 5000 },
+  { id: 1, label: 'Analyse de la fiche technique PDF...', icon: FileSearch, duration: 12000 },
+  { id: 2, label: 'Redaction du contenu marketing...', icon: PenLine, duration: 8000 },
+  { id: 3, label: 'Creation de la recette professionnelle...', icon: ChefHat, duration: 10000 },
+  { id: 4, label: 'Shooting photo de la recette...', icon: Camera, duration: 12000 },
+  { id: 5, label: 'Mise en page finale...', icon: FileOutput, duration: 5000 },
 ];
 
 export function GenerationProgress() {

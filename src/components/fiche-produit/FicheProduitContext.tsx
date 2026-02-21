@@ -28,6 +28,7 @@ const defaultAllergens: AllergenSelection[] = ALLERGENS.map((a) => ({
 export const defaultFormData: ProductFormData = {
   marque: '', nomProduit: '', referenceInterne: '', codeEAN: '', gamme: '',
   photoFile: null, photoPreview: '',
+  pdfFile: null, pdfBase64: '', pdfFileName: '',
   poidsNet: '', conditionnement: '', ingredients: '', allergenes: defaultAllergens,
   nutritionValues: defaultNutrition, dlcDluo: '', conservation: '', origine: '',
   certifications: [], descriptionLibre: '',

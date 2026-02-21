@@ -1,4 +1,4 @@
-import { Sparkles, Package, FlaskConical, UtensilsCrossed, AlertTriangle, Award } from 'lucide-react';
+import { Sparkles, Package, FlaskConical, UtensilsCrossed, AlertTriangle, FileText } from 'lucide-react';
 import { useFiche } from '../FicheProduitContext';
 import { ALLERGENS } from '../../../utils/allergenData';
 import { CERTIFICATIONS } from '../../../utils/certificationData';
@@ -51,6 +51,16 @@ export function StepPreview({ onGenerate }: StepPreviewProps) {
             </div>
           )}
         </Section>
+
+        {formData.pdfFileName && (
+          <Section icon={FileText} title="Fiche technique PDF">
+            <div className="flex items-center gap-2 py-1">
+              <FileText className="w-4 h-4 text-emerald-400" />
+              <span className="text-xs text-emerald-300 font-medium">{formData.pdfFileName}</span>
+              <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-500/15 text-emerald-400 uppercase">Pret</span>
+            </div>
+          </Section>
+        )}
 
         <Section icon={FlaskConical} title="Details techniques">
           {formData.poidsNet && <Row label="Poids net" value={formData.poidsNet} />}
