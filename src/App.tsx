@@ -14,6 +14,7 @@ const VideoGenerationForm = React.lazy(() =>
 );
 const SocialMediaWorkspace = React.lazy(() => import('./components/social-media/SocialMediaWorkspace'));
 const LinksUtilesPage = React.lazy(() => import('./components/LinksUtilesPage'));
+const FicheProduitModule = React.lazy(() => import('./components/fiche-produit/FicheProduitModule'));
 
 const pageTransition = {
   initial: { opacity: 0, x: 24 },
@@ -31,6 +32,8 @@ function AppContent() {
         return <VideoGenerationForm />;
       case 'social-media':
         return <SocialMediaWorkspace />;
+      case 'fiche-produit':
+        return <FicheProduitModule />;
       case 'liens-utiles':
         return <LinksUtilesPage />;
       default:

@@ -11,6 +11,7 @@ import {
   Palette,
   MessageCircle,
   Sparkles,
+  FileText,
   type LucideIcon,
 } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
@@ -51,6 +52,15 @@ const sections: NavSection[] = [
     defaultOpen: true,
     children: [
       { id: 'social-media', label: 'Generateur de posts', icon: Share2 },
+    ],
+  },
+  {
+    id: 'fiche-produit',
+    label: 'Fiche Produit IA',
+    icon: FileText,
+    defaultOpen: true,
+    children: [
+      { id: 'fiche-produit', label: 'Generateur de fiches', icon: FileText },
     ],
   },
   {
